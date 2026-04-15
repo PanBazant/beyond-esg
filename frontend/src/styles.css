@@ -60,8 +60,6 @@ code {
 
 .hero,
 .layout {
-  position: relative;
-  z-index: 1;
   max-width: 1180px;
   margin: 0 auto;
 }
@@ -174,9 +172,10 @@ code {
 .panel {
   background: var(--panel);
   border: 1px solid var(--line);
+  border-top: 1px solid var(--panel-border);
   border-radius: 24px;
   box-shadow: var(--shadow);
-  backdrop-filter: blur(12px);
+  backdrop-filter: blur(16px);
   padding: 24px;
 }
 
