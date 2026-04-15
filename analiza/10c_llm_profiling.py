@@ -28,6 +28,8 @@ POSTS_FLAT_SAMPLE_PATH = OUT_DIR / "posts_flat_sample.jsonl"
 LLM_PROFILES_PATH = OUT_DIR / "llm_axiological_profiles.jsonl"
 LLM_PROFILES_SAMPLE_PATH = OUT_DIR / "llm_axiological_profiles_sample.jsonl"
 
+VALID_COVERAGE_VALUES = {"none", "marginal", "present", "dominant"}
+
 PROMPT_TEMPLATE = """\
 You are analyzing investor commentary about publicly traded companies.
 Your task: identify PERCEPTUAL FRAMES and VALUE LENSES in investor discourse.
@@ -110,6 +112,18 @@ def build_prompt(symbol: str, data: dict, max_posts: int = 25) -> str:
     )
 
 
+def validate_llm_result(result: dict) -> dict:
+    """Normalizes LLM output to a fixed schema. Drops unexpected keys."""
+    coverage = result.get("axiological_coverage", "none")
+    if coverage not in VALID_COVERAGE_VALUES:
+        coverage = "none"
+    return {
+        "frames": result.get("frames", []),
+        "axiological_coverage": coverage,
+        "notes": result.get("notes"),
+    }
+
+
 def call_llm(client: OpenAI, model: str, prompt: str, retries: int = 2) -> dict | None:
     for attempt in range(retries + 1):
         try:
@@ -120,13 +134,17 @@ def call_llm(client: OpenAI, model: str, prompt: str, retries: int = 2) -> dict 
                 max_tokens=800,
             )
             raw = response.choices[0].message.content.strip()
-            # Wyciągnij JSON jeśli model dodał tekst przed/po
+            # Extract JSON even if the model added text before/after
             start = raw.find("{")
             end = raw.rfind("}") + 1
             if start == -1 or end == 0:
+                if attempt < retries:
+                    time.sleep(1)
+                    continue
                 return None
             return json.loads(raw[start:end])
-        except json.JSONDecodeError:
+        except json.JSONDecodeError as e:
+            print(f"  JSON parse failed (attempt {attempt+1}): {e}", file=sys.stderr)
             if attempt < retries:
                 time.sleep(1)
                 continue
@@ -166,9 +184,9 @@ def main() -> None:
     parser.add_argument("--min-posts", type=int, default=5)
     parser.add_argument("--max-posts-per-company", type=int, default=25)
     parser.add_argument("--resume", action="store_true",
-                        help="Kontynuuj od miejsca przerwania (pomija już przetworzone spółki)")
+                        help="Kontynuuj od miejsca przerwania (pomija juz przetworzone spolki)")
     parser.add_argument("--limit-companies", type=int, default=None,
-                        help="Ogranicz liczbę spółek (do testów)")
+                        help="Ogranicz liczbe spolek (do testow)")
     args = parser.parse_args()
 
     posts_path = POSTS_FLAT_SAMPLE_PATH if args.sample else POSTS_FLAT_PATH
@@ -177,6 +195,9 @@ def main() -> None:
     if not posts_path.exists():
         print(f"ERROR: brak pliku: {posts_path}", file=sys.stderr)
         sys.exit(1)
+
+    if not args.resume and out_path.exists():
+        print(f"WARN: nadpisuję istniejący plik {out_path} (użyj --resume aby kontynuować)", file=sys.stderr)
 
     print(f"Ładowanie postów: {posts_path}")
     companies = load_posts_by_company(posts_path, min_posts=args.min_posts)
@@ -223,13 +244,14 @@ def main() -> None:
                 }
             else:
                 processed += 1
-                print(f"OK ({len(result.get('frames', []))} frames, coverage={result.get('axiological_coverage')})")
+                validated = validate_llm_result(result)
+                print(f"OK ({len(validated['frames'])} frames, coverage={validated['axiological_coverage']})")
                 row = {
                     "symbol": symbol,
                     "category": data.get("category"),
                     "industry": data.get("industry"),
                     "post_count": len(data["posts"]),
-                    **result,
+                    **validated,
                     "error": False,
                 }
 
