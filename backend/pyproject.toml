@@ -1,0 +1,19 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "mgr-value-selector-backend"
+version = "0.1.0"
+description = "Backend aplikacji selekcji wartosci inwestycyjnych poza normami ESG."
+requires-python = ">=3.10"
+dependencies = [
+  "fastapi>=0.135,<0.136",
+  "uvicorn[standard]>=0.44,<0.45",
+]
+
+[tool.setuptools.packages.find]
+include = ["app*"]
+
+[tool.fastapi]
+entrypoint = "app.main:app"

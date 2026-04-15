@@ -1,0 +1,11 @@
+node_modules/
+__pycache__/
+*.pyc
+.venv/
+*.egg-info/
+dist/
+.env
+analiza/out/
+analiza/input/raw/uploads/
+scrapper/media_sample/
+scrapper/cmc_out/
