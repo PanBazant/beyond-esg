@@ -99,6 +99,7 @@ code {
   inset: 0;
   color: transparent;
   font: inherit;
+  z-index: 1;
 }
 
 .glitch-milk::before {
