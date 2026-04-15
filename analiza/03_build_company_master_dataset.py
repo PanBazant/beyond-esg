@@ -26,6 +26,8 @@ PROFITABILITY_FEATURES_SAMPLE_PATH = OUT_DIR / "company_profitability_features_s
 TECHNICAL_FEATURES_PATH = OUT_DIR / "company_technical_features.jsonl"
 TECHNICAL_FEATURES_SAMPLE_PATH = OUT_DIR / "company_technical_features_sample.jsonl"
 REAL_ESG_FEATURES_PATH = OUT_DIR / "company_real_esg_benchmark.jsonl"
+AXIOLOGICAL_PROFILE_PATH = OUT_DIR / "company_axiological_profile.jsonl"
+AXIOLOGICAL_PROFILE_SAMPLE_PATH = OUT_DIR / "company_axiological_profile_sample.jsonl"
 MASTER_JSONL_PATH = OUT_DIR / "company_master_dataset.jsonl"
 MASTER_CSV_PATH = OUT_DIR / "company_master_dataset.csv"
 SUMMARY_PATH = OUT_DIR / "company_master_summary.json"
@@ -128,6 +130,7 @@ def main() -> None:
     parser.add_argument("--profitability-features-file", type=str, default=None)
     parser.add_argument("--technical-features-file", type=str, default=None)
     parser.add_argument("--real-esg-features-file", type=str, default=None)
+    parser.add_argument("--axiological-profile-file", type=str, default=None)
     parser.add_argument("--sample", action="store_true")
     args = parser.parse_args()
 
@@ -137,6 +140,10 @@ def main() -> None:
     profitability_path = Path(args.profitability_features_file) if args.profitability_features_file else (PROFITABILITY_FEATURES_SAMPLE_PATH if args.sample else PROFITABILITY_FEATURES_PATH)
     technical_path = Path(args.technical_features_file) if args.technical_features_file else (TECHNICAL_FEATURES_SAMPLE_PATH if args.sample else TECHNICAL_FEATURES_PATH)
     real_esg_path = Path(args.real_esg_features_file) if args.real_esg_features_file else REAL_ESG_FEATURES_PATH
+    axiological_path = (
+        Path(args.axiological_profile_file) if args.axiological_profile_file
+        else (AXIOLOGICAL_PROFILE_SAMPLE_PATH if args.sample else AXIOLOGICAL_PROFILE_PATH)
+    )
     master_jsonl_path = MASTER_JSONL_SAMPLE_PATH if args.sample else MASTER_JSONL_PATH
     master_csv_path = MASTER_CSV_SAMPLE_PATH if args.sample else MASTER_CSV_PATH
     summary_path = SUMMARY_SAMPLE_PATH if args.sample else SUMMARY_PATH
@@ -146,6 +153,7 @@ def main() -> None:
     profitability = load_signal_features(profitability_path)
     technical = load_signal_features(technical_path)
     real_esg = load_signal_features(real_esg_path)
+    axiological = load_signal_features(axiological_path)
     companies = load_companies()
 
     fieldnames = [
@@ -193,6 +201,12 @@ def main() -> None:
         "metric_version",
         "custom_esg_metric_version",
         "custom_value_dimensions_metric_version",
+        "axiological_coverage",
+        "axiological_confidence",
+        "axiological_inter_method_agreement",
+        "axiological_frames_json",
+        "axiological_has_signal",
+        "axiological_profile_null",
         "real_esg_total_score",
         "real_esg_environment_score",
         "real_esg_social_score",
@@ -277,6 +291,15 @@ def main() -> None:
                 "metric_version": signal.get("metric_version"),
                 "custom_esg_metric_version": comment_row.get("custom_esg_metric_version"),
                 "custom_value_dimensions_metric_version": comment_row.get("custom_value_dimensions_metric_version"),
+                "axiological_coverage": axiological.get(company["symbol"], {}).get("axiological_coverage"),
+                "axiological_confidence": axiological.get(company["symbol"], {}).get("axiological_confidence"),
+                "axiological_inter_method_agreement": axiological.get(company["symbol"], {}).get("inter_method_agreement"),
+                "axiological_frames_json": json.dumps(
+                    axiological.get(company["symbol"], {}).get("frames", []),
+                    ensure_ascii=False
+                ),
+                "axiological_has_signal": axiological.get(company["symbol"], {}).get("has_signal", False),
+                "axiological_profile_null": axiological.get(company["symbol"], {}).get("profile_null", True),
                 "real_esg_total_score": real_esg_row.get("total_esg_score"),
                 "real_esg_environment_score": real_esg_row.get("environment_score"),
                 "real_esg_social_score": real_esg_row.get("social_score"),
