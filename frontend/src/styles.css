@@ -1173,6 +1173,10 @@ select[multiple] {
 }
 
 @media (max-width: 1180px) {
+  .mosaic-sidebar {
+    display: none;
+  }
+
   .layout {
     grid-template-columns: 1fr;
     grid-template-areas:
