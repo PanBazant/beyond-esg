@@ -32,6 +32,9 @@ from umap import UMAP
 ROOT_DIR = Path(__file__).resolve().parents[1]
 OUT_DIR = ROOT_DIR / "analiza" / "out"
 
+# Minimum number of valid (non-empty) posts for BERTopic to form stable clusters
+MIN_VALID_POSTS = 50
+
 INPUT_PATHS = {
     "seed": OUT_DIR / "posts_valueframed_seed.jsonl",
     "seed_sample": OUT_DIR / "posts_valueframed_seed_sample.jsonl",
@@ -59,11 +62,14 @@ def load_filtered_posts(path: Path) -> list[dict]:
             line = line.strip()
             if not line:
                 continue
-            rows.append(json.loads(line))
+            try:
+                rows.append(json.loads(line))
+            except json.JSONDecodeError as e:
+                print(f"WARN: skipping malformed line: {e}", file=sys.stderr)
     return rows
 
 
-def build_bertopic_model(n_topics: int = 60) -> BERTopic:
+def build_bertopic_model(n_topics: int = 60) -> tuple[BERTopic, SentenceTransformer]:
     embedding_model = SentenceTransformer("all-mpnet-base-v2")
     umap_model = UMAP(
         n_neighbors=15, n_components=5, min_dist=0.0,
@@ -76,7 +82,7 @@ def build_bertopic_model(n_topics: int = 60) -> BERTopic:
     vectorizer = CountVectorizer(
         stop_words="english", min_df=2, ngram_range=(1, 2)
     )
-    return BERTopic(
+    topic_model = BERTopic(
         embedding_model=embedding_model,
         umap_model=umap_model,
         hdbscan_model=hdbscan_model,
@@ -85,6 +91,7 @@ def build_bertopic_model(n_topics: int = 60) -> BERTopic:
         calculate_probabilities=True,
         verbose=True,
     )
+    return topic_model, embedding_model
 
 
 def classify_topics(topic_words: dict[int, list[tuple[str, float]]], embedding_model) -> dict[int, dict]:
@@ -96,7 +103,7 @@ def classify_topics(topic_words: dict[int, list[tuple[str, float]]], embedding_m
         if topic_id == -1:
             results[topic_id] = {
                 "is_axiological": False, "axiological_score": 0.0,
-                "noise_score": 1.0, "words": "outlier"
+                "noise_score": 1.0, "words": "outlier", "top_words": []
             }
             continue
         words_str = " ".join(w for w, _ in words[:10])
@@ -116,10 +123,17 @@ def compute_company_exposure(
     posts: list[dict],
     topic_assignments: list[int],
     topic_classification: dict[int, dict],
+    valid_indices: set[int],
 ) -> dict[str, dict]:
-    """Oblicza ekspozycję per spółka na każdy temat aksjologiczny."""
+    """Oblicza ekspozycję per spółka na każdy temat aksjologiczny.
+
+    Denominator = liczba postów przekazanych do modelu (valid_indices),
+    nie wszystkich postów — żeby puste posty nie rozmywały coverage.
+    """
     company_posts: dict[str, list[int]] = defaultdict(list)
-    for post, topic_id in zip(posts, topic_assignments):
+    for i, (post, topic_id) in enumerate(zip(posts, topic_assignments)):
+        if i not in valid_indices:
+            continue
         symbol = str(post.get("symbol") or "").upper()
         if symbol:
             company_posts[symbol].append(topic_id)
@@ -163,27 +177,36 @@ def run_for_filter(filter_name: str, sample: bool) -> None:
     posts = load_filtered_posts(input_path)
     texts = [str(p.get("text") or "") for p in posts]
     valid = [(i, t) for i, t in enumerate(texts) if len(t.strip()) > 20]
-    if len(valid) < 50:
-        print(f"Za mało postów ({len(valid)}) — pomijam.", file=sys.stderr)
-        # Zapisz puste pliki żeby fuzja nie crashowała
-        topics_out.write_text(json.dumps({"filter": filter_name, "sample": sample, "total_posts": len(posts), "valid_posts": len(valid), "topics_count": 0, "axiological_topics_count": 0, "topics": {}, "note": "insufficient_data"}, indent=2, ensure_ascii=False), encoding="utf-8")
+    if len(valid) < MIN_VALID_POSTS:
+        print(f"SKIP: Za mało postów ({len(valid)}) — pomijam.", file=sys.stderr)
+        insufficient_data = {
+            "filter": filter_name,
+            "sample": sample,
+            "total_posts": len(posts),
+            "valid_posts": len(valid),
+            "topics_count": 0,
+            "axiological_topics_count": 0,
+            "topics": {},
+            "note": "insufficient_data",
+        }
+        topics_out.write_text(json.dumps(insufficient_data, indent=2, ensure_ascii=False), encoding="utf-8")
         with exposure_out.open("w", encoding="utf-8") as f:
             pass
         return
 
-    valid_indices, valid_texts = zip(*valid)
+    valid_indices_list, valid_texts = zip(*valid)
+    valid_index_set = set(valid_indices_list)
     print(f"Trenowanie BERTopic na {len(valid_texts)} postach...")
-    model = build_bertopic_model()
+    model, embedding_model = build_bertopic_model()
     topic_ids, _probs = model.fit_transform(list(valid_texts))
 
     topic_words = model.get_topics()
-    embedding_model = SentenceTransformer("all-mpnet-base-v2")
     topic_classification = classify_topics(topic_words, embedding_model)
 
-    idx_to_topic = {idx: tid for idx, tid in zip(valid_indices, topic_ids)}
+    idx_to_topic = {idx: tid for idx, tid in zip(valid_indices_list, topic_ids)}
     all_topic_ids = [idx_to_topic.get(i, -1) for i in range(len(posts))]
 
-    exposure = compute_company_exposure(posts, all_topic_ids, topic_classification)
+    exposure = compute_company_exposure(posts, all_topic_ids, topic_classification, valid_index_set)
 
     topics_payload = {
         "filter": filter_name,
@@ -191,7 +214,11 @@ def run_for_filter(filter_name: str, sample: bool) -> None:
         "total_posts": len(posts),
         "valid_posts": len(valid_texts),
         "topics_count": len([t for t in topic_classification if t != -1]),
-        "axiological_topics_count": sum(1 for t in topic_classification.values() if t.get("is_axiological")),
+        # Outlier topic (-1) is hardcoded is_axiological=False, so this correctly excludes it
+        "axiological_topics_count": sum(
+            1 for t, v in topic_classification.items()
+            if t != -1 and v.get("is_axiological")
+        ),
         "topics": {str(k): v for k, v in topic_classification.items()},
     }
     topics_out.write_text(json.dumps(topics_payload, indent=2, ensure_ascii=False), encoding="utf-8")
