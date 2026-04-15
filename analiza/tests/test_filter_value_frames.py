@@ -28,3 +28,32 @@ def test_filter_seed_empty_text():
     matched, tokens = filter_seed("")
     assert matched is False
     assert tokens == []
+
+
+def test_filter_embedding_axiological_post_passes():
+    """Post o wartościach powinien mieć wyższe similarity niż trading-post."""
+    from sentence_transformers import SentenceTransformer
+    from filter_value_frames_lib import build_concept_embedding, filter_embedding_batch
+
+    model = SentenceTransformer("all-MiniLM-L6-v2")  # mały model do testów
+    concept_emb = build_concept_embedding(model)
+
+    axiological = "The board is systematically diluting shareholders with no accountability"
+    trading = "RSI 30, oversold, buy the dip, chart looks bullish"
+
+    results, scores = filter_embedding_batch([axiological, trading], model, concept_emb, threshold=0.0)
+    assert scores[0] > scores[1]
+
+
+def test_filter_embedding_threshold_rejects_low_similarity():
+    from sentence_transformers import SentenceTransformer
+    from filter_value_frames_lib import build_concept_embedding, filter_embedding_batch
+
+    model = SentenceTransformer("all-MiniLM-L6-v2")
+    concept_emb = build_concept_embedding(model)
+
+    results, scores = filter_embedding_batch(
+        ["buy buy buy moon lamborghini gains"],
+        model, concept_emb, threshold=0.99
+    )
+    assert results[0] is False
