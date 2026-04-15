@@ -1,0 +1,244 @@
+"""10c_llm_profiling.py
+
+LLM per-company axiological profiling.
+Dla każdej spółki sklejamy posty w prompt i pytamy model o kategorie percepcji.
+
+Uruchomienie:
+  python 10c_llm_profiling.py
+  python 10c_llm_profiling.py --sample
+  python 10c_llm_profiling.py --base-url http://localhost:1234/v1 --model deepseek-r1
+  python 10c_llm_profiling.py --min-posts 5 --max-posts-per-company 30
+  python 10c_llm_profiling.py --resume   # kontynuuje po przerwaniu
+"""
+from __future__ import annotations
+
+import argparse
+import json
+import sys
+import time
+from collections import defaultdict
+from pathlib import Path
+
+from openai import OpenAI
+
+ROOT_DIR = Path(__file__).resolve().parents[1]
+OUT_DIR = ROOT_DIR / "analiza" / "out"
+POSTS_FLAT_PATH = OUT_DIR / "posts_flat.jsonl"
+POSTS_FLAT_SAMPLE_PATH = OUT_DIR / "posts_flat_sample.jsonl"
+LLM_PROFILES_PATH = OUT_DIR / "llm_axiological_profiles.jsonl"
+LLM_PROFILES_SAMPLE_PATH = OUT_DIR / "llm_axiological_profiles_sample.jsonl"
+
+PROMPT_TEMPLATE = """\
+You are analyzing investor commentary about publicly traded companies.
+Your task: identify PERCEPTUAL FRAMES and VALUE LENSES in investor discourse.
+
+Company: {symbol} | Category: {category} | Industry: {industry}
+Total posts collected: {total_posts} | Posts shown below: {shown_posts}
+
+--- POSTS ---
+{posts_text}
+--- END POSTS ---
+
+Question: Through which value lenses or perceptual frames do investors discuss this company?
+Do NOT rate sentiment (liked/not liked). Focus on CATEGORIES OF PERCEPTION.
+
+Examples of valid frames:
+- "regulatory scrutiny" (investors talk about SEC, lawsuits, compliance)
+- "management accountability" (investors question CEO decisions, board actions)
+- "environmental footprint" (investors mention oil, emissions, resource extraction)
+- "labor practices" (investors mention workers, strikes, layoffs)
+- "financial opacity" (investors question accounting, debt transparency)
+- "innovation narrative" (investors frame company as tech disruptor)
+
+Respond with valid JSON only, no extra text:
+{{
+  "frames": [
+    {{"label": "short descriptive label (2-4 words)", "evidence": "brief quote or paraphrase from posts", "exposure": "low|medium|high"}},
+    ...
+  ],
+  "axiological_coverage": "none|marginal|present|dominant",
+  "notes": "brief observation or null"
+}}
+
+If no value frames are detectable, return: {{"frames": [], "axiological_coverage": "none", "notes": null}}
+"""
+
+
+def load_posts_by_company(path: Path, min_posts: int = 5) -> dict[str, dict]:
+    """Ładuje posty zgrupowane per spółka. Pomija spółki z < min_posts."""
+    by_company: dict[str, list[str]] = defaultdict(list)
+    meta: dict[str, dict] = {}
+
+    with path.open("r", encoding="utf-8") as f:
+        for line in f:
+            line = line.strip()
+            if not line:
+                continue
+            try:
+                row = json.loads(line)
+            except json.JSONDecodeError as e:
+                print(f"WARN: skipping malformed line: {e}", file=sys.stderr)
+                continue
+            symbol = str(row.get("symbol") or "").upper()
+            text = str(row.get("text") or "").strip()
+            if not symbol or not text or len(text) < 15:
+                continue
+            by_company[symbol].append(text)
+            if symbol not in meta:
+                meta[symbol] = {
+                    "category": str(row.get("category") or "Unknown"),
+                    "industry": str(row.get("industry") or "Unknown"),
+                }
+
+    return {
+        symbol: {"posts": posts, **meta.get(symbol, {})}
+        for symbol, posts in by_company.items()
+        if len(posts) >= min_posts
+    }
+
+
+def build_prompt(symbol: str, data: dict, max_posts: int = 25) -> str:
+    posts = data["posts"][:max_posts]
+    posts_text = "\n".join(f"- {p[:200]}" for p in posts)
+    return PROMPT_TEMPLATE.format(
+        symbol=symbol,
+        category=data.get("category", "Unknown"),
+        industry=data.get("industry", "Unknown"),
+        total_posts=len(data["posts"]),
+        shown_posts=len(posts),
+        posts_text=posts_text,
+    )
+
+
+def call_llm(client: OpenAI, model: str, prompt: str, retries: int = 2) -> dict | None:
+    for attempt in range(retries + 1):
+        try:
+            response = client.chat.completions.create(
+                model=model,
+                messages=[{"role": "user", "content": prompt}],
+                temperature=0.1,
+                max_tokens=800,
+            )
+            raw = response.choices[0].message.content.strip()
+            # Wyciągnij JSON jeśli model dodał tekst przed/po
+            start = raw.find("{")
+            end = raw.rfind("}") + 1
+            if start == -1 or end == 0:
+                return None
+            return json.loads(raw[start:end])
+        except json.JSONDecodeError:
+            if attempt < retries:
+                time.sleep(1)
+                continue
+            return None
+        except Exception as e:
+            print(f"  LLM error: {e}", file=sys.stderr)
+            if attempt < retries:
+                time.sleep(2)
+                continue
+            return None
+    return None
+
+
+def load_done_symbols(out_path: Path) -> set[str]:
+    done = set()
+    if not out_path.exists():
+        return done
+    with out_path.open("r", encoding="utf-8") as f:
+        for line in f:
+            line = line.strip()
+            if line:
+                try:
+                    done.add(json.loads(line)["symbol"])
+                except (json.JSONDecodeError, KeyError):
+                    pass
+    return done
+
+
+def main() -> None:
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--sample", action="store_true")
+    parser.add_argument("--base-url", type=str, default="http://localhost:1234/v1",
+                        help="OpenAI-compatible API base URL (LM Studio / lokalny LLM)")
+    parser.add_argument("--model", type=str, default="local-model",
+                        help="Nazwa modelu w lokalnym serwerze")
+    parser.add_argument("--api-key", type=str, default="not-needed")
+    parser.add_argument("--min-posts", type=int, default=5)
+    parser.add_argument("--max-posts-per-company", type=int, default=25)
+    parser.add_argument("--resume", action="store_true",
+                        help="Kontynuuj od miejsca przerwania (pomija już przetworzone spółki)")
+    parser.add_argument("--limit-companies", type=int, default=None,
+                        help="Ogranicz liczbę spółek (do testów)")
+    args = parser.parse_args()
+
+    posts_path = POSTS_FLAT_SAMPLE_PATH if args.sample else POSTS_FLAT_PATH
+    out_path = LLM_PROFILES_SAMPLE_PATH if args.sample else LLM_PROFILES_PATH
+
+    if not posts_path.exists():
+        print(f"ERROR: brak pliku: {posts_path}", file=sys.stderr)
+        sys.exit(1)
+
+    print(f"Ładowanie postów: {posts_path}")
+    companies = load_posts_by_company(posts_path, min_posts=args.min_posts)
+    print(f"Spółek z >= {args.min_posts} postami: {len(companies)}")
+
+    done = set()
+    if args.resume:
+        done = load_done_symbols(out_path)
+        print(f"Wznowienie: pominięto {len(done)} już przetworzonych spółek")
+
+    symbols = sorted(companies.keys())
+    if args.limit_companies:
+        symbols = symbols[:args.limit_companies]
+
+    client = OpenAI(base_url=args.base_url, api_key=args.api_key)
+
+    mode = "a" if args.resume else "w"
+    processed = 0
+    errors = 0
+
+    with out_path.open(mode, encoding="utf-8") as f:
+        for i, symbol in enumerate(symbols):
+            if symbol in done:
+                continue
+
+            data = companies[symbol]
+            print(f"[{i+1}/{len(symbols)}] {symbol} ({len(data['posts'])} postów)...", end=" ", flush=True)
+
+            prompt = build_prompt(symbol, data, max_posts=args.max_posts_per_company)
+            result = call_llm(client, args.model, prompt)
+
+            if result is None:
+                errors += 1
+                print("BŁĄD")
+                row = {
+                    "symbol": symbol,
+                    "category": data.get("category"),
+                    "industry": data.get("industry"),
+                    "post_count": len(data["posts"]),
+                    "frames": [],
+                    "axiological_coverage": "error",
+                    "notes": "LLM call failed",
+                    "error": True,
+                }
+            else:
+                processed += 1
+                print(f"OK ({len(result.get('frames', []))} frames, coverage={result.get('axiological_coverage')})")
+                row = {
+                    "symbol": symbol,
+                    "category": data.get("category"),
+                    "industry": data.get("industry"),
+                    "post_count": len(data["posts"]),
+                    **result,
+                    "error": False,
+                }
+
+            f.write(json.dumps(row, ensure_ascii=False) + "\n")
+            f.flush()
+
+    print(f"\nGotowe: {processed} OK, {errors} błędów")
+    print(f"Zapisano: {out_path}")
+
+
+if __name__ == "__main__":
+    main()
