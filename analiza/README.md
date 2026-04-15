@@ -6,16 +6,22 @@ Katalog `analiza/` buduje warstwe interpretacyjna i decyzyjna nad danymi zebrany
 
 1. `python 01_flatten_stocktwits_messages.py`
 2. `python 02_build_social_features.py`
-3. `python 10_discover_comment_topics.py`
-4. `python 11_build_comment_derived_esg.py`
-5. `python 06_export_fundamentals_worklist.py`
-6. `python 05_import_fundamentals_raw.py --input-file analiza/input/raw/<twoj_eksport>.csv`
-7. `python 04_build_profitability_features.py`
-8. `python 08_import_technicals_raw.py --input-file analiza/input/raw/<twoj_eksport_techniczny>.csv`
-9. `python 07_build_technical_features.py`
-10. `python 12_import_esg_benchmark_csv.py --input-file analiza/input/raw/<twoj_eksport_esg>.csv --source-name RealEsgProvider --as-of-date 2026-04-11`
-11. `python 03_build_company_master_dataset.py`
-12. `python 09_generate_portfolio_report.py --preset-id balanced_signal`
+3. `python 10a_filter_value_frames.py` — trzy filtry postow (seed, embedding, nofilter)
+4. `python 10b_bertopic_discovery.py --filter all` — BERTopic na kazdym filtrze
+5. `python 10c_llm_profiling.py` — LLM profil per spolka (wymaga lokalnego serwera LLM)
+6. `python 11_fuse_axiological.py` — fuzja wynikow, company_axiological_profile.jsonl
+7. `python 11b_sentiment_per_axis.py` — (opcjonalnie) sentyment per kategoria
+8. `python 06_export_fundamentals_worklist.py`
+9. `python 05_import_fundamentals_raw.py --input-file analiza/input/raw/<twoj_eksport>.csv`
+10. `python 04_build_profitability_features.py`
+11. `python 08_import_technicals_raw.py --input-file analiza/input/raw/<twoj_eksport_techniczny>.csv`
+12. `python 07_build_technical_features.py`
+13. `python 12_import_esg_benchmark_csv.py --input-file analiza/input/raw/<twoj_eksport_esg>.csv --source-name RealEsgProvider --as-of-date 2026-04-11`
+14. `python 03_build_company_master_dataset.py`
+15. `python 09_generate_portfolio_report.py --preset-id balanced_signal`
+
+Filtr embedding (Filtr C) wymaga kalibracji progu. Domyslny prog: `--embed-threshold 0.28`.
+Dla LLM: upewnij sie ze lokalny serwer (np. LM Studio) dziala na `http://localhost:1234/v1`.
 
 Etap `05` sluzy do normalizacji surowego eksportu finansowego do pliku `analiza/input/company_fundamentals.csv`.
 Etap `04` liczy `profitability_score` na podstawie znormalizowanego CSV. Jesli nie ma jeszcze pliku `analiza/input/company_fundamentals.csv`, skrypt wygeneruje szablon `analiza/input/company_fundamentals_template.csv`.
@@ -47,12 +53,21 @@ Pliki trafiaja do `analiza/out/`.
 Pelny run zapisuje `posts_flat.jsonl`, `company_social_features.jsonl`, `comment_topic_summary.json`, `company_comment_esg_features.jsonl`, `company_profitability_features.jsonl`, `company_technical_features.jsonl`, `company_real_esg_benchmark.jsonl` i `company_master_dataset.jsonl`.
 Tryb walidacyjny zapisuje osobne pliki z sufiksem `_sample`.
 
-## Komentarzowe wymiary wartosci i ESG-like
+## Aksjologiczny profil dyskursu (nowa metodologia)
 
-- `10_discover_comment_topics.py` odkrywa globalne tematy komentarzy przez `TF-IDF + NMF`, mocniej usuwa boilerplate i domenowy szum oraz zapisuje tematy i agregacje per spolka.
-- `11_build_comment_derived_esg.py` buduje z tych tematow kilkadziesiat organicznych wymiarow wartosci, a dopiero potem streszcza je do warstwy `ESG-like`.
-- Finalny `custom_esg_proxy_score` w master datasecie jest skrotem nad wieloma wymiarami komentarzowymi, a nie z gory narzuconym modelem 3 osi.
-- `comment_esg_axes_summary.json` jest katalogiem wymiarow dla backendu i frontendu: zawiera etykiety, rodziny, slowa-klucze, przyklady i metadane jakosci.
+Skrypty 10a–11b zastepuja stare 10_discover_comment_topics i 11_build_comment_derived_esg nowym podejsciem:
+
+- `10a_filter_value_frames.py` — trzy rownolegle filtry: seed-word bootstrap (Filtr A), brak filtra (Filtr B), embedding cosine similarity (Filtr C).
+- `10b_bertopic_discovery.py` — BERTopic (UMAP + HDBSCAN) odkrywa organiczne tematy z kazdego z trzech filtrow; klasyfikuje je jako aksjologiczne vs trading-noise; oblicza ekspozycje per spolka.
+- `10c_llm_profiling.py` — lokalny LLM (OpenAI-compatible API) profiluje kazda spolke osobno: zadaje pytanie "przez jakie soczewki wartosci inwestorzy te spolke postrzegaja?" (NIE sentyment).
+- `11_fuse_axiological.py` — laczy wyniki BERTopic x3 + LLM; liczy `inter_method_agreement`, `axiological_confidence`, `axiological_coverage`; produkuje `company_axiological_profile.jsonl`.
+- `11b_sentiment_per_axis.py` — (opcjonalny) VADER sentiment per kategoria aksjologiczna; wzbogaca profil o `sentiment_by_frame`.
+
+Kluczowe metryki wynikowe:
+- `axiological_coverage` — jaki % postow spolki ma sygnal aksjologiczny
+- `axiological_confidence` — pewnosc profilu (coverage x posty x metody)
+- `inter_method_agreement` — zgodnosc miedzy metodami (0.0–1.0)
+- `profile_null = True` — spolka bez wystarczajacego sygnalu (brak pseudoscoru)
 
 ## Benchmark real ESG
 
