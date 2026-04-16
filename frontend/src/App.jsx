@@ -845,6 +845,152 @@ export default function App() {
         </section>
         )}
 
+        {/* ── STEP 2: WARTOŚCI ── */}
+        {step === 2 && (
+        <section className="wizard-step-panel">
+
+          <div className="panel">
+            <div className="panel-head">
+              <h2>Kategorie spółek</h2>
+              <span className="badge ghost">{form.categories.length > 0 ? `${form.categories.length} wybranych` : "wszystkie"}</span>
+            </div>
+            <div className="category-picker">
+              <div className="category-picker-head">
+                <strong>Wybrane: {form.categories.length}</strong>
+                <span>{catalog.categories_count} dostępnych kategorii</span>
+              </div>
+              <input
+                value={categoryQuery}
+                onChange={(event) => setCategoryQuery(event.target.value)}
+                placeholder="Szukaj kategorii, np. software, oil, retail..."
+                disabled={catalogLoading}
+              />
+              <div className="category-actions">
+                <button type="button" className="secondary-button compact-button" onClick={handleSelectAllCategories} disabled={catalogLoading}>Wszystkie</button>
+                <button type="button" className="secondary-button compact-button" onClick={handleClearCategories} disabled={catalogLoading}>Wyczyść</button>
+              </div>
+              <div className="category-list" role="group" aria-label="Lista kategorii">
+                {visibleCategories.map((item) => {
+                  const selected = form.categories.includes(item.name);
+                  return (
+                    <label key={item.slug} className={`category-option${selected ? " selected" : ""}`}>
+                      <input type="checkbox" checked={selected} onChange={() => handleCategoryToggle(item.name)} />
+                      <span>{item.name}</span>
+                    </label>
+                  );
+                })}
+              </div>
+            </div>
+          </div>
+
+          <div className="panel">
+            <div className="panel-head">
+              <h2>Wartości ESG-like</h2>
+            </div>
+            <div className="axis-preferences-block main-esg-block">
+              <div className="axis-toolbar">
+                <input
+                  type="search"
+                  value={axisQuery}
+                  onChange={(event) => setAxisQuery(event.target.value)}
+                  placeholder="Szukaj rodziny, słowa kluczowego albo motywu z komentarzy"
+                />
+              </div>
+              <div className="family-section-list">
+                {familySections.map((section) => (
+                  <section key={section.id} className="family-section">
+                    <div className="family-section-head">
+                      <div>
+                        <strong>{section.label}</strong>
+                        <p>{section.description}</p>
+                      </div>
+                      <span className="badge ghost">{section.families.length} rodzin</span>
+                    </div>
+                    <div className="axis-family-list main-family-list">
+                      {section.families.map((family) => {
+                        const familyPreferences = family.axes.map((axis) =>
+                          axisPreferences.find((item) => item.axis_id === axis.axis_id) ?? {
+                            axis_id: axis.axis_id, axis_label: axis.label, mode: "neutral", importance: 0.5,
+                          }
+                        );
+                        const averageImportance = familyPreferences.reduce((sum, p) => sum + (p.importance ?? 0.5), 0) / Math.max(familyPreferences.length, 1);
+                        const familyMode = summarizeFamilyMode(familyPreferences);
+                        return (
+                          <article key={family.family_id} className="axis-family-card main-family-card">
+                            <div className="axis-family-head">
+                              <div className="axis-family-title">
+                                <strong>{family.label}</strong>
+                                <span>{familyModeLabel(familyMode)}</span>
+                              </div>
+                            </div>
+                            <div className="family-pill-row">
+                              <span className="family-pill">{family.member_dimensions_count || family.axes.length} wykryte wymiary</span>
+                              <span className="family-pill">{describeEsgRelevance(family.esg_relevance)}</span>
+                              <span className="family-pill">{weightPercent(averageImportance)} znaczenia</span>
+                            </div>
+                            {family.summary ? <p className="family-summary">{family.summary}</p> : null}
+                            {family.topic_labels?.length ? <p className="family-topic-preview">Wykryte motywy: {family.topic_labels.slice(0, 3).join(" • ")}</p> : null}
+                            {family.keywords?.length ? (
+                              <div className="axis-keywords">
+                                {family.keywords.slice(0, 6).map((kw) => <span key={`${family.family_id}-${kw}`}>{kw}</span>)}
+                              </div>
+                            ) : null}
+                            <div className="family-mode-buttons">
+                              <button type="button" className={`ghost-button mode-button${familyMode === "prefer_high" ? " is-active is-positive" : ""}`} onClick={() => handleAxisFamilyModeChange(family.axes, "prefer_high")}>Wzmacniaj</button>
+                              <button type="button" className={`ghost-button mode-button${familyMode === "neutral" ? " is-active" : ""}`} onClick={() => handleAxisFamilyModeChange(family.axes, "neutral")}>Neutralnie</button>
+                              <button type="button" className={`ghost-button mode-button${familyMode === "prefer_low" ? " is-active is-negative" : ""}`} onClick={() => handleAxisFamilyModeChange(family.axes, "prefer_low")}>Osłabiaj</button>
+                            </div>
+                            <label className="axis-family-importance">
+                              <span>Jak mocno ta rodzina ma wpływać na ESG-like</span>
+                              <input type="range" min="0" max="100" step="1" value={averageImportance * 100} onChange={(event) => handleAxisFamilyImportanceChange(family.axes, event.target.value)} />
+                            </label>
+                          </article>
+                        );
+                      })}
+                    </div>
+                  </section>
+                ))}
+              </div>
+            </div>
+          </div>
+
+          <div className="panel">
+            <div className="panel-head"><h2>Dodatkowe filtry</h2></div>
+            <div className="mini-grid">
+              <label>
+                <span>Priorytet rentowności</span>
+                <select name="profitability_mode" value={form.profitability_mode} onChange={handleTextChange}>
+                  <option value="prefer_high">Preferuj wysoką rentowność</option>
+                  <option value="neutral">Neutralnie</option>
+                  <option value="prefer_low">Preferuj niską rentowność</option>
+                </select>
+              </label>
+              <label>
+                <span>Priorytet techniczny</span>
+                <select name="technical_mode" value={form.technical_mode} onChange={handleTextChange}>
+                  <option value="prefer_high">Preferuj mocniejszy sygnał</option>
+                  <option value="neutral">Neutralnie</option>
+                  <option value="prefer_low">Preferuj słabszy sygnał</option>
+                </select>
+              </label>
+              <label>
+                <span>Bias kapitalizacji</span>
+                <select name="market_cap_mode" value={form.market_cap_mode} onChange={handleTextChange}>
+                  <option value="neutral">Neutralnie</option>
+                  <option value="prefer_large">Preferuj duże spółki</option>
+                  <option value="prefer_small">Preferuj mniejsze spółki</option>
+                </select>
+              </label>
+            </div>
+          </div>
+
+          <div className="step-nav">
+            <button type="button" className="secondary-button" onClick={() => setStep(1)}>← Wróć</button>
+            <button type="button" className="primary-button" onClick={() => setStep(3)}>Dalej →</button>
+          </div>
+        </section>
+        )}
+
         <section className="panel control-panel">
           <div className="panel-head">
             <h2>Ustaw model i portfel</h2>
