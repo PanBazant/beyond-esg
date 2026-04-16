@@ -115,112 +115,6 @@ function getPresetCopy(profile) {
   };
 }
 
-function buildFamilyDefinitionMap(familyDefinitions = []) {
-  return new Map((familyDefinitions ?? []).map((family) => [family.family_id, family]));
-}
-
-function groupAxesByFamily(axisDefinitions = [], familyDefinitions = []) {
-  const familyDefinitionMap = buildFamilyDefinitionMap(familyDefinitions);
-  const families = new Map();
-
-  for (const axis of axisDefinitions) {
-    const familyId = axis.family_id ?? `axis-${axis.axis_id}`;
-    const familyDefinition = familyDefinitionMap.get(familyId);
-    const familyLabel = familyDefinition?.label ?? axis.family_label ?? axis.label;
-    const existing = families.get(familyId);
-    if (existing) {
-      existing.axes.push(axis);
-      continue;
-    }
-
-    families.set(familyId, {
-      familyId,
-      familyLabel,
-      summary: familyDefinition?.summary ?? null,
-      keywords: familyDefinition?.keywords ?? [],
-      topicLabels: familyDefinition?.topic_labels ?? [],
-      examples: familyDefinition?.examples ?? [],
-      memberDimensionsCount: familyDefinition?.member_dimensions_count ?? 0,
-      esgRelevance: familyDefinition?.esg_relevance ?? null,
-      axes: [axis],
-    });
-  }
-
-  return [...families.values()].sort((left, right) => left.familyLabel.localeCompare(right.familyLabel));
-}
-
-function summarizeFamilyMode(familyPreferences = []) {
-  if (!familyPreferences.length) {
-    return "neutral";
-  }
-
-  const counts = familyPreferences.reduce(
-    (bucket, preference) => {
-      const mode = preference.mode ?? "neutral";
-      bucket[mode] = (bucket[mode] ?? 0) + 1;
-      return bucket;
-    },
-    { prefer_high: 0, neutral: 0, prefer_low: 0 },
-  );
-
-  if (counts.prefer_high === familyPreferences.length) return "prefer_high";
-  if (counts.prefer_low === familyPreferences.length) return "prefer_low";
-  if (counts.neutral === familyPreferences.length) return "neutral";
-  return "mixed";
-}
-
-function familyModeLabel(mode) {
-  if (mode === "prefer_high") return "wzmacniana";
-  if (mode === "prefer_low") return "oslabiana";
-  if (mode === "mixed") return "mieszana";
-  return "neutralna";
-}
-
-function describeEsgRelevance(value) {
-  const numeric = Number(value ?? 0);
-  if (numeric >= 0.55) return "mocno buduje wynik ESG-like";
-  if (numeric >= 0.35) return "realnie wplywa na ESG-like";
-  if (numeric > 0) return "slabiej, ale nadal jest czescia modelu";
-  return "rodzina pomocnicza";
-}
-
-function resolveFamilyLens(family) {
-  const code = String(family?.dominant_axis_code ?? "").toUpperCase();
-  if (code === "E" || code === "S" || code === "G") return code;
-  return "MIX";
-}
-
-function buildFamilySections(families = []) {
-  const definitions = [
-    {
-      id: "G",
-      label: "Governance i zaufanie",
-      description: "Rodziny zwiazane z zarzadem, disclosure, zgodnoscia, insiderami i sygnalami ostrzegawczymi rynku.",
-    },
-    {
-      id: "S",
-      label: "Wplyw spoleczny i interesariusze",
-      description: "Rodziny komentujace produkt, klienta, pracownikow, bezpieczenstwo i spoleczne koszty dzialalnosci.",
-    },
-    {
-      id: "E",
-      label: "Srodowisko, zasoby i wydobycie",
-      description: "Rodziny dotyczace wydobycia, presji srodowiskowej, energii i bardziej zasobooszczednych modeli biznesu.",
-    },
-    {
-      id: "MIX",
-      label: "Rodziny mieszane",
-      description: "Organiczne rodziny z komentarzy, ktore nie ukladaja sie jeszcze czysto w jedno streszczenie E, S albo G.",
-    },
-  ];
-
-  return definitions
-    .map((definition) => ({
-      ...definition,
-      families: families.filter((family) => resolveFamilyLens(family) === definition.id),
-    }))
-    .filter((section) => section.families.length > 0);
-}
 
 export default function App() {
   const [catalog, setCatalog] = useState({
@@ -230,6 +124,7 @@ export default function App() {
     metrics: null,
     custom_esg_axes: [],
     custom_esg_families: [],
+    axis_clusters: [],
     instrument_universes: [],
   });
   const [dataStatus, setDataStatus] = useState(null);
@@ -269,6 +164,7 @@ export default function App() {
   const [categoryQuery, setCategoryQuery] = useState("");
   const [axisQuery, setAxisQuery] = useState("");
   const [showAllAxes, setShowAllAxes] = useState(false);
+  const [axisViewMode, setAxisViewMode] = useState("list"); // "list" | "groups"
 
   function applyPreset(profile, axisDefinitions = catalog.custom_esg_axes, { keepProfileName = false } = {}) {
     if (!profile) return;
@@ -529,27 +425,6 @@ export default function App() {
     }));
   }
 
-  function handleAxisFamilyModeChange(familyAxes, mode) {
-    const axisIds = new Set(familyAxes.map((axis) => axis.axis_id));
-    setForm((current) => ({
-      ...current,
-      axis_preferences: synchronizeAxisPreferences(catalog.custom_esg_axes, current.axis_preferences).map((axis) =>
-        axisIds.has(axis.axis_id) ? { ...axis, mode } : axis,
-      ),
-    }));
-  }
-
-  function handleAxisFamilyImportanceChange(familyAxes, value) {
-    const nextImportance = Number(value) / 100;
-    const axisIds = new Set(familyAxes.map((axis) => axis.axis_id));
-    setForm((current) => ({
-      ...current,
-      axis_preferences: synchronizeAxisPreferences(catalog.custom_esg_axes, current.axis_preferences).map((axis) =>
-        axisIds.has(axis.axis_id) ? { ...axis, importance: nextImportance } : axis,
-      ),
-    }));
-  }
-
   function handlePresetChange(event) {
     const nextPresetId = event.target.value;
     if (!nextPresetId) {
@@ -679,7 +554,6 @@ export default function App() {
   const activePreset = profiles.find((profile) => profile.id === selectedPresetId);
   const activeSavedProfile = savedProfiles.find((profile) => profile.profile_id === selectedSavedProfileId);
   const axisDefinitions = catalog.custom_esg_axes ?? [];
-  const familyDefinitions = catalog.custom_esg_families ?? [];
   const instrumentUniverseDefinitions = catalog.instrument_universes ?? [];
   const axisPreferences = synchronizeAxisPreferences(axisDefinitions, form.axis_preferences);
   const fundamentalsStatus = dataStatus?.fundamentals;
@@ -690,14 +564,9 @@ export default function App() {
   const visibleCategories = catalog.categories.filter((item) =>
     normalizedCategoryQuery ? item.name.toLowerCase().includes(normalizedCategoryQuery) : true,
   );
-  const sortedAxisDefinitions = [...axisDefinitions].sort((left, right) => {
-    const leftFamily = (left.family_label ?? left.label).toLowerCase();
-    const rightFamily = (right.family_label ?? right.label).toLowerCase();
-    if (leftFamily !== rightFamily) {
-      return leftFamily.localeCompare(rightFamily);
-    }
-    return left.label.localeCompare(right.label);
-  });
+  const sortedAxisDefinitions = [...axisDefinitions].sort(
+    (a, b) => (b.corpus_weight ?? 0) - (a.corpus_weight ?? 0)
+  );
   const filteredAxisDefinitions = sortedAxisDefinitions.filter((axis) => {
     if (!normalizedAxisQuery) return true;
     const haystack = [axis.label, axis.family_label, ...(axis.keywords ?? []), ...(axis.topic_labels ?? [])]
@@ -707,38 +576,6 @@ export default function App() {
     return haystack.includes(normalizedAxisQuery);
   });
   const displayedAxisDefinitions = showAllAxes ? filteredAxisDefinitions : filteredAxisDefinitions.slice(0, 18);
-  const axisFamilies = groupAxesByFamily(displayedAxisDefinitions, familyDefinitions);
-  const filteredEsgFamilies = familyDefinitions
-    .filter((family) => (family.esg_relevance ?? 0) >= 0.05)
-    .filter((family) => {
-      if (!normalizedAxisQuery) return true;
-      const haystack = [family.label, family.summary, ...(family.keywords ?? []), ...(family.topic_labels ?? [])]
-        .filter(Boolean)
-        .join(" ")
-        .toLowerCase();
-      return haystack.includes(normalizedAxisQuery);
-    })
-    .map((family) => ({
-      ...family,
-      axes: axisDefinitions.filter((axis) => (family.member_axis_ids ?? []).includes(axis.axis_id)),
-    }))
-    .filter((family) => family.axes.length > 0);
-  const familySections = buildFamilySections(filteredEsgFamilies);
-  const configuredFamilyCount = filteredEsgFamilies.filter((family) => {
-    const familyPreferences = family.axes.map((axis) =>
-      axisPreferences.find((item) => item.axis_id === axis.axis_id) ?? {
-        axis_id: axis.axis_id,
-        axis_label: axis.label,
-        mode: "neutral",
-        importance: 0.5,
-      },
-    );
-    const familyMode = summarizeFamilyMode(familyPreferences);
-    const averageImportance =
-      familyPreferences.reduce((sum, preference) => sum + (preference.importance ?? 0.5), 0) /
-      Math.max(familyPreferences.length, 1);
-    return familyMode !== "neutral" || Math.abs(averageImportance - 0.5) > 0.05;
-  }).length;
   const selectedCategoryCount = form.categories.length;
 
   return (
@@ -871,75 +708,97 @@ export default function App() {
           </div>
 
           <div className="panel">
-            <div className="panel-head">
-              <h2>Wartości ESG-like</h2>
-            </div>
-            <div className="axis-preferences-block main-esg-block">
-              <div className="axis-toolbar">
-                <input
-                  type="search"
-                  value={axisQuery}
-                  onChange={(event) => setAxisQuery(event.target.value)}
-                  placeholder="Szukaj rodziny, słowa kluczowego albo motywu z komentarzy"
-                />
-              </div>
-              <div className="family-section-list">
-                {familySections.map((section) => (
-                  <section key={section.id} className="family-section">
-                    <div className="family-section-head">
-                      <div>
-                        <strong>{section.label}</strong>
-                        <p>{section.description}</p>
-                      </div>
-                      <span className="badge ghost">{section.families.length} rodzin</span>
-                    </div>
-                    <div className="axis-family-list main-family-list">
-                      {section.families.map((family) => {
-                        const familyPreferences = family.axes.map((axis) =>
-                          axisPreferences.find((item) => item.axis_id === axis.axis_id) ?? {
-                            axis_id: axis.axis_id, axis_label: axis.label, mode: "neutral", importance: 0.5,
-                          }
-                        );
-                        const averageImportance = familyPreferences.reduce((sum, p) => sum + (p.importance ?? 0.5), 0) / Math.max(familyPreferences.length, 1);
-                        const familyMode = summarizeFamilyMode(familyPreferences);
-                        return (
-                          <article key={family.family_id} className="axis-family-card main-family-card">
-                            <div className="axis-family-head">
-                              <div className="axis-family-title">
-                                <strong>{family.label}</strong>
-                                <span>{familyModeLabel(familyMode)}</span>
-                              </div>
-                            </div>
-                            <div className="family-pill-row">
-                              <span className="family-pill">{family.member_dimensions_count || family.axes.length} wykryte wymiary</span>
-                              <span className="family-pill">{describeEsgRelevance(family.esg_relevance)}</span>
-                              <span className="family-pill">{weightPercent(averageImportance)} znaczenia</span>
-                            </div>
-                            {family.summary ? <p className="family-summary">{family.summary}</p> : null}
-                            {family.topic_labels?.length ? <p className="family-topic-preview">Wykryte motywy: {family.topic_labels.slice(0, 3).join(" • ")}</p> : null}
-                            {family.keywords?.length ? (
-                              <div className="axis-keywords">
-                                {family.keywords.slice(0, 6).map((kw) => <span key={`${family.family_id}-${kw}`}>{kw}</span>)}
-                              </div>
-                            ) : null}
-                            <div className="family-mode-buttons">
-                              <button type="button" className={`ghost-button mode-button${familyMode === "prefer_high" ? " is-active is-positive" : ""}`} onClick={() => handleAxisFamilyModeChange(family.axes, "prefer_high")}>Wzmacniaj</button>
-                              <button type="button" className={`ghost-button mode-button${familyMode === "neutral" ? " is-active" : ""}`} onClick={() => handleAxisFamilyModeChange(family.axes, "neutral")}>Neutralnie</button>
-                              <button type="button" className={`ghost-button mode-button${familyMode === "prefer_low" ? " is-active is-negative" : ""}`} onClick={() => handleAxisFamilyModeChange(family.axes, "prefer_low")}>Osłabiaj</button>
-                            </div>
-                            <label className="axis-family-importance">
-                              <span>Jak mocno ta rodzina ma wpływać na ESG-like</span>
-                              <input type="range" min="0" max="100" step="1" value={averageImportance * 100} onChange={(event) => handleAxisFamilyImportanceChange(family.axes, event.target.value)} />
-                            </label>
-                          </article>
-                        );
-                      })}
-                    </div>
-                  </section>
-                ))}
-              </div>
-            </div>
+  <div className="panel-head">
+    <h2>Percepcja spółek — osie organiczne</h2>
+    <div className="axis-view-toggle">
+      <button type="button" className={`chart-pill${axisViewMode === "list" ? " active" : ""}`} onClick={() => setAxisViewMode("list")}>Lista</button>
+      <button type="button" className={`chart-pill${axisViewMode === "groups" ? " active" : ""}`} onClick={() => setAxisViewMode("groups")}>Grupy</button>
+    </div>
+  </div>
+  <p className="panel-copy">
+    Każda oś opisuje, jak inwestorzy postrzegają spółkę przez pryzmat komentarzy.
+    Ekspozycja = jak mocno spółka jest z tą osią kojarzona. Nastawienie = ton komentarzy.
+    Waga 0 = ignoruj tę oś, waga 2 = silnie uwzględnij.
+  </p>
+  <div className="axis-toolbar">
+    <input
+      type="search"
+      value={axisQuery}
+      onChange={(e) => setAxisQuery(e.target.value)}
+      placeholder="Szukaj osi, słowa kluczowego..."
+    />
+  </div>
+  {(() => {
+    const maxWeight = Math.max(...filteredAxisDefinitions.map((ax) => ax.corpus_weight ?? 0), 1);
+    const AxisCard = ({ axis }) => {
+      const pref = axisPreferences.find((p) => p.axis_id === axis.axis_id);
+      const importance = pref?.importance ?? 0.5;
+      const sentColor = (axis.average_sentiment ?? 0) >= 0 ? "#21513f" : "#c0392b";
+      const barPct = Math.min(100, ((axis.corpus_weight ?? 0) / maxWeight) * 100).toFixed(1);
+      return (
+        <article className={`axis-card${importance === 0 ? " axis-card--muted" : ""}`}>
+          <div className="axis-card-head">
+            <strong className="axis-card-label">{axis.label}</strong>
+            <span className="axis-card-sentiment" style={{ color: sentColor }}>
+              {(axis.average_sentiment ?? 0) >= 0 ? "▲" : "▼"}{Math.abs((axis.average_sentiment ?? 0) * 100).toFixed(0)}%
+            </span>
           </div>
+          <div className="axis-card-exposure">
+            <div className="axis-card-exposure-bar" style={{ width: `${barPct}%` }} />
+          </div>
+          {axis.keywords?.length > 0 && (
+            <div className="axis-keywords">
+              {axis.keywords.slice(0, 4).map((kw) => <span key={kw}>{kw}</span>)}
+            </div>
+          )}
+          <label className="axis-weight-label">
+            <span>Waga: {(importance * 2).toFixed(1)}×</span>
+            <input
+              type="range" min="0" max="100" step="1"
+              value={importance * 100}
+              onChange={(e) => handleAxisImportanceChange(axis.axis_id, e.target.value)}
+            />
+          </label>
+        </article>
+      );
+    };
+    return (
+      <>
+        {axisViewMode === "list" && (
+          <div className="axis-card-grid">
+            {(showAllAxes ? filteredAxisDefinitions : filteredAxisDefinitions.slice(0, 20)).map((axis) => (
+              <AxisCard key={axis.axis_id} axis={axis} />
+            ))}
+          </div>
+        )}
+        {axisViewMode === "groups" && (
+          <div className="axis-cluster-list">
+            {(catalog.axis_clusters ?? []).map((cluster) => {
+              const clusterAxes = filteredAxisDefinitions.filter((ax) => ax.cluster_id === cluster.cluster_id);
+              if (!clusterAxes.length) return null;
+              return (
+                <details key={cluster.cluster_id} className="axis-cluster-section" open={cluster.cluster_id < 3}>
+                  <summary className="axis-cluster-summary">
+                    <strong>{cluster.cluster_label}</strong>
+                    <span className="badge ghost">{clusterAxes.length} osi</span>
+                  </summary>
+                  <div className="axis-card-grid">
+                    {clusterAxes.map((axis) => <AxisCard key={axis.axis_id} axis={axis} />)}
+                  </div>
+                </details>
+              );
+            })}
+          </div>
+        )}
+        {filteredAxisDefinitions.length > 20 && axisViewMode === "list" && (
+          <button type="button" className="secondary-button" onClick={() => setShowAllAxes((v) => !v)}>
+            {showAllAxes ? "Pokaż mniej" : `Pokaż wszystkie ${filteredAxisDefinitions.length}`}
+          </button>
+        )}
+      </>
+    );
+  })()}
+</div>
 
           <div className="panel">
             <div className="panel-head"><h2>Dodatkowe filtry</h2></div>
