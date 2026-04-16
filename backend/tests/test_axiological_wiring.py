@@ -4,6 +4,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
 from app.schemas import CompanyPreview, MetricAvailability, PortfolioSummary
 from app.services.portfolio import _parse_axiological_frames
+from app.services.datasets import metric_availability
 
 
 def test_metric_availability_has_axiological_field():
@@ -77,3 +78,9 @@ def test_parse_frames_invalid_json_returns_empty():
 def test_parse_frames_json_dict_returns_empty():
     # Valid JSON but not a list — should return []
     assert _parse_axiological_frames('{"label": "governance"}') == []
+
+
+def test_metric_availability_detects_axiological():
+    assert metric_availability([{"axiological_coverage": 0.8}])["axiological"] is True
+    assert metric_availability([{"axiological_coverage": None}])["axiological"] is False
+    assert metric_availability([{}])["axiological"] is False
