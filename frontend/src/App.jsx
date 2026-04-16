@@ -991,6 +991,115 @@ export default function App() {
         </section>
         )}
 
+        {/* ── STEP 3: PARAMETRY ── */}
+        {step === 3 && (
+        <section className="wizard-step-panel">
+          <div className="panel">
+            <div className="panel-head"><h2>Parametry portfela</h2></div>
+            <div className="mini-grid">
+              <label>
+                <span>Ile spółek ma mieć portfel</span>
+                <input type="number" min="1" max="50" name="portfolio_size" value={form.portfolio_size} onChange={handleNumberChange} />
+              </label>
+              <label>
+                <span>Minimalna liczba komentarzy na spółkę</span>
+                <input type="number" min="0" max="500" name="min_posts" value={form.min_posts} onChange={handleNumberChange} />
+              </label>
+              <label>
+                <span>Maksymalna waga jednej spółki</span>
+                <input type="number" min="0.05" max="1" step="0.01" name="max_holding_weight" value={form.max_holding_weight} onChange={handleNumberChange} />
+              </label>
+              <label>
+                <span>Maksymalnie spółek na kategorię</span>
+                <input type="number" min="0" max="20" name="max_companies_per_category" value={form.max_companies_per_category} onChange={handleNumberChange} />
+              </label>
+              <label>
+                <span>Minimalna liczba kategorii</span>
+                <input type="number" min="1" max="20" name="min_distinct_categories" value={form.min_distinct_categories} onChange={handleNumberChange} />
+              </label>
+              <label>
+                <span>Jak rozkładać wagi w portfelu</span>
+                <select name="weighting_mode" value={form.weighting_mode} onChange={handleTextChange}>
+                  <option value="equal">Równy udział</option>
+                  <option value="score_weighted">Ważenie wynikiem</option>
+                </select>
+              </label>
+            </div>
+            <label className="checkbox-row">
+              <input type="checkbox" name="strict_category_limit" checked={form.strict_category_limit} onChange={handleCheckboxChange} />
+              <span>Trzymaj ścisły limit kategorii nawet kosztem mniejszej liczby pozycji</span>
+            </label>
+          </div>
+
+          <div className="panel">
+            <div className="panel-head"><h2>Wagi składowych scoringu</h2></div>
+            <div className="weights-block">
+              <label>
+                <span>Jakość bazowa: {weightPercent(form.score_weights.base_quality)}</span>
+                <input type="range" min="0" max="100" step="1" name="base_quality" value={form.score_weights.base_quality * 100} onChange={handleWeightChange} />
+              </label>
+              <label>
+                <span>Custom ESG: {weightPercent(form.score_weights.esg_alignment)}</span>
+                <input type="range" min="0" max="100" step="1" name="esg_alignment" value={form.score_weights.esg_alignment * 100} onChange={handleWeightChange} />
+              </label>
+              <label>
+                <span>Dopasowanie kategorii: {weightPercent(form.score_weights.category_match)}</span>
+                <input type="range" min="0" max="100" step="1" name="category_match" value={form.score_weights.category_match * 100} onChange={handleWeightChange} />
+              </label>
+              <label>
+                <span>Rentowność: {weightPercent(form.score_weights.profitability_alignment)}</span>
+                <input type="range" min="0" max="100" step="1" name="profitability_alignment" value={form.score_weights.profitability_alignment * 100} onChange={handleWeightChange} />
+              </label>
+              <label>
+                <span>Technikalia: {weightPercent(form.score_weights.technical_alignment)}</span>
+                <input type="range" min="0" max="100" step="1" name="technical_alignment" value={form.score_weights.technical_alignment * 100} onChange={handleWeightChange} />
+              </label>
+              <label>
+                <span>Kapitalizacja: {weightPercent(form.score_weights.market_cap_alignment)}</span>
+                <input type="range" min="0" max="100" step="1" name="market_cap_alignment" value={form.score_weights.market_cap_alignment * 100} onChange={handleWeightChange} />
+              </label>
+            </div>
+          </div>
+
+          <details className="details-card">
+            <summary>Zapis profilu</summary>
+            <div className="details-body">
+              <label>
+                <span>Nazwa zapisywanego profilu</span>
+                <input name="profile_name" value={form.profile_name} onChange={handleTextChange} />
+              </label>
+              <label>
+                <span>Opis profilu</span>
+                <textarea name="profile_description" value={profileDescription} onChange={(event) => setProfileDescription(event.target.value)} rows={3} placeholder="Opcjonalny opis strategii." />
+              </label>
+              <div className="action-row">
+                <button type="button" className="secondary-button" onClick={handleSaveProfile} disabled={loading || savingProfile || catalogLoading}>
+                  {savingProfile ? "Zapisywanie..." : selectedSavedProfileId ? "Aktualizuj profil" : "Zapisz profil"}
+                </button>
+                <button type="button" className="secondary-button danger-button" onClick={handleDeleteProfile} disabled={!selectedSavedProfileId || savingProfile || deletingProfile}>
+                  {deletingProfile ? "Usuwanie..." : "Usuń profil"}
+                </button>
+              </div>
+              {profileStatus && <p className="profile-status">{profileStatus}</p>}
+            </div>
+          </details>
+
+          {error && <p className="error-message">{error}</p>}
+
+          <div className="step-nav">
+            <button type="button" className="secondary-button" onClick={() => setStep(2)}>← Wróć</button>
+            <button
+              type="button"
+              className="primary-button"
+              onClick={handleGenerate}
+              disabled={loading || catalogLoading}
+            >
+              {loading ? "Generowanie..." : "Generuj portfel →"}
+            </button>
+          </div>
+        </section>
+        )}
+
         <section className="panel control-panel">
           <div className="panel-head">
             <h2>Ustaw model i portfel</h2>
