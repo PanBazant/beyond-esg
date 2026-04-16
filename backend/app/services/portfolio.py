@@ -20,7 +20,7 @@ from ..schemas import (
 )
 from .datasets import load_comment_esg_axes_catalog, load_company_records, metric_availability
 from .instrument_universe import PORTFOLIO_EXCLUDED_UNIVERSES, expand_allowed_instrument_universes
-from .scoring import build_holding_weights, normalize_weights, score_company
+from .scoring import build_holding_weights, normalize_weights, perception_score, score_company
 
 
 def _build_warnings(payload: PortfolioPreviewRequest, metrics: dict[str, bool]) -> list[str]:
@@ -351,6 +351,13 @@ def _run_preview(payload: PortfolioPreviewRequest) -> tuple[int, list[str], Scor
     warnings = _build_warnings(payload, metrics)
     normalized_weights = normalize_weights(payload.score_weights)
     axis_lookup = {axis["axis_id"]: axis for axis in load_comment_esg_axes_catalog()}
+    axis_info_map: dict[int, dict] = {
+        axis_id: {
+            "corpus_weight": axis.get("corpus_weight", 0.0),
+            "average_sentiment": axis.get("average_sentiment", 0.0),
+        }
+        for axis_id, axis in axis_lookup.items()
+    }
 
     if payload.categories:
         allowed_categories = set(payload.categories)
@@ -373,6 +380,31 @@ def _run_preview(payload: PortfolioPreviewRequest) -> tuple[int, list[str], Scor
 
     companies = [company for company in companies if (company.get("posts_count") or 0) >= payload.min_posts]
 
+    filters = payload.dimension_filters
+    if filters.esg_max is not None or not filters.include_missing_esg:
+        def _esg_passes(c: dict) -> bool:
+            val = c.get("real_esg_total_score")
+            if val is None:
+                return filters.include_missing_esg
+            return filters.esg_max is None or float(val) <= filters.esg_max
+        companies = [c for c in companies if _esg_passes(c)]
+
+    if filters.profitability_min is not None or not filters.include_missing_profitability:
+        def _prof_passes(c: dict) -> bool:
+            val = c.get("profitability_score")
+            if val is None:
+                return filters.include_missing_profitability
+            return filters.profitability_min is None or float(val) >= filters.profitability_min
+        companies = [c for c in companies if _prof_passes(c)]
+
+    if filters.technical_min is not None or not filters.include_missing_technical:
+        def _tech_passes(c: dict) -> bool:
+            val = c.get("technical_score")
+            if val is None:
+                return filters.include_missing_technical
+            return filters.technical_min is None or float(val) >= filters.technical_min
+        companies = [c for c in companies if _tech_passes(c)]
+
     scored: list[CompanyPreview] = []
     for company in companies:
         selection_score, breakdown, explanations = score_company(
@@ -385,6 +417,7 @@ def _run_preview(payload: PortfolioPreviewRequest) -> tuple[int, list[str], Scor
             market_cap_mode=payload.market_cap_mode,
             weights=normalized_weights,
         )
+        p_score = perception_score(company, payload.axis_preferences, axis_info_map)
 
         scored.append(
             CompanyPreview(
@@ -413,6 +446,7 @@ def _run_preview(payload: PortfolioPreviewRequest) -> tuple[int, list[str], Scor
                 technical_score=_safe_float(company.get("technical_score"), None),
                 avg_sentiment=_safe_float(company.get("avg_sentiment"), None),
                 coverage_score=_safe_float(company.get("coverage_score"), None),
+                perception_score=p_score,
                 axiological_coverage=_safe_float(company.get("axiological_coverage"), None),
                 axiological_confidence=_safe_float(company.get("axiological_confidence"), None),
                 axiological_inter_method_agreement=_safe_float(company.get("axiological_inter_method_agreement"), None),
@@ -426,6 +460,12 @@ def _run_preview(payload: PortfolioPreviewRequest) -> tuple[int, list[str], Scor
         )
 
     scored.sort(key=lambda item: item.selection_score, reverse=True)
+    if filters.perception_min is not None or not filters.include_missing_perception:
+        def _perc_passes(c: CompanyPreview) -> bool:
+            if c.perception_score is None:
+                return filters.include_missing_perception
+            return filters.perception_min is None or c.perception_score >= filters.perception_min
+        scored = [c for c in scored if _perc_passes(c)]
     selected, diversification_warnings = _select_diversified_companies(scored, payload)
     warnings.extend(diversification_warnings)
 
