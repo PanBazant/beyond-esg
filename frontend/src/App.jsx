@@ -1,4 +1,6 @@
-import { startTransition, useEffect, useState } from "react";
+import { startTransition, useEffect, useRef, useState } from "react";
+import CompanyChart from "./CompanyChart.jsx";
+import WizardBar from "./WizardBar.jsx";
 import {
   buildPortfolioPreview,
   deleteProfile,
@@ -248,6 +250,10 @@ export default function App() {
   const [error, setError] = useState("");
   const [reportStatus, setReportStatus] = useState("");
   const [profileStatus, setProfileStatus] = useState("");
+  const [expandedSymbol, setExpandedSymbol] = useState(null);
+  const [step, setStep] = useState(1);
+  // maxStep tracks the furthest step unlocked (step 4 only after first generation)
+  const [maxStep, setMaxStep] = useState(3);
   const [dataStatusMessage, setDataStatusMessage] = useState("");
   const [profileDescription, setProfileDescription] = useState("");
   const [fundamentalsSourceName, setFundamentalsSourceName] = useState("");
@@ -395,8 +401,7 @@ export default function App() {
     };
   }, []);
 
-  async function handleSubmit(event) {
-    event.preventDefault();
+  async function handleGenerate() {
     setLoading(true);
     setError("");
     setReportStatus("");
@@ -407,6 +412,8 @@ export default function App() {
       startTransition(() => {
         setResult(nextResult);
       });
+      setStep(4);
+      setMaxStep(4);
     } catch (nextError) {
       setError(`Nie udalo sie zbudowac portfela: ${nextError.message}`);
     } finally {
@@ -743,6 +750,7 @@ export default function App() {
       </div>
 
       <div className="app-content">
+        <WizardBar step={step} maxStep={maxStep} onStep={setStep} />
         <header className="hero">
           <p className="eyebrow">Inzynieria selekcji wartosci</p>
           <h1
@@ -764,7 +772,7 @@ export default function App() {
             <span className="badge">ESG-like builder</span>
           </div>
 
-          <form onSubmit={handleSubmit} className="form-grid">
+          <form onSubmit={(e) => e.preventDefault()} className="form-grid">
             <section className="step-card">
               <div className="step-card-head">
                 <span className="step-index">1</span>
@@ -1703,7 +1711,7 @@ export default function App() {
 
               <div className="company-table">
                 {result.companies.map((company) => (
-                  <article key={company.symbol} className="company-row">
+                  <article key={company.symbol} className={`company-row${expandedSymbol === company.symbol ? " company-row--expanded" : ""}`}>
                     <div>
                       <div className="company-headline">
                         <strong>{company.symbol}</strong>
@@ -1807,6 +1815,13 @@ export default function App() {
                     <div className="score-box">
                       <span>score</span>
                       <strong>{company.selection_score.toFixed(4)}</strong>
+                      <button
+                        className="expand-btn"
+                        onClick={() => setExpandedSymbol(expandedSymbol === company.symbol ? null : company.symbol)}
+                        title={expandedSymbol === company.symbol ? "Zwiń" : "Wykres i analiza"}
+                      >
+                        {expandedSymbol === company.symbol ? "▲" : "▼"}
+                      </button>
                     </div>
                     <div className="explanations">
                       {company.explanations.map((item) => (
@@ -1815,6 +1830,9 @@ export default function App() {
                         </p>
                       ))}
                     </div>
+                    {expandedSymbol === company.symbol && (
+                      <CompanyChart symbol={company.symbol} />
+                    )}
                   </article>
                 ))}
               </div>
