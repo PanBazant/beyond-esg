@@ -1274,3 +1274,250 @@ select[multiple] {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }
+
+/* ── Company chart expand ── */
+.company-row--expanded {
+  border-color: rgba(59, 130, 246, 0.3);
+}
+
+.expand-btn {
+  display: block;
+  margin-top: 10px;
+  width: 100%;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: transparent;
+  color: var(--muted);
+  font-size: 0.75rem;
+  cursor: pointer;
+  padding: 4px 0;
+  transition: background 0.12s;
+}
+
+.expand-btn:hover {
+  background: rgba(26, 23, 20, 0.05);
+}
+
+.company-chart-panel {
+  grid-column: 1 / -1;
+  margin-top: 16px;
+  padding-top: 16px;
+  border-top: 1px solid var(--line);
+  display: grid;
+  gap: 12px;
+}
+
+.chart-controls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: center;
+}
+
+.chart-control-group {
+  display: flex;
+  gap: 4px;
+  flex-wrap: wrap;
+}
+
+.chart-pill {
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  padding: 4px 10px;
+  font-size: 0.72rem;
+  font-weight: 600;
+  background: transparent;
+  color: var(--muted);
+  cursor: pointer;
+  transition: background 0.12s, color 0.12s;
+}
+
+.chart-pill:hover {
+  background: rgba(26, 23, 20, 0.05);
+}
+
+.chart-pill.active {
+  background: var(--ink);
+  color: #fff;
+  border-color: var(--ink);
+}
+
+.chart-panes {
+  display: grid;
+  gap: 2px;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  overflow: hidden;
+  background: rgba(255, 255, 255, 0.6);
+}
+
+.chart-pane {
+  position: relative;
+}
+
+.chart-pane-label {
+  position: absolute;
+  top: 6px;
+  left: 10px;
+  font-size: 0.68rem;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  z-index: 1;
+  pointer-events: none;
+}
+
+.chart-canvas {
+  width: 100%;
+}
+
+.chart-status {
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.85rem;
+}
+
+.chart-error {
+  color: #c0392b;
+}
+
+.market-data-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+.market-panel {
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  padding: 14px;
+  background: rgba(255, 255, 255, 0.55);
+  display: grid;
+  gap: 10px;
+}
+
+.market-panel-title {
+  margin: 0;
+  font-size: 0.78rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--muted);
+}
+
+.market-metrics {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 8px 16px;
+  margin: 0;
+}
+
+.market-metric {
+  display: grid;
+  gap: 2px;
+}
+
+.market-metric dt {
+  font-size: 0.72rem;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.market-metric dd {
+  margin: 0;
+  font-size: 0.92rem;
+  font-weight: 600;
+  color: var(--ink);
+}
+
+.esg-total {
+  font-size: 2rem;
+  font-weight: 700;
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+}
+
+.esg-total-label {
+  font-size: 0.75rem;
+  font-weight: 400;
+  color: var(--muted);
+}
+
+.market-null {
+  margin: 0;
+  font-size: 0.82rem;
+  color: var(--muted);
+  font-style: italic;
+}
+
+.market-note {
+  margin: 0;
+  font-size: 0.72rem;
+  color: var(--muted);
+  font-style: italic;
+}
+
+@media (max-width: 700px) {
+  .market-data-row {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ── Wizard Bar ── */
+.wizard-bar {
+  display: flex;
+  gap: 0;
+  border-bottom: 1px solid var(--line);
+  margin-bottom: 32px;
+  background: rgba(255,255,255,0.6);
+  border-radius: 16px 16px 0 0;
+  overflow: hidden;
+}
+
+.wizard-step-btn {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 14px 20px;
+  border: none;
+  border-right: 1px solid var(--line);
+  background: transparent;
+  cursor: pointer;
+  color: var(--muted);
+  font-size: 0.88rem;
+  font-weight: 500;
+  transition: background 0.12s;
+}
+
+.wizard-step-btn:last-child { border-right: none; }
+.wizard-step-btn:hover:not(.locked) { background: rgba(26,23,20,0.04); }
+
+.wizard-step-btn.active {
+  color: var(--ink);
+  font-weight: 700;
+  background: rgba(255,255,255,0.9);
+  border-bottom: 2px solid var(--ink);
+}
+
+.wizard-step-btn.done { color: var(--ok); }
+.wizard-step-btn.locked { opacity: 0.4; cursor: default; }
+
+.wizard-step-num {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  border: 1.5px solid currentColor;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.75rem;
+  flex-shrink: 0;
+}
+
+.wizard-step-btn.active .wizard-step-num {
+  background: var(--ink);
+  color: #fff;
+  border-color: var(--ink);
+}
