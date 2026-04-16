@@ -42,9 +42,6 @@ def _build_warnings(payload: PortfolioPreviewRequest, metrics: dict[str, bool]) 
             "Warstwa techniczna jest juz podpieta architektonicznie, ale w master datasecie nie ma jeszcze zaladowanych metryk technicznych."
         )
 
-    warnings.append(
-        "Fundusze, ETF-y i trusty sa trwale wyciete z universe wejsciowego. REIT-y sa wlaczone do ogolnego koszyka akcji."
-    )
     if "ambiguous" in allowed_universes:
         warnings.append(
             "W universe zostawiono tez rekordy niejednoznaczne, zeby nie wyciac agresywnie spolek z mylacymi metadanymi."
