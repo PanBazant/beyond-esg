@@ -799,7 +799,7 @@ export default function App() {
             <button
               type="button"
               className={`preset-card preset-card-blank${!selectedPresetId ? " selected" : ""}`}
-              onClick={() => { resetToEmptyProfile(catalog.custom_esg_axes); setStep(2); }}
+              onClick={() => { resetToEmptyProfile(catalog?.custom_esg_axes); setStep(2); }}
               disabled={catalogLoading}
             >
               <strong>Od zera</strong>
