@@ -1399,6 +1399,10 @@ export default function App() {
               <strong>{metrics?.technicals ? "gotowe" : "brak danych"}</strong>
             </article>
             <article>
+              <span className="stat-label">Profil aksjologiczny</span>
+              <strong>{metrics?.axiological ? "gotowe" : "brak danych"}</strong>
+            </article>
+            <article>
               <span className="stat-label">Profile</span>
               <strong>{profiles.length}</strong>
             </article>
@@ -1763,6 +1767,42 @@ export default function App() {
                         {company.score_breakdown.technical_alignment.toFixed(4)} / cap{" "}
                         {company.score_breakdown.market_cap_alignment.toFixed(4)}
                       </p>
+                      <div className="axiological-profile">
+                        {company.axiological_profile_null || company.axiological_coverage == null ? (
+                          <p className="axiological-null">Brak profilu aksjologicznego</p>
+                        ) : (
+                          <>
+                            <div className="axiological-metrics">
+                              <div className="axiological-metric">
+                                <span>Pokrycie</span>
+                                <strong>{(company.axiological_coverage * 100).toFixed(0)}%</strong>
+                              </div>
+                              <div className="axiological-metric">
+                                <span>Pewność</span>
+                                <strong>{company.axiological_confidence != null ? company.axiological_confidence.toFixed(2) : "n/d"}</strong>
+                              </div>
+                              <div className="axiological-metric">
+                                <span>Zgodność metod</span>
+                                <strong>{company.axiological_inter_method_agreement != null ? (company.axiological_inter_method_agreement * 100).toFixed(0) + "%" : "n/d"}</strong>
+                              </div>
+                            </div>
+                            {company.axiological_frames?.length > 0 && (
+                              <div className="axiological-frames">
+                                {company.axiological_frames.slice(0, 6).map((frame, i) => (
+                                  <span key={i} className="axiological-frame-chip">
+                                    {String(frame.label ?? frame).toLowerCase()}
+                                  </span>
+                                ))}
+                                {company.axiological_frames.length > 6 && (
+                                  <span className="axiological-frame-chip axiological-frame-more">
+                                    +{company.axiological_frames.length - 6}
+                                  </span>
+                                )}
+                              </div>
+                            )}
+                          </>
+                        )}
+                      </div>
                     </div>
                     <div className="score-box">
                       <span>score</span>
