@@ -58,8 +58,7 @@ code {
   flex: 1;
 }
 
-.hero,
-.layout {
+.hero {
   max-width: 1180px;
   margin: 0 auto;
 }
@@ -146,28 +145,6 @@ code {
   color: var(--muted);
 }
 
-.layout {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr);
-  grid-template-areas:
-    "control"
-    "result"
-    "status";
-  gap: 20px;
-  align-items: start;
-}
-
-.control-panel {
-  grid-area: control;
-}
-
-.status-panel {
-  grid-area: status;
-}
-
-.result-panel {
-  grid-area: result;
-}
 
 .panel {
   background: var(--panel);
@@ -1236,14 +1213,6 @@ select[multiple] {
 @media (max-width: 1180px) {
   .mosaic-sidebar {
     display: none;
-  }
-
-  .layout {
-    grid-template-columns: 1fr;
-    grid-template-areas:
-      "control"
-      "status"
-      "result";
   }
 
   .action-row {
