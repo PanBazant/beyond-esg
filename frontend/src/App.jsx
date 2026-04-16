@@ -1040,7 +1040,7 @@ export default function App() {
               </label>
 
               <div className="action-row">
-                <button type="submit" className="primary-button" disabled={loading || reporting || catalogLoading}>
+                <button type="button" className="primary-button" onClick={handleGenerate} disabled={loading || reporting || catalogLoading}>
                   {loading ? "Budowanie..." : "Zbuduj portfel"}
                 </button>
                 <button type="button" className="secondary-button" onClick={handleReportExport} disabled={loading || reporting || catalogLoading}>
