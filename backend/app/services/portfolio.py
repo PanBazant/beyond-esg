@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import json
 from collections import Counter, defaultdict
 
 from ..schemas import (
@@ -41,6 +42,11 @@ def _build_warnings(payload: PortfolioPreviewRequest, metrics: dict[str, bool]) 
             "Warstwa techniczna jest juz podpieta architektonicznie, ale w master datasecie nie ma jeszcze zaladowanych metryk technicznych."
         )
 
+    if not metrics.get("axiological"):
+        warnings.append(
+            "Profil aksjologiczny nie jest jeszcze dostepny — uruchom pipeline 10a-11 zeby wygenerowac company_axiological_profile.jsonl."
+        )
+
     warnings.append(
         "Fundusze, ETF-y i trusty sa trwale wyciete z universe wejsciowego. REIT-y sa wlaczone do ogolnego koszyka akcji."
     )
@@ -59,6 +65,18 @@ def _safe_float(value: object, default: float | None = 0.0) -> float | None:
         return float(value)
     except (TypeError, ValueError):
         return default
+
+
+def _parse_axiological_frames(frames_json: object) -> list[dict]:
+    if isinstance(frames_json, list):
+        return frames_json
+    if isinstance(frames_json, str) and frames_json:
+        try:
+            parsed = json.loads(frames_json)
+            return parsed if isinstance(parsed, list) else []
+        except (json.JSONDecodeError, ValueError):
+            return []
+    return []
 
 
 def _append_company(selected: list[CompanyPreview], company: CompanyPreview, selected_symbols: set[str], category_counts: Counter) -> None:
@@ -271,6 +289,7 @@ def _build_summary(selected: list[CompanyPreview], holdings: list[PortfolioHoldi
         average_technical=_weighted_average(selected, holdings_by_symbol, "technical_score"),
         average_sentiment=_weighted_average(selected, holdings_by_symbol, "avg_sentiment"),
         average_posts_count=_weighted_average(selected, holdings_by_symbol, "posts_count"),
+        average_axiological_coverage=_weighted_average(selected, holdings_by_symbol, "axiological_coverage"),
         concentration_hhi=concentration_hhi,
         max_holding_weight=max_weight,
         top_category=top_category,
@@ -402,6 +421,12 @@ def _run_preview(payload: PortfolioPreviewRequest) -> tuple[int, list[str], Scor
                 technical_score=_safe_float(company.get("technical_score"), None),
                 avg_sentiment=_safe_float(company.get("avg_sentiment"), None),
                 coverage_score=_safe_float(company.get("coverage_score"), None),
+                axiological_coverage=_safe_float(company.get("axiological_coverage"), None),
+                axiological_confidence=_safe_float(company.get("axiological_confidence"), None),
+                axiological_inter_method_agreement=_safe_float(company.get("axiological_inter_method_agreement"), None),
+                axiological_frames=_parse_axiological_frames(company.get("axiological_frames_json")),
+                axiological_has_signal=bool(company.get("axiological_has_signal", False)),
+                axiological_profile_null=bool(company.get("axiological_profile_null", True)),
                 selection_score=selection_score,
                 score_breakdown=breakdown,
                 explanations=explanations,

@@ -47,3 +47,35 @@ def test_portfolio_summary_has_average_axiological_coverage():
     )
     assert hasattr(summary, "average_axiological_coverage")
     assert summary.average_axiological_coverage is None
+
+
+from app.services.portfolio import _parse_axiological_frames
+
+
+def test_parse_frames_from_json_string():
+    raw = '[{"label": "governance"}, {"label": "ethics"}]'
+    result = _parse_axiological_frames(raw)
+    assert result == [{"label": "governance"}, {"label": "ethics"}]
+
+
+def test_parse_frames_from_list_passthrough():
+    raw = [{"label": "governance"}]
+    result = _parse_axiological_frames(raw)
+    assert result == [{"label": "governance"}]
+
+
+def test_parse_frames_none_returns_empty():
+    assert _parse_axiological_frames(None) == []
+
+
+def test_parse_frames_empty_string_returns_empty():
+    assert _parse_axiological_frames("") == []
+
+
+def test_parse_frames_invalid_json_returns_empty():
+    assert _parse_axiological_frames("not-json") == []
+
+
+def test_parse_frames_json_dict_returns_empty():
+    # Valid JSON but not a list — should return []
+    assert _parse_axiological_frames('{"label": "governance"}') == []

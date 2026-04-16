@@ -314,6 +314,7 @@ def metric_availability(companies: list[dict] | None = None) -> dict[str, bool]:
     has_custom_esg = any(company.get("custom_esg_proxy_score") is not None for company in companies)
     has_profitability = any(company.get("profitability_score") is not None for company in companies)
     has_technicals = any(company.get("technical_score") is not None for company in companies)
+    has_axiological = any(company.get("axiological_coverage") is not None for company in companies)
     return {
         "categories": True,
         "market_cap": True,
@@ -321,4 +322,5 @@ def metric_availability(companies: list[dict] | None = None) -> dict[str, bool]:
         "custom_esg": has_custom_esg,
         "profitability": has_profitability,
         "technicals": has_technicals,
+        "axiological": has_axiological,
     }
