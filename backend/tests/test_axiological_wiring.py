@@ -3,6 +3,7 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
 from app.schemas import CompanyPreview, MetricAvailability, PortfolioSummary
+from app.services.portfolio import _parse_axiological_frames
 
 
 def test_metric_availability_has_axiological_field():
@@ -47,9 +48,6 @@ def test_portfolio_summary_has_average_axiological_coverage():
     )
     assert hasattr(summary, "average_axiological_coverage")
     assert summary.average_axiological_coverage is None
-
-
-from app.services.portfolio import _parse_axiological_frames
 
 
 def test_parse_frames_from_json_string():

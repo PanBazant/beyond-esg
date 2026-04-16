@@ -42,11 +42,6 @@ def _build_warnings(payload: PortfolioPreviewRequest, metrics: dict[str, bool]) 
             "Warstwa techniczna jest juz podpieta architektonicznie, ale w master datasecie nie ma jeszcze zaladowanych metryk technicznych."
         )
 
-    if not metrics.get("axiological"):
-        warnings.append(
-            "Profil aksjologiczny nie jest jeszcze dostepny — uruchom pipeline 10a-11 zeby wygenerowac company_axiological_profile.jsonl."
-        )
-
     warnings.append(
         "Fundusze, ETF-y i trusty sa trwale wyciete z universe wejsciowego. REIT-y sa wlaczone do ogolnego koszyka akcji."
     )
@@ -69,7 +64,7 @@ def _safe_float(value: object, default: float | None = 0.0) -> float | None:
 
 def _parse_axiological_frames(frames_json: object) -> list[dict]:
     if isinstance(frames_json, list):
-        return frames_json
+        return list(frames_json)
     if isinstance(frames_json, str) and frames_json:
         try:
             parsed = json.loads(frames_json)
