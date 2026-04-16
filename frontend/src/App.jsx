@@ -165,6 +165,16 @@ export default function App() {
   const [axisQuery, setAxisQuery] = useState("");
   const [showAllAxes, setShowAllAxes] = useState(false);
   const [axisViewMode, setAxisViewMode] = useState("list"); // "list" | "groups"
+  const [dimensionFilters, setDimensionFilters] = useState({
+    perception_min: "",
+    esg_max: "",
+    profitability_min: "",
+    technical_min: "",
+    include_missing_perception: true,
+    include_missing_esg: true,
+    include_missing_profitability: true,
+    include_missing_technical: true,
+  });
 
   function applyPreset(profile, axisDefinitions = catalog.custom_esg_axes, { keepProfileName = false } = {}) {
     if (!profile) return;
@@ -304,7 +314,20 @@ export default function App() {
     setProfileStatus("");
 
     try {
-      const nextResult = await buildPortfolioPreview(form);
+      const payload = {
+        ...form,
+        dimension_filters: {
+          perception_min: dimensionFilters.perception_min !== "" ? Number(dimensionFilters.perception_min) : null,
+          esg_max: dimensionFilters.esg_max !== "" ? Number(dimensionFilters.esg_max) : null,
+          profitability_min: dimensionFilters.profitability_min !== "" ? Number(dimensionFilters.profitability_min) : null,
+          technical_min: dimensionFilters.technical_min !== "" ? Number(dimensionFilters.technical_min) : null,
+          include_missing_perception: dimensionFilters.include_missing_perception,
+          include_missing_esg: dimensionFilters.include_missing_esg,
+          include_missing_profitability: dimensionFilters.include_missing_profitability,
+          include_missing_technical: dimensionFilters.include_missing_technical,
+        },
+      };
+      const nextResult = await buildPortfolioPreview(payload);
       startTransition(() => {
         setResult(nextResult);
       });
@@ -907,6 +930,53 @@ export default function App() {
             </div>
           </div>
 
+          <div className="panel">
+            <div className="panel-head"><h2>Filtry wymiarów</h2></div>
+            <p className="panel-copy">Spółki niespełniające progu są wykluczone z wyników. Brak danych = spółka przechodzi (toggle).</p>
+            <div className="dimension-filter-grid">
+              <div className="dimension-filter-row">
+                <label>
+                  <span>Percepcja min (0–1)</span>
+                  <input type="number" min="0" max="1" step="0.05" placeholder="brak progu" value={dimensionFilters.perception_min} onChange={(e) => setDimensionFilters((f) => ({ ...f, perception_min: e.target.value }))} />
+                </label>
+                <label className="checkbox-row">
+                  <input type="checkbox" checked={dimensionFilters.include_missing_perception} onChange={(e) => setDimensionFilters((f) => ({ ...f, include_missing_perception: e.target.checked }))} />
+                  <span>Uwzględnij bez percepcji</span>
+                </label>
+              </div>
+              <div className="dimension-filter-row">
+                <label>
+                  <span>ESG ryzyko max (niższy = lepszy)</span>
+                  <input type="number" min="0" max="100" step="1" placeholder="brak progu" value={dimensionFilters.esg_max} onChange={(e) => setDimensionFilters((f) => ({ ...f, esg_max: e.target.value }))} />
+                </label>
+                <label className="checkbox-row">
+                  <input type="checkbox" checked={dimensionFilters.include_missing_esg} onChange={(e) => setDimensionFilters((f) => ({ ...f, include_missing_esg: e.target.checked }))} />
+                  <span>Uwzględnij bez ESG</span>
+                </label>
+              </div>
+              <div className="dimension-filter-row">
+                <label>
+                  <span>Rentowność min (0–100)</span>
+                  <input type="number" min="0" max="100" step="1" placeholder="brak progu" value={dimensionFilters.profitability_min} onChange={(e) => setDimensionFilters((f) => ({ ...f, profitability_min: e.target.value }))} />
+                </label>
+                <label className="checkbox-row">
+                  <input type="checkbox" checked={dimensionFilters.include_missing_profitability} onChange={(e) => setDimensionFilters((f) => ({ ...f, include_missing_profitability: e.target.checked }))} />
+                  <span>Uwzględnij bez fundamentów</span>
+                </label>
+              </div>
+              <div className="dimension-filter-row">
+                <label>
+                  <span>Technikalia min (0–100)</span>
+                  <input type="number" min="0" max="100" step="1" placeholder="brak progu" value={dimensionFilters.technical_min} onChange={(e) => setDimensionFilters((f) => ({ ...f, technical_min: e.target.value }))} />
+                </label>
+                <label className="checkbox-row">
+                  <input type="checkbox" checked={dimensionFilters.include_missing_technical} onChange={(e) => setDimensionFilters((f) => ({ ...f, include_missing_technical: e.target.checked }))} />
+                  <span>Uwzględnij bez technikaliów</span>
+                </label>
+              </div>
+            </div>
+          </div>
+
           <details className="details-card">
             <summary>Zapis profilu</summary>
             <div className="details-body">
@@ -1093,16 +1163,24 @@ export default function App() {
                         {company.industry ? ` / ${company.industry}` : ""}
                         {company.market_cap_label ? ` / ${company.market_cap_label}` : ""}
                       </p>
-                      <p className="company-meta">
-                        {company.custom_esg_proxy_score != null ? `custom ESG ${company.custom_esg_proxy_score.toFixed(2)}` : "custom ESG n/d"}
-                        {company.custom_esg_metric_version ? ` / ${company.custom_esg_metric_version}` : ""}
-                        {company.real_esg_total_score != null ? ` / real ESG ${company.real_esg_total_score.toFixed(2)}` : ""}
-                        {company.real_esg_source ? ` / zrodlo ${company.real_esg_source}` : ""}
-                        {company.profitability_score != null ? ` / profitability ${company.profitability_score.toFixed(2)}` : " / profitability n/d"}
-                        {company.technical_score != null ? ` / technical ${company.technical_score.toFixed(2)}` : " / technical n/d"}
-                        {company.avg_sentiment != null ? ` / avg sentyment ${company.avg_sentiment.toFixed(4)}` : ""}
-                        {company.coverage_score != null ? ` / coverage ${company.coverage_score.toFixed(4)}` : ""}
-                      </p>
+                      <div className="company-dimensions">
+                        <div className="company-dim">
+                          <span className="company-dim-label">Percepcja</span>
+                          <strong className="company-dim-value">{company.perception_score != null ? company.perception_score.toFixed(2) : "n/d"}</strong>
+                        </div>
+                        <div className="company-dim">
+                          <span className="company-dim-label">ESG ryzyko</span>
+                          <strong className="company-dim-value">{company.real_esg_total_score != null ? company.real_esg_total_score.toFixed(1) : "n/d"}</strong>
+                        </div>
+                        <div className="company-dim">
+                          <span className="company-dim-label">Rentowność</span>
+                          <strong className="company-dim-value">{company.profitability_score != null ? company.profitability_score.toFixed(1) : "n/d"}</strong>
+                        </div>
+                        <div className="company-dim">
+                          <span className="company-dim-label">Technikalia</span>
+                          <strong className="company-dim-value">{company.technical_score != null ? company.technical_score.toFixed(1) : "n/d"}</strong>
+                        </div>
+                      </div>
                       {company.custom_esg_families?.length ? (
                         <div className="axis-strip family-strip">
                           {company.custom_esg_families.slice(0, 5).map((family) => (
