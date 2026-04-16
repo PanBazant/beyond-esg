@@ -27,6 +27,7 @@ class MetricAvailability(BaseModel):
     custom_esg: bool = False
     profitability: bool = False
     technicals: bool = False
+    axiological: bool = False
 
 
 class CommentEsgAxisDefinition(BaseModel):
@@ -217,6 +218,12 @@ class CompanyPreview(BaseModel):
     technical_score: float | None = None
     avg_sentiment: float | None = None
     coverage_score: float | None = None
+    axiological_coverage: float | None = None
+    axiological_confidence: float | None = None
+    axiological_inter_method_agreement: float | None = None
+    axiological_frames: list[dict] = Field(default_factory=list)
+    axiological_has_signal: bool = False
+    axiological_profile_null: bool = True
     selection_score: float
     score_breakdown: ScoreBreakdown
     explanations: list[CompanyExplanation]
@@ -247,6 +254,7 @@ class PortfolioSummary(BaseModel):
     average_technical: float | None = None
     average_sentiment: float | None = None
     average_posts_count: float | None = None
+    average_axiological_coverage: float | None = None
     concentration_hhi: float
     max_holding_weight: float
     top_category: str | None = None
