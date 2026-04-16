@@ -9,7 +9,7 @@ const STEPS = [
 export default function WizardBar({ step, maxStep, onStep }) {
   return (
     <nav className="wizard-bar">
-      {STEPS.map(({ n, label }, i) => {
+      {STEPS.map(({ n, label }) => {
         const done = n < step;
         const active = n === step;
         const locked = n > maxStep;
