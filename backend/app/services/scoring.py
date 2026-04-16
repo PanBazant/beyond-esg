@@ -89,6 +89,48 @@ def _extract_company_axes(company: dict) -> list[dict]:
     return axes
 
 
+def perception_score(
+    company: dict,
+    axis_preferences: list[AxisPreference] | None,
+    axis_info_map: dict[int, dict],
+) -> float:
+    """
+    Compute a 0-1 perception score for a company.
+    axis_info_map: {axis_id: {corpus_weight, average_sentiment}} from catalog.
+    Formula: Σ(exposure × sentiment_factor × weight) / max_possible
+    where weight = preference.importance * 2  (slider 0→1 maps to effective weight 0→2)
+    and sentiment_factor = 0.5 + 0.5 * clamp(average_sentiment, -1, 1)
+    """
+    company_axes = _extract_company_axes(company)
+    prefs = list(axis_preferences or [])
+    if not company_axes or not prefs:
+        return 0.5
+
+    axis_by_id = {ax["axis_id"]: ax for ax in company_axes}
+
+    total = 0.0
+    max_possible = 0.0
+
+    for pref in prefs:
+        axis_company = axis_by_id.get(pref.axis_id)
+        if axis_company is None:
+            continue
+        axis_catalog = axis_info_map.get(pref.axis_id, {})
+        exposure = _clamp(_safe_float(axis_company.get("exposure"), 0.0))
+        avg_sent = float(axis_catalog.get("average_sentiment") or 0.0)
+        avg_sent = max(-1.0, min(1.0, avg_sent))
+        sentiment_factor = 0.5 + 0.5 * avg_sent
+        user_weight = _clamp(pref.importance) * 2.0  # importance 0-1 → effective weight 0-2
+        if user_weight <= 0:
+            continue
+        total += exposure * sentiment_factor * user_weight
+        max_possible += sentiment_factor * user_weight  # max exposure = 1
+
+    if max_possible <= 0:
+        return 0.5
+    return round(_clamp(total / max_possible), 4)
+
+
 def esg_alignment(company: dict, mode: str, axis_preferences: list[AxisPreference] | None = None) -> tuple[float, dict]:
     score = company.get("custom_esg_proxy_score")
     if score is None:
