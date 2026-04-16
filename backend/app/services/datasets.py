@@ -168,10 +168,27 @@ def load_comment_esg_axes_catalog() -> list[dict]:
                 "topic_labels": topic_labels,
                 "examples": examples,
                 "topic_count": int(item.get("topic_count", len(topic_labels))),
+                "corpus_weight": float(item.get("corpus_weight") or 0.0),
+                "average_sentiment": float(item.get("average_sentiment") or 0.0),
+                "cluster_id": item.get("cluster_id"),
+                "cluster_label": item.get("cluster_label"),
             }
         )
 
     return _cache_set("comment_esg_axes_catalog", signature, sorted(axes, key=lambda item: item["axis_id"]))
+
+
+def load_axis_clusters_catalog() -> list[dict]:
+    axes = load_comment_esg_axes_catalog()
+    seen: dict[int, dict] = {}
+    for axis in axes:
+        cid = axis.get("cluster_id")
+        if cid is None:
+            continue
+        if cid not in seen:
+            seen[cid] = {"cluster_id": cid, "cluster_label": axis.get("cluster_label", ""), "axis_count": 0}
+        seen[cid]["axis_count"] += 1
+    return sorted(seen.values(), key=lambda c: c["cluster_id"])
 
 
 def load_comment_esg_family_catalog() -> list[dict]:
