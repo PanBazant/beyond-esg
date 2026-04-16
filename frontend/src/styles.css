@@ -1350,6 +1350,11 @@ select[multiple] {
   color: #c0392b;
 }
 
+.chart-ticker-note {
+  color: var(--muted);
+  font-size: 0.8rem;
+}
+
 .market-data-row {
   display: grid;
   grid-template-columns: 1fr 1fr;
