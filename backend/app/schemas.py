@@ -40,6 +40,27 @@ class CommentEsgAxisDefinition(BaseModel):
     topic_labels: list[str] = Field(default_factory=list)
     examples: list[str] = Field(default_factory=list)
     topic_count: int = 0
+    corpus_weight: float = 0.0
+    average_sentiment: float = 0.0
+    cluster_id: int | None = None
+    cluster_label: str | None = None
+
+
+class AxisClusterDefinition(BaseModel):
+    cluster_id: int
+    cluster_label: str
+    axis_count: int
+
+
+class DimensionFilters(BaseModel):
+    perception_min: float | None = Field(default=None, ge=0.0, le=1.0)
+    esg_max: float | None = Field(default=None, ge=0.0)
+    profitability_min: float | None = Field(default=None, ge=0.0, le=100.0)
+    technical_min: float | None = Field(default=None, ge=0.0, le=100.0)
+    include_missing_perception: bool = True
+    include_missing_esg: bool = True
+    include_missing_profitability: bool = True
+    include_missing_technical: bool = True
 
 
 class CommentEsgFamilyDefinition(BaseModel):
@@ -71,6 +92,7 @@ class CatalogResponse(BaseModel):
     metrics: MetricAvailability
     custom_esg_axes: list[CommentEsgAxisDefinition] = Field(default_factory=list)
     custom_esg_families: list[CommentEsgFamilyDefinition] = Field(default_factory=list)
+    axis_clusters: list[AxisClusterDefinition] = Field(default_factory=list)
     instrument_universes: list[InstrumentUniverseDefinition] = Field(default_factory=list)
 
 
@@ -129,6 +151,7 @@ class PortfolioPreviewRequest(BaseModel):
     score_weights: ScoreWeights = Field(default_factory=ScoreWeights)
     min_posts: int = Field(default=4, ge=0, le=500)
     portfolio_size: int = Field(default=10, ge=1, le=50)
+    dimension_filters: DimensionFilters = Field(default_factory=DimensionFilters)
 
 
 class SavedProfileUpsertRequest(PortfolioPreviewRequest):
@@ -218,6 +241,7 @@ class CompanyPreview(BaseModel):
     technical_score: float | None = None
     avg_sentiment: float | None = None
     coverage_score: float | None = None
+    perception_score: float | None = None
     axiological_coverage: float | None = None
     axiological_confidence: float | None = None
     axiological_inter_method_agreement: float | None = None
