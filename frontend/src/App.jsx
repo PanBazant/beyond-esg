@@ -1100,6 +1100,272 @@ export default function App() {
         </section>
         )}
 
+        {/* ── STEP 4: WYNIKI ── */}
+        {step === 4 && (
+        <section className="wizard-step-panel">
+          <div className="step-nav" style={{ paddingTop: 0 }}>
+            <button type="button" className="secondary-button" onClick={() => setStep(3)}>← Zmień parametry</button>
+            <div style={{ display: "flex", gap: 8 }}>
+              <button type="button" className="secondary-button" onClick={handleGenerate} disabled={loading}>
+                {loading ? "Generowanie..." : "Generuj ponownie"}
+              </button>
+              <button type="button" className="secondary-button" onClick={handleReportExport} disabled={reporting}>
+                {reporting ? "Eksport..." : "Eksportuj raport .md"}
+              </button>
+            </div>
+          </div>
+
+          {!result ? (
+            <p className="chart-status">
+              Brak wyników.{" "}
+              <button type="button" className="secondary-button" onClick={() => setStep(3)}>Wróć do parametrów</button>
+            </p>
+          ) : (
+            <>
+              {result.warnings.length > 0 ? (
+                <div className="warning-box">
+                  <h3>Uwagi do prototypu</h3>
+                  <ul>
+                    {result.warnings.map((warning) => (
+                      <li key={warning}>{warning}</li>
+                    ))}
+                  </ul>
+                </div>
+              ) : null}
+
+              <p className="panel-copy">
+                Sposob rozkladania wag: <strong>{weightingModeLabels[result.weighting_mode] ?? result.weighting_mode}</strong>. Spolek po filtracji:{" "}
+                <strong>{result.matched_companies}</strong>.
+              </p>
+
+              {result.comparison ? (
+                <div className="comparison-block">
+                  <div className="comparison-head">
+                    <h3>Jak Twoj portfel wypada wzgledem benchmarku ESG-like</h3>
+                    <span>{result.comparison.benchmark.label}</span>
+                  </div>
+                  <div className="comparison-grid">
+                    <article>
+                      <span className="stat-label">Wspolne spolki</span>
+                      <strong>{result.comparison.metrics.overlap_count}</strong>
+                    </article>
+                    <article>
+                      <span className="stat-label">Overlap ratio</span>
+                      <strong>{(result.comparison.metrics.overlap_ratio * 100).toFixed(1)}%</strong>
+                    </article>
+                    <article>
+                      <span className="stat-label">Delta custom ESG</span>
+                      <strong>{result.comparison.metrics.custom_esg_delta != null ? result.comparison.metrics.custom_esg_delta.toFixed(2) : "n/d"}</strong>
+                    </article>
+                    <article>
+                      <span className="stat-label">Delta sentymentu</span>
+                      <strong>{result.comparison.metrics.sentiment_delta != null ? result.comparison.metrics.sentiment_delta.toFixed(4) : "n/d"}</strong>
+                    </article>
+                    <article>
+                      <span className="stat-label">Delta kategorii</span>
+                      <strong>{result.comparison.metrics.distinct_categories_delta}</strong>
+                    </article>
+                  </div>
+                  <div className="portfolio-strip comparison-strip">
+                    {result.comparison.benchmark.holdings.map((holding) => (
+                      <article key={`benchmark-${holding.symbol}`} className="holding-card comparison-card">
+                        <span className="holding-symbol">{holding.symbol}</span>
+                        <strong>{holding.company_name}</strong>
+                        <span>{holding.category}</span>
+                        <span className="holding-weight">{(holding.weight * 100).toFixed(1)}%</span>
+                        <span>score {holding.selection_score.toFixed(4)}</span>
+                      </article>
+                    ))}
+                  </div>
+                </div>
+              ) : null}
+
+              <div className="summary-grid">
+                <article>
+                  <span className="stat-label">Pozycji</span>
+                  <strong>{result.summary.selected_companies}</strong>
+                </article>
+                <article>
+                  <span className="stat-label">Kategorie</span>
+                  <strong>{result.summary.distinct_categories}</strong>
+                </article>
+                <article>
+                  <span className="stat-label">Sredni custom ESG</span>
+                  <strong>{result.summary.average_custom_esg != null ? result.summary.average_custom_esg.toFixed(2) : "n/d"}</strong>
+                </article>
+                <article>
+                  <span className="stat-label">Srednia rentownosc</span>
+                  <strong>{result.summary.average_profitability != null ? result.summary.average_profitability.toFixed(2) : "n/d"}</strong>
+                </article>
+                <article>
+                  <span className="stat-label">Srednia technika</span>
+                  <strong>{result.summary.average_technical != null ? result.summary.average_technical.toFixed(2) : "n/d"}</strong>
+                </article>
+                <article>
+                  <span className="stat-label">HHI koncentracji</span>
+                  <strong>{result.summary.concentration_hhi.toFixed(4)}</strong>
+                </article>
+                <article>
+                  <span className="stat-label">Top kategoria</span>
+                  <strong>{result.summary.top_category ?? "n/d"}</strong>
+                </article>
+              </div>
+
+              <div className="allocation-strip">
+                {result.category_allocations.map((allocation) => (
+                  <article key={allocation.category} className="allocation-card">
+                    <strong>{allocation.category}</strong>
+                    <span>{allocation.holdings_count} spolek</span>
+                    <span>{(allocation.total_weight * 100).toFixed(1)}% wagi</span>
+                    <span>avg score {allocation.average_selection_score.toFixed(4)}</span>
+                  </article>
+                ))}
+              </div>
+
+              <div className="portfolio-strip">
+                {result.holdings.map((holding) => (
+                  <article key={holding.symbol} className="holding-card">
+                    <span className="holding-symbol">{holding.symbol}</span>
+                    <strong>{holding.company_name}</strong>
+                    <span>{holding.category}</span>
+                    <span className="holding-weight">{(holding.weight * 100).toFixed(1)}%</span>
+                    <span>score {holding.selection_score.toFixed(4)}</span>
+                  </article>
+                ))}
+              </div>
+
+              <div className="company-table">
+                {result.companies.map((company) => (
+                  <article key={company.symbol} className={`company-row${expandedSymbol === company.symbol ? " company-row--expanded" : ""}`}>
+                    <div>
+                      <div className="company-headline">
+                        <strong>{company.symbol}</strong>
+                        <span>{company.company_name}</span>
+                      </div>
+                      <p className="company-meta">
+                        {company.category}
+                        {company.industry ? ` / ${company.industry}` : ""}
+                        {company.market_cap_label ? ` / ${company.market_cap_label}` : ""}
+                      </p>
+                      <p className="company-meta">
+                        {company.custom_esg_proxy_score != null ? `custom ESG ${company.custom_esg_proxy_score.toFixed(2)}` : "custom ESG n/d"}
+                        {company.custom_esg_metric_version ? ` / ${company.custom_esg_metric_version}` : ""}
+                        {company.real_esg_total_score != null ? ` / real ESG ${company.real_esg_total_score.toFixed(2)}` : ""}
+                        {company.real_esg_source ? ` / zrodlo ${company.real_esg_source}` : ""}
+                        {company.profitability_score != null ? ` / profitability ${company.profitability_score.toFixed(2)}` : " / profitability n/d"}
+                        {company.technical_score != null ? ` / technical ${company.technical_score.toFixed(2)}` : " / technical n/d"}
+                        {company.avg_sentiment != null ? ` / avg sentyment ${company.avg_sentiment.toFixed(4)}` : ""}
+                        {company.coverage_score != null ? ` / coverage ${company.coverage_score.toFixed(4)}` : ""}
+                      </p>
+                      {company.custom_esg_families?.length ? (
+                        <div className="axis-strip family-strip">
+                          {company.custom_esg_families.slice(0, 5).map((family) => (
+                            <article key={`${company.symbol}-${family.family_id}`} className="axis-chip family-chip" title={family.summary ?? family.label}>
+                              <strong>{family.label}</strong>
+                              <span>{family.score != null ? `score ${family.score.toFixed(2)}` : "score n/d"}</span>
+                              <span>{family.exposure != null ? `exp ${family.exposure.toFixed(3)}` : "exp n/d"}</span>
+                              <span>{family.esg_relevance != null ? `rel ${family.esg_relevance.toFixed(2)}` : "rel n/d"}</span>
+                            </article>
+                          ))}
+                          {company.custom_esg_families.length > 5 ? (
+                            <article className="axis-chip axis-chip-more family-chip-more">
+                              <strong>+{company.custom_esg_families.length - 5}</strong>
+                              <span>Pozostale rodziny ukryte</span>
+                            </article>
+                          ) : null}
+                        </div>
+                      ) : null}
+                      {company.custom_esg_axes?.length ? (
+                        <div className="axis-strip">
+                          {company.custom_esg_axes.slice(0, 8).map((axis) => (
+                            <article key={`${company.symbol}-${axis.axis_id}`} className="axis-chip" title={axis.summary ?? axis.label}>
+                              <strong>{axis.label}</strong>
+                              {axis.family_label ? <span>{axis.family_label}</span> : null}
+                              <span>{axis.score != null ? `score ${axis.score.toFixed(2)}` : "score n/d"}</span>
+                              <span>{axis.exposure != null ? `exp ${axis.exposure.toFixed(3)}` : "exp n/d"}</span>
+                              <span>{axis.confidence != null ? `conf ${axis.confidence.toFixed(3)}` : "conf n/d"}</span>
+                            </article>
+                          ))}
+                          {company.custom_esg_axes.length > 8 ? (
+                            <article className="axis-chip axis-chip-more">
+                              <strong>+{company.custom_esg_axes.length - 8}</strong>
+                              <span>Pozostale wymiary ukryte</span>
+                            </article>
+                          ) : null}
+                        </div>
+                      ) : null}
+                      <p className="company-meta">
+                        base {company.score_breakdown.base_quality.toFixed(4)} / esg {company.score_breakdown.esg_alignment.toFixed(4)} / kat.{" "}
+                        {company.score_breakdown.category_match.toFixed(4)} / rent. {company.score_breakdown.profitability_alignment.toFixed(4)} / tech.{" "}
+                        {company.score_breakdown.technical_alignment.toFixed(4)} / cap{" "}
+                        {company.score_breakdown.market_cap_alignment.toFixed(4)}
+                      </p>
+                      <div className="axiological-profile">
+                        {company.axiological_profile_null || company.axiological_coverage == null ? (
+                          <p className="axiological-null">Brak profilu aksjologicznego</p>
+                        ) : (
+                          <>
+                            <div className="axiological-metrics">
+                              <div className="axiological-metric">
+                                <span>Pokrycie</span>
+                                <strong>{(company.axiological_coverage * 100).toFixed(0)}%</strong>
+                              </div>
+                              <div className="axiological-metric">
+                                <span>Pewność</span>
+                                <strong>{company.axiological_confidence != null ? company.axiological_confidence.toFixed(2) : "n/d"}</strong>
+                              </div>
+                              <div className="axiological-metric">
+                                <span>Zgodność metod</span>
+                                <strong>{company.axiological_inter_method_agreement != null ? (company.axiological_inter_method_agreement * 100).toFixed(0) + "%" : "n/d"}</strong>
+                              </div>
+                            </div>
+                            {company.axiological_frames?.length > 0 && (
+                              <div className="axiological-frames">
+                                {company.axiological_frames.slice(0, 6).map((frame, i) => (
+                                  <span key={i} className="axiological-frame-chip">
+                                    {String(frame.label ?? frame).toLowerCase()}
+                                  </span>
+                                ))}
+                                {company.axiological_frames.length > 6 && (
+                                  <span className="axiological-frame-chip axiological-frame-more">
+                                    +{company.axiological_frames.length - 6}
+                                  </span>
+                                )}
+                              </div>
+                            )}
+                          </>
+                        )}
+                      </div>
+                    </div>
+                    <div className="score-box">
+                      <span>score</span>
+                      <strong>{company.selection_score.toFixed(4)}</strong>
+                      <button
+                        className="expand-btn"
+                        onClick={() => setExpandedSymbol(expandedSymbol === company.symbol ? null : company.symbol)}
+                        title={expandedSymbol === company.symbol ? "Zwiń" : "Wykres i analiza"}
+                      >
+                        {expandedSymbol === company.symbol ? "▲" : "▼"}
+                      </button>
+                    </div>
+                    <div className="explanations">
+                      {company.explanations.map((item) => (
+                        <p key={`${company.symbol}-${item.title}`}>
+                          <strong>{item.title}:</strong> {item.detail}
+                        </p>
+                      ))}
+                    </div>
+                    {expandedSymbol === company.symbol && (
+                      <CompanyChart symbol={company.symbol} />
+                    )}
+                  </article>
+                ))}
+              </div>
+            </>
+          )}
+        </section>
+        )}
+
         <section className="panel control-panel">
           <div className="panel-head">
             <h2>Ustaw model i portfel</h2>
