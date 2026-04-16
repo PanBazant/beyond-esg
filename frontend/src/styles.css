@@ -1520,3 +1520,61 @@ select[multiple] {
   color: #fff;
   border-color: var(--ink);
 }
+
+/* ── Wizard layout ── */
+.wizard-main {
+  display: grid;
+  gap: 24px;
+}
+
+.wizard-step-panel {
+  display: grid;
+  gap: 24px;
+}
+
+.start-hero {
+  text-align: center;
+  padding: 24px 0 8px;
+}
+
+.preset-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 14px;
+}
+
+.preset-card {
+  border: 1.5px solid var(--line);
+  border-radius: 18px;
+  padding: 20px;
+  background: rgba(255,255,255,0.65);
+  text-align: left;
+  cursor: pointer;
+  transition: border-color 0.12s, box-shadow 0.12s;
+  display: grid;
+  gap: 8px;
+}
+
+.preset-card:hover {
+  border-color: rgba(26,23,20,0.3);
+  box-shadow: var(--shadow);
+}
+
+.preset-card.selected {
+  border-color: var(--ink);
+  background: rgba(255,255,255,0.9);
+}
+
+.preset-card strong { font-size: 1rem; }
+.preset-card p { margin: 0; font-size: 0.82rem; color: var(--muted); line-height: 1.5; }
+
+.preset-card-blank {
+  border-style: dashed;
+}
+
+.step-nav {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-top: 8px;
+}

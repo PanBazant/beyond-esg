@@ -765,7 +765,86 @@ export default function App() {
           </p>
         </header>
 
-        <main className="layout">
+        <main className="wizard-main">
+        {/* ── STEP 1: START ── */}
+        {step === 1 && (
+        <section className="wizard-step-panel">
+          <div className="start-hero">
+            <p className="eyebrow">Inżynieria selekcji wartości</p>
+            <h1 className="glitch-milk" data-text="Kreator portfela ESG-like">
+              Kreator portfela ESG-like
+            </h1>
+            <p className="hero-copy">
+              Zbuduj portfel inwestycyjny oparty na własnych wartościach — nie na gotowych standardach ESG.
+              Wybierz preset jako punkt startowy albo zacznij od zera.
+            </p>
+          </div>
+
+          <div className="preset-grid">
+            {profiles.map((profile) => {
+              const copy = getPresetCopy(profile);
+              return (
+                <button
+                  key={profile.id}
+                  type="button"
+                  className={`preset-card${selectedPresetId === profile.id ? " selected" : ""}`}
+                  onClick={() => { applyPreset(profile); setStep(2); }}
+                  disabled={catalogLoading}
+                >
+                  <strong>{copy?.title ?? profile.name}</strong>
+                  <p>{copy?.description ?? ""}</p>
+                </button>
+              );
+            })}
+            <button
+              type="button"
+              className={`preset-card preset-card-blank${!selectedPresetId ? " selected" : ""}`}
+              onClick={() => { resetToEmptyProfile(catalog.custom_esg_axes); setStep(2); }}
+              disabled={catalogLoading}
+            >
+              <strong>Od zera</strong>
+              <p>Zacznij z pustymi ustawieniami i skonfiguruj wszystko ręcznie.</p>
+            </button>
+          </div>
+
+          {savedProfiles.length > 0 && (
+            <details className="details-card">
+              <summary>Wczytaj zapisany profil ({savedProfiles.length})</summary>
+              <div className="details-body">
+                <select
+                  value={selectedSavedProfileId}
+                  onChange={handleSavedProfileChange}
+                  disabled={catalogLoading}
+                >
+                  <option value="">Wybierz profil...</option>
+                  {savedProfiles.map((profile) => (
+                    <option key={profile.profile_id} value={profile.profile_id}>
+                      {profile.profile_name}
+                    </option>
+                  ))}
+                </select>
+                {activeSavedProfile && (
+                  <button
+                    type="button"
+                    className="secondary-button"
+                    onClick={() => setStep(2)}
+                  >
+                    Wczytaj i przejdź dalej →
+                  </button>
+                )}
+              </div>
+            </details>
+          )}
+
+          <div className="step-nav">
+            <span />
+            <button type="button" className="primary-button" onClick={() => setStep(2)} disabled={catalogLoading}>
+              Dalej →
+            </button>
+          </div>
+        </section>
+        )}
+
         <section className="panel control-panel">
           <div className="panel-head">
             <h2>Ustaw model i portfel</h2>
