@@ -1552,3 +1552,157 @@ select[multiple] {
   align-items: center;
   padding-top: 8px;
 }
+
+/* ── Axis perception cards ── */
+.axis-view-toggle {
+  display: flex;
+  gap: 4px;
+}
+
+.axis-card-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 12px;
+  margin-top: 12px;
+}
+
+.axis-card {
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  padding: 12px 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  transition: border-color 0.15s;
+}
+
+.axis-card:hover {
+  border-color: var(--accent);
+}
+
+.axis-card--muted {
+  opacity: 0.45;
+}
+
+.axis-card-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 8px;
+}
+
+.axis-card-label {
+  font-size: 0.82rem;
+  line-height: 1.35;
+  flex: 1;
+}
+
+.axis-card-sentiment {
+  font-size: 0.78rem;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.axis-card-exposure {
+  height: 4px;
+  background: var(--line);
+  border-radius: 2px;
+  overflow: hidden;
+}
+
+.axis-card-exposure-bar {
+  height: 100%;
+  background: var(--accent);
+  border-radius: 2px;
+  max-width: 100%;
+}
+
+.axis-weight-label {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  font-size: 0.78rem;
+  color: var(--muted);
+}
+
+.axis-weight-label input[type="range"] {
+  width: 100%;
+}
+
+/* ── Cluster sections ── */
+.axis-cluster-section {
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  overflow: hidden;
+  margin-bottom: 8px;
+}
+
+.axis-cluster-summary {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 14px;
+  cursor: pointer;
+  background: var(--panel);
+  font-size: 0.9rem;
+  gap: 10px;
+  list-style: none;
+}
+
+.axis-cluster-section .axis-card-grid {
+  padding: 12px 14px;
+  border-top: 1px solid var(--line);
+}
+
+/* ── Dimension filters ── */
+.dimension-filter-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.dimension-filter-row {
+  display: flex;
+  align-items: flex-end;
+  gap: 24px;
+  flex-wrap: wrap;
+}
+
+.dimension-filter-row label > span {
+  display: block;
+  font-size: 0.8rem;
+  color: var(--muted);
+  margin-bottom: 4px;
+}
+
+.dimension-filter-row input[type="number"] {
+  width: 130px;
+}
+
+/* ── Company dimension columns in results ── */
+.company-dimensions {
+  display: flex;
+  gap: 16px;
+  flex-wrap: wrap;
+  margin-top: 4px;
+}
+
+.company-dim {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  min-width: 72px;
+}
+
+.company-dim-label {
+  font-size: 0.7rem;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.company-dim-value {
+  font-size: 0.9rem;
+  font-weight: 600;
+}
