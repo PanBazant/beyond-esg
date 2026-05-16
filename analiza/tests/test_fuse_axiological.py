@@ -54,3 +54,37 @@ def test_merge_frames_deduplicates():
     merged = merge_frames(frames)
     labels = [f["label"] for f in merged]
     assert len(labels) == len(set(labels))
+
+
+from fuse_axiological_lib import sentiment_to_score
+
+
+def test_sentiment_to_score_positive():
+    assert sentiment_to_score("positive") == 1.0
+
+
+def test_sentiment_to_score_negative():
+    assert sentiment_to_score("negative") == -1.0
+
+
+def test_sentiment_to_score_neutral_is_zero():
+    assert sentiment_to_score("neutral") == 0.0
+
+
+def test_sentiment_to_score_mixed_is_zero():
+    assert sentiment_to_score("mixed") == 0.0
+
+
+def test_sentiment_to_score_unknown_defaults_to_zero():
+    assert sentiment_to_score("garbage") == 0.0
+
+
+def test_merge_frames_preserves_sentiment():
+    frames = [
+        {"label": "regulatory scrutiny", "evidence": "SEC", "exposure": "high", "sentiment": "negative"},
+        {"label": "innovation narrative", "evidence": "tech moat", "exposure": "medium", "sentiment": "positive"},
+    ]
+    merged = merge_frames(frames)
+    sentiments = {f["label"]: f.get("sentiment") for f in merged}
+    assert sentiments["regulatory scrutiny"] == "negative"
+    assert sentiments["innovation narrative"] == "positive"

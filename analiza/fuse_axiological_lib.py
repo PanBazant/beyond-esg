@@ -3,6 +3,19 @@ from __future__ import annotations
 import math
 
 
+SENTIMENT_SCORE_MAP: dict[str, float] = {
+    "positive": 1.0,
+    "negative": -1.0,
+    "mixed": 0.0,
+    "neutral": 0.0,
+}
+
+
+def sentiment_to_score(sentiment: str) -> float:
+    """Mapuje etykietę sentymentu na liczbę: positive→+1, negative→-1, reszta→0."""
+    return SENTIMENT_SCORE_MAP.get(sentiment, 0.0)
+
+
 def compute_inter_method_agreement(methods: dict[str, dict]) -> float:
     """Oblicza stopień zgodności między metodami (0.0–1.0).
 
