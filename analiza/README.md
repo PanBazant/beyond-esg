@@ -59,15 +59,16 @@ Skrypty 10a–11b zastepuja stare 10_discover_comment_topics i 11_build_comment_
 
 - `10a_filter_value_frames.py` — trzy rownolegle filtry: seed-word bootstrap (Filtr A), brak filtra (Filtr B), embedding cosine similarity (Filtr C).
 - `10b_bertopic_discovery.py` — BERTopic (UMAP + HDBSCAN) odkrywa organiczne tematy z kazdego z trzech filtrow; klasyfikuje je jako aksjologiczne vs trading-noise; oblicza ekspozycje per spolka.
-- `10c_llm_profiling.py` — lokalny LLM (OpenAI-compatible API) profiluje kazda spolke osobno: zadaje pytanie "przez jakie soczewki wartosci inwestorzy te spolke postrzegaja?" (NIE sentyment).
+- `10c_llm_profiling.py` — lokalny LLM (OpenAI-compatible API) profiluje kazda spolke osobno: identyfikuje ramy percepcyjne (`label`, `evidence`, `exposure`) oraz kierunek dyskursu per rama (`sentiment`: positive/negative/mixed/neutral). NIE ocenia globalnego sentymentu spolki — tylko kierunek w ramach kazdej ramy aksjologicznej.
 - `11_fuse_axiological.py` — laczy wyniki BERTopic x3 + LLM; liczy `inter_method_agreement`, `axiological_confidence`, `axiological_coverage`; produkuje `company_axiological_profile.jsonl`.
-- `11b_sentiment_per_axis.py` — (opcjonalny) VADER sentiment per kategoria aksjologiczna; wzbogaca profil o `sentiment_by_frame`.
+- `11b_sentiment_per_axis.py` — (opcjonalny, zastapiony przez sentiment w 10c) VADER sentiment per kategoria; wzbogaca profil o `sentiment_by_frame`.
 
 Kluczowe metryki wynikowe:
 - `axiological_coverage` — jaki % postow spolki ma sygnal aksjologiczny
 - `axiological_confidence` — pewnosc profilu (coverage x posty x metody)
 - `inter_method_agreement` — zgodnosc miedzy metodami (0.0–1.0)
 - `profile_null = True` — spolka bez wystarczajacego sygnalu (brak pseudoscoru)
+- `sentiment` per rama — kierunek dyskursu: positive/negative/mixed/neutral (oceniany przez LLM, agregowany przez `sentiment_to_score` z `fuse_axiological_lib`)
 
 ## Benchmark real ESG
 
