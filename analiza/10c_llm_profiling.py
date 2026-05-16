@@ -21,14 +21,14 @@ from pathlib import Path
 
 from openai import OpenAI
 
+from llm_profiling_lib import validate_llm_result, VALID_COVERAGE_VALUES, VALID_SENTIMENT_VALUES
+
 ROOT_DIR = Path(__file__).resolve().parents[1]
 OUT_DIR = ROOT_DIR / "analiza" / "out"
 POSTS_FLAT_PATH = OUT_DIR / "posts_flat.jsonl"
 POSTS_FLAT_SAMPLE_PATH = OUT_DIR / "posts_flat_sample.jsonl"
 LLM_PROFILES_PATH = OUT_DIR / "llm_axiological_profiles.jsonl"
 LLM_PROFILES_SAMPLE_PATH = OUT_DIR / "llm_axiological_profiles_sample.jsonl"
-
-VALID_COVERAGE_VALUES = {"none", "marginal", "present", "dominant"}
 
 PROMPT_TEMPLATE = """\
 You are analyzing investor commentary about publicly traded companies.
@@ -43,6 +43,7 @@ Total posts collected: {total_posts} | Posts shown below: {shown_posts}
 
 Question: Through which value lenses or perceptual frames do investors discuss this company?
 Do NOT rate sentiment (liked/not liked). Focus on CATEGORIES OF PERCEPTION.
+For each frame, also assess the overall sentiment direction of the discourse around it: positive (investors discuss it favorably), negative (unfavorably), mixed (both positive and negative signals present), or neutral (factual, no clear direction).
 
 Examples of valid frames:
 - "regulatory scrutiny" (investors talk about SEC, lawsuits, compliance)
@@ -55,7 +56,7 @@ Examples of valid frames:
 Respond with valid JSON only, no extra text:
 {{
   "frames": [
-    {{"label": "short descriptive label (2-4 words)", "evidence": "brief quote or paraphrase from posts", "exposure": "low|medium|high"}},
+    {{"label": "short descriptive label (2-4 words)", "evidence": "brief quote or paraphrase from posts", "exposure": "low|medium|high", "sentiment": "positive|negative|mixed|neutral"}},
     ...
   ],
   "axiological_coverage": "none|marginal|present|dominant",
@@ -110,18 +111,6 @@ def build_prompt(symbol: str, data: dict, max_posts: int = 25) -> str:
         shown_posts=len(posts),
         posts_text=posts_text,
     )
-
-
-def validate_llm_result(result: dict) -> dict:
-    """Normalizes LLM output to a fixed schema. Drops unexpected keys."""
-    coverage = result.get("axiological_coverage", "none")
-    if coverage not in VALID_COVERAGE_VALUES:
-        coverage = "none"
-    return {
-        "frames": result.get("frames", []),
-        "axiological_coverage": coverage,
-        "notes": result.get("notes"),
-    }
 
 
 def call_llm(client: OpenAI, model: str, prompt: str, retries: int = 2) -> dict | None:
@@ -187,10 +176,15 @@ def main() -> None:
                         help="Kontynuuj od miejsca przerwania (pomija juz przetworzone spolki)")
     parser.add_argument("--limit-companies", type=int, default=None,
                         help="Ogranicz liczbe spolek (do testow)")
+    parser.add_argument("--output-file", type=str, default=None,
+                        help="Nadpisz domyslna sciezke wyjsciowa (przydatne przy ablacji: --output-file analiza/out/llm_axiological_profiles_claude.jsonl)")
     args = parser.parse_args()
 
     posts_path = POSTS_FLAT_SAMPLE_PATH if args.sample else POSTS_FLAT_PATH
-    out_path = LLM_PROFILES_SAMPLE_PATH if args.sample else LLM_PROFILES_PATH
+    if args.output_file:
+        out_path = Path(args.output_file)
+    else:
+        out_path = LLM_PROFILES_SAMPLE_PATH if args.sample else LLM_PROFILES_PATH
 
     if not posts_path.exists():
         print(f"ERROR: brak pliku: {posts_path}", file=sys.stderr)
