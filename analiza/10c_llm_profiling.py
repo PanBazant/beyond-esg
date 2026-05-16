@@ -21,7 +21,7 @@ from pathlib import Path
 
 from openai import OpenAI
 
-from llm_profiling_lib import validate_llm_result, VALID_COVERAGE_VALUES, VALID_SENTIMENT_VALUES
+from llm_profiling_lib import validate_llm_result
 
 ROOT_DIR = Path(__file__).resolve().parents[1]
 OUT_DIR = ROOT_DIR / "analiza" / "out"
