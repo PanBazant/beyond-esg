@@ -56,10 +56,10 @@ def run_seed_filter(posts: list[dict], out_path: Path) -> dict:
         for post in posts:
             text = str(post.get("text") or "")
             matched, tokens = filter_seed(text)
-            row = {**post, "filter_seed": matched, "filter_seed_tokens": tokens}
             if matched:
+                row = {**post, "filter_seed": True, "filter_seed_tokens": tokens}
+                f.write(json.dumps(row, ensure_ascii=False) + "\n")
                 passed += 1
-            f.write(json.dumps(row, ensure_ascii=False) + "\n")
     return {"total": len(posts), "passed": passed, "coverage": round(passed / len(posts), 4) if posts else 0.0}
 
 
@@ -69,10 +69,10 @@ def run_embed_filter(posts: list[dict], out_path: Path, model, concept_emb, thre
     passed = 0
     with out_path.open("w", encoding="utf-8") as f:
         for post, result, score in zip(posts, results, scores):
-            row = {**post, "filter_embed": result, "filter_embed_score": round(score, 4)}
             if result:
+                row = {**post, "filter_embed": True, "filter_embed_score": round(score, 4)}
+                f.write(json.dumps(row, ensure_ascii=False) + "\n")
                 passed += 1
-            f.write(json.dumps(row, ensure_ascii=False) + "\n")
     return {"total": len(posts), "passed": passed, "coverage": round(passed / len(posts), 4) if posts else 0.0, "threshold": threshold}
 
 
