@@ -1,0 +1,23 @@
+{
+  "profile_name": "balanced_signal_custom",
+  "categories": [],
+  "custom_esg_mode": "neutral",
+  "profitability_mode": "neutral",
+  "technical_mode": "prefer_high",
+  "market_cap_mode": "neutral",
+  "weighting_mode": "score_weighted",
+  "max_holding_weight": 0.25,
+  "max_companies_per_category": 2,
+  "min_distinct_categories": 4,
+  "strict_category_limit": false,
+  "score_weights": {
+    "base_quality": 0.25,
+    "esg_alignment": 0.2,
+    "category_match": 0.2,
+    "profitability_alignment": 0.2,
+    "technical_alignment": 0.15,
+    "market_cap_alignment": 0.15
+  },
+  "min_posts": 30,
+  "portfolio_size": 10
+}

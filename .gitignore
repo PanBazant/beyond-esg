@@ -5,7 +5,33 @@ __pycache__/
 *.egg-info/
 dist/
 .env
+
+# Pipeline outputs / inputs (large, generated)
 analiza/out/
 analiza/input/raw/uploads/
 scrapper/media_sample/
 scrapper/cmc_out/
+
+# Large raw scrapper datasets (>1MB, derivable from running scrapers)
+scrapper/symbols_table.json
+scrapper/symbols_table_partial.json
+scrapper/symbol_stocks_only.json
+scrapper/symbols_coins_only.json
+scrapper/merged_categories_stocktwits.json
+scrapper/merged_flat_stocktwits.jsonl
+scrapper/batch_progress.json
+
+# Runtime PID files
+*.pid
+
+# Local agent/tooling state (user-specific, contains absolute paths)
+.claude/
+.superpowers/
+
+# Reference literature (large binaries — see docs/ for citations)
+*.pdf
+
+# Saved user profiles — whitelist seed fixtures only
+analiza/profiles/*.json
+!analiza/profiles/anti_esg_diversified.json
+!analiza/profiles/balanced_signal.json

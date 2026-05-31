@@ -1,0 +1,23 @@
+{
+  "profile_name": "anti_esg_diversified",
+  "categories": [],
+  "custom_esg_mode": "prefer_low",
+  "profitability_mode": "neutral",
+  "technical_mode": "neutral",
+  "market_cap_mode": "prefer_large",
+  "weighting_mode": "score_weighted",
+  "max_holding_weight": 0.2,
+  "max_companies_per_category": 1,
+  "min_distinct_categories": 8,
+  "strict_category_limit": false,
+  "score_weights": {
+    "base_quality": 0.25,
+    "esg_alignment": 0.3,
+    "category_match": 0.15,
+    "profitability_alignment": 0.15,
+    "technical_alignment": 0.05,
+    "market_cap_alignment": 0.1
+  },
+  "min_posts": 30,
+  "portfolio_size": 10
+}
