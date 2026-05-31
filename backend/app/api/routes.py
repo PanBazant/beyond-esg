@@ -18,6 +18,7 @@ from ..schemas import (
 )
 from ..services.catalog import build_catalog
 from ..services.data_pipeline import build_data_status, build_data_worklist, import_raw_data
+from ..services.market_data import fetch_market_data
 from ..services.portfolio import build_portfolio_preview
 from ..services.presets import build_profile_catalog
 from ..services.reporting import generate_portfolio_report
@@ -79,6 +80,24 @@ async def save_profile(payload: SavedProfileUpsertRequest) -> SavedProfileRecord
 @router.delete("/profiles/saved/{profile_id}", response_model=SavedProfileDeleteResponse)
 async def remove_profile(profile_id: str) -> SavedProfileDeleteResponse:
     return delete_saved_profile(profile_id)
+
+
+VALID_PERIODS = {"1mo", "3mo", "6mo", "1y", "2y", "5y"}
+
+
+@router.get("/company/{symbol}/market-data")
+async def company_market_data(
+    symbol: str,
+    period: str = Query(default="1y"),
+) -> dict:
+    if period not in VALID_PERIODS:
+        raise HTTPException(status_code=400, detail=f"Invalid period. Choose from: {', '.join(sorted(VALID_PERIODS))}")
+    try:
+        return fetch_market_data(symbol.upper(), period=period)
+    except ValueError as e:
+        raise HTTPException(status_code=404, detail=str(e))
+    except RuntimeError as e:
+        raise HTTPException(status_code=503, detail=str(e))
 
 
 @router.post("/portfolio/preview", response_model=PortfolioPreviewResponse)

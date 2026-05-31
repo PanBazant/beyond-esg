@@ -10,6 +10,8 @@ requires-python = ">=3.10"
 dependencies = [
   "fastapi>=0.135,<0.136",
   "uvicorn[standard]>=0.44,<0.45",
+  "yfinance>=0.2.50",
+  "pandas>=2.0",
 ]
 
 [tool.setuptools.packages.find]
