@@ -17,6 +17,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import re
 import sys
 from collections import defaultdict
 from pathlib import Path
@@ -53,6 +54,23 @@ NOISE_CONCEPT = (
     "stock price chart trading buy sell technical analysis RSI "
     "candlestick pattern momentum breakout oversold overbought"
 )
+
+
+# Boilerplate scraperów/agregatorów zaśmiecający korpus seed (~15% postów to
+# stopki botów typu wegro/marketbeat). Usuwamy URL-e i frazy promocyjne, ale
+# zachowujemy realną treść — posty, z których po czyszczeniu nic nie zostaje
+# (sam cashtag + link), odpadną przez próg długości w run_for_filter.
+# Funkcja jest pure i nadaje się do reużycia w 10c_llm_profiling.
+_URL_RE = re.compile(r"\b\w[\w.-]*\.(?:com|app|gov|net|org|io|in|co)\b(?:/\S*)?", re.I)
+
+
+def clean_post_text(text: str) -> str:
+    """Usuwa boilerplate scraperów (URL-e, frazy promocyjne) zachowując treść."""
+    t = _URL_RE.sub(" ", text)
+    t = re.sub(r"(?i)instant stock alerts on whatsapp", " ", t)
+    t = re.sub(r"(?i)try free", " ", t)
+    t = re.sub(r"\s+", " ", t).strip()
+    return t
 
 
 def load_filtered_posts(path: Path) -> list[dict]:
@@ -175,7 +193,7 @@ def run_for_filter(filter_name: str, sample: bool) -> None:
 
     print(f"\n=== BERTopic: filter={filter_name} ===")
     posts = load_filtered_posts(input_path)
-    texts = [str(p.get("text") or "") for p in posts]
+    texts = [clean_post_text(str(p.get("text") or "")) for p in posts]
     valid = [(i, t) for i, t in enumerate(texts) if len(t.strip()) > 20]
     if len(valid) < MIN_VALID_POSTS:
         print(f"SKIP: Za mało postów ({len(valid)}) — pomijam.", file=sys.stderr)
