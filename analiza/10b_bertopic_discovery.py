@@ -106,7 +106,10 @@ def build_bertopic_model(n_topics: int = 60) -> tuple[BERTopic, SentenceTransfor
         hdbscan_model=hdbscan_model,
         vectorizer_model=vectorizer,
         nr_topics=n_topics,
-        calculate_probabilities=True,
+        # _probs z fit_transform jest odrzucane (linia ~219) — soft-membership
+        # (all_points_membership_vectors) to wąskie gardło O(n×klastry), zwisa
+        # na pełnym korpusie (65k). Twarde przypisania są niezależne od tej flagi.
+        calculate_probabilities=False,
         verbose=True,
     )
     return topic_model, embedding_model

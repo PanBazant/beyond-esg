@@ -80,8 +80,10 @@ def main() -> None:
     parser = argparse.ArgumentParser(description="Trzy filtry postów aksjologicznych")
     parser.add_argument("--sample", action="store_true", help="Tryb sample")
     parser.add_argument("--input-file", type=str, default=None)
-    parser.add_argument("--embed-threshold", type=float, default=0.28,
-                        help="Próg cosine similarity dla filtra C (default: 0.28)")
+    parser.add_argument("--embed-threshold", type=float, default=0.16,
+                        help="Próg cosine similarity dla filtra C. Skalibrowany na "
+                             "pełnym korpusie: 0.16 → ~33,8%% postów (mediana sim 0,128, "
+                             "max 0,534). 0.28 byłoby zbyt restrykcyjne (~5,7%%).")
     parser.add_argument("--embed-model", type=str, default="all-mpnet-base-v2",
                         help="Model sentence-transformers dla filtra C")
     parser.add_argument("--skip-embed", action="store_true",

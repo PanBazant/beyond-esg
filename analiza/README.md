@@ -20,7 +20,7 @@ Katalog `analiza/` buduje warstwe interpretacyjna i decyzyjna nad danymi zebrany
 14. `python 03_build_company_master_dataset.py`
 15. `python 09_generate_portfolio_report.py --preset-id balanced_signal`
 
-Filtr embedding (Filtr C) wymaga kalibracji progu. Domyslny prog: `--embed-threshold 0.28`.
+Filtr embedding (Filtr C) wymaga kalibracji progu. Skalibrowany prog: `--embed-threshold 0.16` (~33,8% postow na pelnym korpusie; rozklad: mediana 0,128, max 0,534). Domyslna wartosc 0.28 w skrypcie jest zbyt restrykcyjna (~5,7%).
 Dla LLM: upewnij sie ze lokalny serwer (np. LM Studio) dziala na `http://localhost:1234/v1`.
 
 Etap `05` sluzy do normalizacji surowego eksportu finansowego do pliku `analiza/input/company_fundamentals.csv`.
