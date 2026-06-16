@@ -23,6 +23,38 @@ from openai import OpenAI
 
 from llm_profiling_lib import validate_llm_result
 
+# Wymusza strukturę odpowiedzi w LM Studio (response_format json_schema).
+LLM_JSON_SCHEMA = {
+    "type": "json_schema",
+    "json_schema": {
+        "name": "axiological_profile",
+        "strict": True,
+        "schema": {
+            "type": "object",
+            "properties": {
+                "frames": {
+                    "type": "array",
+                    "items": {
+                        "type": "object",
+                        "properties": {
+                            "label": {"type": "string"},
+                            "evidence": {"type": "string"},
+                            "exposure": {"type": "string", "enum": ["low", "medium", "high"]},
+                            "sentiment": {"type": "string", "enum": ["positive", "negative", "mixed", "neutral"]},
+                        },
+                        "required": ["label", "evidence", "exposure", "sentiment"],
+                        "additionalProperties": False,
+                    },
+                },
+                "axiological_coverage": {"type": "string", "enum": ["none", "marginal", "present", "dominant"]},
+                "notes": {"type": ["string", "null"]},
+            },
+            "required": ["frames", "axiological_coverage", "notes"],
+            "additionalProperties": False,
+        },
+    },
+}
+
 ROOT_DIR = Path(__file__).resolve().parents[1]
 OUT_DIR = ROOT_DIR / "analiza" / "out"
 POSTS_FLAT_PATH = OUT_DIR / "posts_flat.jsonl"
@@ -52,6 +84,20 @@ Examples of valid frames:
 - "labor practices" (investors mention workers, strikes, layoffs)
 - "financial opacity" (investors question accounting, debt transparency)
 - "innovation narrative" (investors frame company as tech disruptor)
+
+These are NOT frames — never output them. They are pure trading chatter, not value lenses:
+- price moves / "it keeps crashing" / "fell off the cliff" / market volatility / momentum
+- volume, liquidity, "no volume"
+- short interest, short squeeze, price targets, valuation, market cap
+If the posts contain ONLY this kind of trading chatter, return an empty frames list with axiological_coverage "none".
+Only cite evidence from posts that actually mention the company {symbol}; ignore quotes about other tickers.
+
+For axiological_coverage, judge how much the discourse is about value lenses vs plain trading talk. Be strict and discriminate — do NOT default to "present":
+- "none": posts are entirely trading chatter (price, volume, technical analysis, RSI/MACD, price targets) with no value lens. Return frames: [].
+- "marginal": overwhelmingly trading talk; at most one weak, incidental value frame.
+- "present": value frames are a clear, recurring part of the discussion alongside trading talk.
+- "dominant": value lenses (regulation, governance, labor, ethics, environment, accountability) are the main thing investors discuss about this company.
+If posts are mostly RSI/MACD/support-resistance/price-target chatter, the answer is "none" or "marginal", never "present".
 
 Respond with valid JSON only, no extra text:
 {{
@@ -120,7 +166,8 @@ def call_llm(client: OpenAI, model: str, prompt: str, retries: int = 2) -> dict 
                 model=model,
                 messages=[{"role": "user", "content": prompt}],
                 temperature=0.1,
-                max_tokens=800,
+                max_tokens=1000,
+                response_format=LLM_JSON_SCHEMA,
             )
             raw = response.choices[0].message.content.strip()
             # Extract JSON even if the model added text before/after
