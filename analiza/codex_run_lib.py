@@ -53,3 +53,32 @@ def select_stratified_sample(run1_rows: list[dict], target_n: int = 90, seed: in
             break
 
     return sorted(selected)
+
+
+def parse_openclaw_response(stdout: str) -> dict | None:
+    """Z surowego stdout `openclaw agent --json` wyciąga JSON profilu aksjologicznego.
+
+    Ścieżka: stdout(JSON) -> result.payloads[0].text -> wyłuskanie {...} -> json.loads.
+    Zwraca dict profilu (frames/axiological_coverage/notes) albo None przy każdym błędzie.
+    """
+    try:
+        envelope = json.loads(stdout)
+    except (json.JSONDecodeError, TypeError):
+        return None
+    try:
+        payloads = envelope["result"]["payloads"]
+    except (KeyError, TypeError):
+        return None
+    if not payloads:
+        return None
+    text = payloads[0].get("text")
+    if not text:
+        return None
+    start = text.find("{")
+    end = text.rfind("}") + 1
+    if start == -1 or end == 0:
+        return None
+    try:
+        return json.loads(text[start:end])
+    except json.JSONDecodeError:
+        return None

@@ -1,8 +1,10 @@
+import json
 import sys
 from pathlib import Path
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
 from codex_run_lib import select_stratified_sample
+from codex_run_lib import parse_openclaw_response
 
 
 def _row(symbol, category, coverage, error=False):
@@ -37,3 +39,33 @@ def test_sample_returns_all_when_target_exceeds_population():
     rows = [_row(f"S{i}", "Cat0", "present") for i in range(5)]
     sample = select_stratified_sample(rows, target_n=100, seed=1)
     assert len(sample) == 5
+
+
+def test_parse_extracts_json_from_payload_text():
+    inner = '{"frames": [{"label": "regulatory scrutiny", "evidence": "SEC", "exposure": "high", "sentiment": "negative"}], "axiological_coverage": "present", "notes": null}'
+    stdout = json.dumps({"status": "ok", "result": {"payloads": [{"text": inner, "mediaUrl": None}]}})
+    parsed = parse_openclaw_response(stdout)
+    assert parsed["axiological_coverage"] == "present"
+    assert parsed["frames"][0]["label"] == "regulatory scrutiny"
+
+
+def test_parse_handles_text_around_json():
+    inner = 'Here is the result:\n{"frames": [], "axiological_coverage": "none", "notes": null}\nDone.'
+    stdout = json.dumps({"result": {"payloads": [{"text": inner}]}})
+    parsed = parse_openclaw_response(stdout)
+    assert parsed["frames"] == []
+    assert parsed["axiological_coverage"] == "none"
+
+
+def test_parse_returns_none_on_empty_payloads():
+    stdout = json.dumps({"status": "ok", "result": {"payloads": []}})
+    assert parse_openclaw_response(stdout) is None
+
+
+def test_parse_returns_none_on_garbage_stdout():
+    assert parse_openclaw_response("not json at all") is None
+
+
+def test_parse_returns_none_when_payload_text_has_no_json():
+    stdout = json.dumps({"result": {"payloads": [{"text": "sorry, no answer"}]}})
+    assert parse_openclaw_response(stdout) is None
