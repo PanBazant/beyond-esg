@@ -69,3 +69,21 @@ def test_parse_returns_none_on_garbage_stdout():
 def test_parse_returns_none_when_payload_text_has_no_json():
     stdout = json.dumps({"result": {"payloads": [{"text": "sorry, no answer"}]}})
     assert parse_openclaw_response(stdout) is None
+
+
+from codex_run_lib import build_openclaw_cmd
+
+
+def test_build_cmd_has_wsl_and_session_isolation():
+    cmd = build_openclaw_cmd("ACME", "PROMPT TEXT", agent="profiler")
+    assert cmd[0] == "wsl"
+    assert "Ubuntu-24.04" in cmd
+    assert "/home/macie/.npm-global/bin/openclaw" in cmd
+    assert "--agent" in cmd and "profiler" in cmd
+    # izolacja sesji per spółka
+    sid_i = cmd.index("--session-id")
+    assert cmd[sid_i + 1] == "codex-ACME"
+    # prompt jako argument --message
+    msg_i = cmd.index("--message")
+    assert cmd[msg_i + 1] == "PROMPT TEXT"
+    assert "--json" in cmd

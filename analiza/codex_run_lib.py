@@ -5,6 +5,9 @@ import json
 import random
 from collections import defaultdict
 
+OPENCLAW_BIN = "/home/macie/.npm-global/bin/openclaw"
+WSL_DISTRO = "Ubuntu-24.04"
+
 
 def select_stratified_sample(run1_rows: list[dict], target_n: int = 90, seed: int = 42) -> list[str]:
     """Warstwowy dobór ~target_n symboli z runu 1.
@@ -82,3 +85,20 @@ def parse_openclaw_response(stdout: str) -> dict | None:
         return json.loads(text[start:end])
     except json.JSONDecodeError:
         return None
+
+
+def build_openclaw_cmd(symbol: str, prompt: str, agent: str = "profiler",
+                       distro: str = WSL_DISTRO, openclaw_bin: str = OPENCLAW_BIN,
+                       timeout_s: int = 300) -> list[str]:
+    """Lista argv dla subprocess: wsl -> openclaw agent ... --json.
+
+    Unikatowy --session-id codex-<SYMBOL> izoluje kontekst każdej spółki.
+    """
+    return [
+        "wsl", "-d", distro, openclaw_bin, "agent",
+        "--agent", agent,
+        "--session-id", f"codex-{symbol}",
+        "--message", prompt,
+        "--json",
+        "--timeout", str(timeout_s),
+    ]
