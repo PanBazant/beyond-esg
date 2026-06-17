@@ -1,4 +1,4 @@
-"""Logika walidacji wyników LLM — importowana przez 10c i testy."""
+"""Wspólna logika LLM profiling — walidacja, prompt, ładowanie postów. Importowana przez 10c, 13 i testy."""
 from __future__ import annotations
 
 import json

@@ -1,3 +1,4 @@
+import json
 import sys
 from pathlib import Path
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
@@ -23,8 +24,12 @@ def test_build_prompt_truncates_posts_to_max():
     assert "post number 25" not in prompt
 
 
+def test_prompt_template_has_required_placeholders():
+    for ph in ("{symbol}", "{category}", "{industry}", "{posts_text}", "{shown_posts}", "{total_posts}"):
+        assert ph in PROMPT_TEMPLATE
+
+
 def test_load_posts_by_company_filters_min_posts(tmp_path):
-    import json
     p = tmp_path / "posts.jsonl"
     rows = [{"symbol": "AAA", "text": "governance lawsuit details here", "category": "C", "industry": "I"}] * 3
     rows += [{"symbol": "BBB", "text": "labor strike happening now everywhere", "category": "C", "industry": "I"}] * 6
