@@ -39,6 +39,11 @@ def load_run1_rows(path: Path) -> list[dict]:
 
 
 def load_done_symbols(path: Path) -> set[str]:
+    """Symbole uznane za gotowe przy --resume.
+
+    Liczą się TYLKO udane wiersze. Wiersze error (np. brak quoty Codexa) są
+    pomijane, żeby przy wznowieniu zostały ponowione, a nie zaliczone jako zrobione.
+    """
     done = set()
     if path.exists():
         with path.open("r", encoding="utf-8") as f:
@@ -46,9 +51,14 @@ def load_done_symbols(path: Path) -> set[str]:
                 line = line.strip()
                 if line:
                     try:
-                        done.add(json.loads(line)["symbol"])
-                    except (json.JSONDecodeError, KeyError):
-                        pass
+                        row = json.loads(line)
+                    except json.JSONDecodeError:
+                        continue
+                    if row.get("error"):
+                        continue
+                    symbol = row.get("symbol")
+                    if symbol:
+                        done.add(symbol)
     return done
 
 
