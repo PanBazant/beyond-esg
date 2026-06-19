@@ -47,7 +47,7 @@ def _build_warnings(payload: PortfolioPreviewRequest, metrics: dict[str, bool]) 
 
     if payload.custom_esg_mode != "neutral" and not metrics["custom_esg"]:
         warnings.append(
-            "Custom ESG orientation jest juz czescia modelu domenowego, ale jeszcze nie zostala podpieta do finalnych metryk spolek."
+            "Orientacja na wartości (aksjologia) jest juz czescia modelu domenowego, ale jeszcze nie zostala podpieta do finalnych metryk spolek."
         )
 
     if payload.profitability_mode != "neutral" and not metrics["profitability"]:

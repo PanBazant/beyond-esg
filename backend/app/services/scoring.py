@@ -309,22 +309,22 @@ def score_company(
 
     explanations.append(
         CompanyExplanation(
-            title="Custom ESG proxy",
+            title="Dopasowanie wartości (aksjologia)",
             detail=(
-                f"Alignment do wybranej orientacji ESG wynosi {esg:.2f}, "
-                f"przy raw proxy-score {company.get('custom_esg_proxy_score')} "
-                f"i bazowym alignment {esg_meta['base_alignment']:.2f}."
+                f"Dopasowanie do wybranego profilu wartości wynosi {esg:.2f}, "
+                f"przy surowym proxy-score {company.get('custom_esg_proxy_score')} "
+                f"i bazowym dopasowaniu {esg_meta['base_alignment']:.2f}."
             ),
         )
     )
     if company.get("custom_esg_metric_version"):
         explanations.append(
             CompanyExplanation(
-                title="Model ESG z komentarzy",
+                title="Profil wartości z komentarzy",
                 detail=(
                     f"Spolka korzysta z metryki {company.get('custom_esg_metric_version')}, "
-                    "zbudowanej najpierw z wielu organicznych wymiarow wartosci odkrytych w komentarzach, "
-                    "potem z rodzin tych wymiarow, a dopiero na koncu streszczonej do warstwy ESG-like."
+                    "zbudowanej z wielu organicznych osi wartosci odkrytych w komentarzach inwestorow, "
+                    "pogrupowanych w rodziny wartosci — oddolnie z dyskursu, nie z gotowych norm ESG."
                 ),
             )
         )
@@ -332,9 +332,9 @@ def score_company(
         axis_labels = ", ".join(esg_meta.get("active_axis_labels", [])[:3]) or "brak"
         explanations.append(
             CompanyExplanation(
-                title="Sterowanie osiami ESG",
+                title="Sterowanie osiami wartości",
                 detail=(
-                    f"Aktywne preferencje osiowe zmienily alignment ESG do {esg_meta['axis_alignment']:.2f} "
+                    f"Aktywne preferencje osiowe zmienily dopasowanie wartości do {esg_meta['axis_alignment']:.2f} "
                     f"z blendingiem {esg_meta['axis_blend']:.2f}. Osie: {axis_labels}."
                 ),
             )
@@ -369,7 +369,7 @@ def score_company(
             detail=(
                 "Finalny score sklada sie z wag: "
                 f"jakosc={normalized_weights.base_quality:.2f}, "
-                f"esg={normalized_weights.esg_alignment:.2f}, "
+                f"wartosci={normalized_weights.esg_alignment:.2f}, "
                 f"kategoria={normalized_weights.category_match:.2f}, "
                 f"rentownosc={normalized_weights.profitability_alignment:.2f}, "
                 f"technika={normalized_weights.technical_alignment:.2f}, "

@@ -169,9 +169,9 @@ def build_markdown(report: dict) -> str:
         if company.get("instrument_universe_reason"):
             lines.append(f"- Uzasadnienie klasy instrumentu: `{company['instrument_universe_reason']}`")
         lines.append(f"- Score: `{company['selection_score']}`")
-        lines.append(f"- Custom ESG: `{fmt(company['custom_esg_proxy_score'])}`")
+        lines.append(f"- Profil wartości (aksjologia): `{fmt(company['custom_esg_proxy_score'])}`")
         if company.get("custom_esg_metric_version"):
-            lines.append(f"- Model ESG: `{company['custom_esg_metric_version']}`")
+            lines.append(f"- Model wartości: `{company['custom_esg_metric_version']}`")
         lines.append(f"- Profitability: `{fmt(company['profitability_score'])}`")
         lines.append(f"- Technical: `{fmt(company['technical_score'])}`")
         lines.append(f"- Sentyment: `{fmt(company['avg_sentiment'])}`")
