@@ -49,6 +49,22 @@ def test_parse_extracts_json_from_payload_text():
     assert parsed["frames"][0]["label"] == "regulatory scrutiny"
 
 
+def test_parse_extracts_json_from_flat_payloads():
+    # ścieżka embedded fallback OpenClaw: brak zawijania w "result"
+    inner = '{"frames": [], "axiological_coverage": "present", "notes": null}'
+    stdout = json.dumps({"payloads": [{"text": inner, "mediaUrl": None}], "meta": {}})
+    parsed = parse_openclaw_response(stdout)
+    assert parsed["axiological_coverage"] == "present"
+
+
+def test_parse_skips_leading_noise_before_json():
+    inner = '{"frames": [], "axiological_coverage": "none", "notes": null}'
+    stdout = "Gateway agent failed; falling back to embedded\n" + \
+        json.dumps({"payloads": [{"text": inner}]})
+    parsed = parse_openclaw_response(stdout)
+    assert parsed["axiological_coverage"] == "none"
+
+
 def test_parse_handles_text_around_json():
     inner = 'Here is the result:\n{"frames": [], "axiological_coverage": "none", "notes": null}\nDone.'
     stdout = json.dumps({"result": {"payloads": [{"text": inner}]}})
@@ -74,16 +90,41 @@ def test_parse_returns_none_when_payload_text_has_no_json():
 from codex_run_lib import build_openclaw_cmd
 
 
-def test_build_cmd_has_wsl_and_session_isolation():
-    cmd = build_openclaw_cmd("ACME", "PROMPT TEXT", agent="profiler")
+def test_build_cmd_has_wsl_agent_and_thinking():
+    cmd = build_openclaw_cmd("ACME", "PROMPT TEXT", agent="profiler", thinking="low")
     assert cmd[0] == "wsl"
     assert "Ubuntu-24.04" in cmd
     assert "/home/macie/.npm-global/bin/openclaw" in cmd
     assert "--agent" in cmd and "profiler" in cmd
-    # izolacja sesji per spółka
-    sid_i = cmd.index("--session-id")
-    assert cmd[sid_i + 1] == "codex-ACME"
+    # effort pinowany jawnie (wipe sesji kasuje ustawiony thinkingLevel)
+    th_i = cmd.index("--thinking")
+    assert cmd[th_i + 1] == "low"
     # prompt jako argument --message
     msg_i = cmd.index("--message")
     assert cmd[msg_i + 1] == "PROMPT TEXT"
     assert "--json" in cmd
+
+
+def test_build_cmd_strips_control_chars_from_prompt():
+    # NUL i inne znaki kontrolne psują CreateProcess na Windows
+    cmd = build_openclaw_cmd("X", "abc\x00def\x07\nok `code` end", agent="profiler")
+    msg = cmd[cmd.index("--message") + 1]
+    assert "\x00" not in msg and "\x07" not in msg
+    assert "`" not in msg  # backtick usuniety (psuje powloke w WSL)
+    assert "abcdef" in msg and "\nok" in msg  # \n zachowany
+
+
+def test_build_cmd_drops_ignored_session_id():
+    # --agent wymusza klucz agent:<id>:main, wiec --session-id i tak byl ignorowany;
+    # izolacje daje wipe sesji (build_wipe_cmd), nie --session-id.
+    cmd = build_openclaw_cmd("ACME", "P", agent="profiler")
+    assert "--session-id" not in cmd
+
+
+def test_build_wipe_cmd_targets_profiler_sessions():
+    from codex_run_lib import build_wipe_cmd
+    cmd = build_wipe_cmd(agent="profiler")
+    assert cmd[0] == "wsl"
+    joined = " ".join(cmd)
+    assert "rm -f" in joined
+    assert "agents/profiler/sessions" in joined
