@@ -18,6 +18,10 @@
   box-sizing: border-box;
 }
 
+html {
+  font-size: 17px;
+}
+
 body {
   margin: 0;
   min-height: 100vh;
@@ -655,10 +659,10 @@ code {
 
 .axis-keywords span {
   border-radius: 999px;
-  padding: 6px 10px;
+  padding: 6px 11px;
   background: rgba(141, 59, 34, 0.08);
   color: var(--accent);
-  font-size: 0.76rem;
+  font-size: 0.82rem;
   font-weight: 600;
 }
 
@@ -1131,6 +1135,99 @@ select[multiple] {
   color: #e8a838;
 }
 
+/* --- Reframing: ekspozycja wkładu aksjologicznego --- */
+.hero-proof {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 16px;
+  margin-top: 22px;
+}
+
+.hero-proof-item {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 10px 16px;
+  border: 1px solid var(--glitch-teal);
+  border-radius: 10px;
+  min-width: 150px;
+}
+
+.hero-proof-item strong {
+  font-size: 1.15rem;
+  color: var(--glitch-teal);
+}
+
+.hero-proof-item span {
+  font-size: 0.74rem;
+  color: var(--muted);
+}
+
+.panel-lead {
+  margin: 0 0 10px;
+  font-size: 0.9rem;
+  line-height: 1.4;
+}
+
+.panel-lead strong {
+  color: var(--glitch-teal);
+}
+
+.panel-lead-muted {
+  color: var(--muted);
+  font-size: 0.82rem;
+  font-style: italic;
+}
+
+.method-note {
+  margin: 10px 0 4px;
+  font-size: 0.82rem;
+}
+
+.method-note summary {
+  cursor: pointer;
+  font-weight: 600;
+  color: var(--glitch-teal);
+}
+
+.method-note p {
+  margin: 8px 0 0;
+  color: var(--muted);
+  line-height: 1.5;
+}
+
+.signal-legend {
+  margin: 0 0 14px;
+  font-size: 0.8rem;
+  color: var(--muted);
+  line-height: 1.5;
+}
+
+.signal-legend-badge {
+  font-weight: 600;
+  color: #e8a838;
+  margin-right: 6px;
+}
+
+.advanced-block > summary {
+  font-weight: 600;
+  color: var(--muted);
+}
+
+.advanced-block .details-body {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  margin-top: 12px;
+}
+
+.zakres-min-posts {
+  display: block;
+  margin-top: 16px;
+  max-width: 320px;
+}
+
 .axiological-metrics {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
@@ -1449,7 +1546,9 @@ select[multiple] {
 .wizard-bar {
   display: flex;
   border-bottom: 1px solid var(--line);
-  margin-bottom: 32px;
+  margin: 0 auto 32px;
+  max-width: 1140px;
+  width: 100%;
   background: var(--panel);
   border-radius: 16px 16px 0 0;
   overflow: hidden;
@@ -1506,6 +1605,9 @@ select[multiple] {
 .wizard-main {
   display: grid;
   gap: 24px;
+  max-width: 1140px;
+  width: 100%;
+  margin: 0 auto;
 }
 
 .wizard-step-panel {
@@ -1568,19 +1670,19 @@ select[multiple] {
 
 .axis-card-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-  gap: 12px;
-  margin-top: 12px;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 16px;
+  margin-top: 14px;
 }
 
 .axis-card {
   background: var(--panel);
   border: 1px solid var(--line);
-  border-radius: 10px;
-  padding: 12px 14px;
+  border-radius: 16px;
+  padding: 16px 18px;
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 11px;
   transition: border-color 0.15s;
 }
 
@@ -1600,21 +1702,21 @@ select[multiple] {
 }
 
 .axis-card-label {
-  font-size: 0.82rem;
-  line-height: 1.35;
+  font-size: 0.98rem;
+  line-height: 1.3;
   flex: 1;
 }
 
 .axis-card-sentiment {
-  font-size: 0.78rem;
+  font-size: 0.85rem;
   font-weight: 600;
   white-space: nowrap;
 }
 
 .axis-card-exposure {
-  height: 4px;
+  height: 6px;
   background: var(--line);
-  border-radius: 2px;
+  border-radius: 3px;
   overflow: hidden;
 }
 
@@ -1628,8 +1730,8 @@ select[multiple] {
 .axis-weight-label {
   display: flex;
   flex-direction: column;
-  gap: 4px;
-  font-size: 0.78rem;
+  gap: 6px;
+  font-size: 0.85rem;
   color: var(--muted);
 }
 
@@ -1710,6 +1812,219 @@ select[multiple] {
 }
 
 .company-dim-value {
-  font-size: 0.9rem;
+  font-size: 1.05rem;
   font-weight: 600;
+}
+
+/* ── Wyniki: readability pass ── */
+.results-section {
+  margin: 30px 0 2px;
+  font-size: 1.22rem;
+  font-weight: 700;
+  letter-spacing: 0.01em;
+}
+
+.results-section:first-of-type {
+  margin-top: 6px;
+}
+
+.results-more {
+  display: flex;
+  justify-content: center;
+  margin: 6px 0 10px;
+}
+
+.stat-label {
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  font-weight: 600;
+  color: var(--muted);
+}
+
+.summary-grid {
+  grid-template-columns: repeat(auto-fit, minmax(185px, 1fr));
+  gap: 14px;
+}
+
+.summary-grid article strong,
+.comparison-grid article strong {
+  font-size: 1.6rem;
+  font-weight: 700;
+  line-height: 1.1;
+  color: var(--ink);
+}
+
+.stats-grid strong {
+  font-size: 1.7rem;
+}
+
+.summary-grid article,
+.comparison-grid article,
+.allocation-card,
+.holding-card {
+  padding: 18px;
+}
+
+.portfolio-strip {
+  grid-template-columns: repeat(auto-fill, minmax(205px, 1fr));
+}
+
+.holding-card strong {
+  font-size: 1.02rem;
+  line-height: 1.3;
+}
+
+.holding-card span {
+  font-size: 0.9rem;
+}
+
+.holding-weight {
+  font-size: 1.05rem;
+}
+
+.allocation-card strong {
+  font-size: 1rem;
+}
+
+.allocation-card span {
+  font-size: 0.88rem;
+}
+
+.company-row {
+  display: flex;
+  flex-direction: column;
+  grid-template-columns: none;
+  padding: 18px 20px;
+  gap: 14px;
+}
+
+.company-row-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px 28px;
+}
+
+.company-row-id {
+  flex: 1 1 240px;
+  min-width: 0;
+  display: grid;
+  gap: 6px;
+}
+
+.company-row-head .company-dimensions {
+  margin-top: 0;
+  gap: 20px;
+}
+
+.company-row-head .score-box {
+  flex: 0 0 auto;
+  min-width: 132px;
+}
+
+.company-detail {
+  display: grid;
+  gap: 12px;
+  padding-top: 14px;
+  border-top: 1px solid var(--line);
+}
+
+.company-headline strong {
+  font-size: 1.12rem;
+}
+
+.company-headline span {
+  font-size: 0.95rem;
+  color: var(--muted);
+}
+
+.company-dim-label {
+  font-size: 0.72rem;
+}
+
+.axis-chip strong {
+  font-size: 0.9rem;
+}
+
+.score-box strong {
+  font-size: 1.5rem;
+}
+
+/* ── Wyniki: karta "w skrócie" (TL;DR) ── */
+.result-tldr {
+  display: grid;
+  gap: 14px;
+  margin: 2px 0 6px;
+  padding: 26px 28px;
+  border-radius: 22px;
+  border: 1px solid var(--glitch-teal);
+  background: linear-gradient(180deg, rgba(100, 200, 210, 0.12), rgba(255, 255, 255, 0.45));
+  box-shadow: var(--shadow);
+}
+
+.result-tldr-kicker {
+  margin: 0;
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: var(--accent);
+}
+
+.result-tldr-lead {
+  margin: 0;
+  font-size: 1.4rem;
+  line-height: 1.4;
+  font-weight: 500;
+  max-width: 720px;
+}
+
+.result-tldr-lead strong {
+  font-weight: 800;
+}
+
+.result-tldr-kpis {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px 36px;
+  margin-top: 2px;
+}
+
+.result-tldr-kpi {
+  display: grid;
+  gap: 2px;
+}
+
+.result-tldr-kpi strong {
+  font-size: 2.1rem;
+  line-height: 1;
+  color: var(--ink);
+}
+
+.result-tldr-kpi span {
+  font-size: 0.85rem;
+  color: var(--muted);
+}
+
+.result-tldr-bar {
+  height: 12px;
+  border-radius: 999px;
+  background: rgba(26, 23, 20, 0.08);
+  overflow: hidden;
+}
+
+.result-tldr-bar-fill {
+  height: 100%;
+  border-radius: 999px;
+  background: var(--ok);
+  transition: width 0.4s ease;
+}
+
+.result-tldr-note {
+  margin: 0;
+  font-size: 0.92rem;
+  color: var(--muted);
+  line-height: 1.6;
 }

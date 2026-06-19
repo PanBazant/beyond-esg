@@ -2,8 +2,9 @@
 const STEPS = [
   { n: 1, label: "Start" },
   { n: 2, label: "Wartości" },
-  { n: 3, label: "Parametry" },
-  { n: 4, label: "Wyniki" },
+  { n: 3, label: "Zakres" },
+  { n: 4, label: "Dostrojenie" },
+  { n: 5, label: "Wyniki" },
 ];
 
 export default function WizardBar({ step, maxStep, onStep }) {

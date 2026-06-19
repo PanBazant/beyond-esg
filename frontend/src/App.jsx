@@ -62,12 +62,12 @@ const presetGlossary = {
   balanced_signal: {
     title: "Zrównoważony sygnał",
     description:
-      "To najbardziej neutralny styl startowy. Szuka kompromisu między jakością spółki, komentarzowym ESG i dopasowaniem do wybranych kategorii.",
+      "To najbardziej neutralny styl startowy. Szuka kompromisu między jakością spółki, profilem wartości z komentarzy i dopasowaniem do wybranych kategorii.",
   },
   classic_esg_defensive: {
     title: "Bardziej klasyczny i defensywny",
     description:
-      "Ten styl bardziej premiuje spółki wyglądające bezpiecznie i zgodnie z dominującym ESG-like profilem niż profile kontrariańskie.",
+      "Ten styl bardziej premiuje spółki wyglądające bezpiecznie i zgodne z dominującym, mainstreamowym profilem wartości niż profile kontrariańskie.",
   },
 };
 
@@ -116,6 +116,14 @@ function getPresetCopy(profile) {
 }
 
 
+function spolkiLabel(n) {
+  if (n === 1) return "spółka";
+  const d = n % 10;
+  const dd = n % 100;
+  if (d >= 2 && d <= 4 && !(dd >= 12 && dd <= 14)) return "spółki";
+  return "spółek";
+}
+
 export default function App() {
   const [catalog, setCatalog] = useState({
     categories: [],
@@ -146,9 +154,10 @@ export default function App() {
   const [reportStatus, setReportStatus] = useState("");
   const [profileStatus, setProfileStatus] = useState("");
   const [expandedSymbol, setExpandedSymbol] = useState(null);
+  const [showAllCompanies, setShowAllCompanies] = useState(false);
   const [step, setStep] = useState(1);
-  // maxStep tracks the furthest step unlocked (step 4 only after first generation)
-  const [maxStep, setMaxStep] = useState(3);
+  // maxStep tracks the furthest step unlocked (step 5 = Wyniki only after first generation)
+  const [maxStep, setMaxStep] = useState(4);
   const [dataStatusMessage, setDataStatusMessage] = useState("");
   const [profileDescription, setProfileDescription] = useState("");
   const [fundamentalsSourceName, setFundamentalsSourceName] = useState("");
@@ -331,8 +340,8 @@ export default function App() {
       startTransition(() => {
         setResult(nextResult);
       });
-      setStep(4);
-      setMaxStep(4);
+      setStep(5);
+      setMaxStep(5);
     } catch (nextError) {
       setError(`Nie udalo sie zbudowac portfela: ${nextError.message}`);
     } finally {
@@ -617,14 +626,28 @@ export default function App() {
         {step === 1 && (
         <section className="wizard-step-panel">
           <div className="start-hero">
-            <p className="eyebrow">Inżynieria selekcji wartości</p>
-            <h1 className="glitch-milk" data-text="Kreator portfela ESG-like">
-              Kreator portfela ESG-like
+            <p className="eyebrow">Aksjologiczne profilowanie spółek</p>
+            <h1 className="glitch-milk" data-text="Profil aksjologiczny spółek">
+              Profil aksjologiczny spółek
             </h1>
             <p className="hero-copy">
-              Zbuduj portfel inwestycyjny oparty na własnych wartościach — nie na gotowych standardach ESG.
-              Wybierz preset jako punkt startowy albo zacznij od zera.
+              Dobór inwestycji według wartości <strong>wydobytych z prawdziwych rozmów inwestorów</strong> —
+              nie z gotowych norm ESG. Wybierz preset jako punkt startowy albo zacznij od zera.
             </p>
+            <div className="hero-proof">
+              <div className="hero-proof-item">
+                <strong>{(catalog.companies_count || 2298).toLocaleString("pl-PL")}</strong>
+                <span>spółek z realnego dyskursu</span>
+              </div>
+              <div className="hero-proof-item">
+                <strong>{catalog.custom_esg_axes?.length || 55} osi wartości</strong>
+                <span>wykrytych z komentarzy, nie narzuconych</span>
+              </div>
+              <div className="hero-proof-item">
+                <strong>2 modele LLM</strong>
+                <span>niezależny test rzetelności</span>
+              </div>
+            </div>
           </div>
 
           <div className="preset-grid">
@@ -697,52 +720,34 @@ export default function App() {
         <section className="wizard-step-panel">
 
           <div className="panel">
-            <div className="panel-head">
-              <h2>Kategorie spółek</h2>
-              <span className="badge ghost">{form.categories.length > 0 ? `${form.categories.length} wybranych` : "wszystkie"}</span>
-            </div>
-            <div className="category-picker">
-              <div className="category-picker-head">
-                <strong>Wybrane: {form.categories.length}</strong>
-                <span>{catalog.categories_count} dostępnych kategorii</span>
-              </div>
-              <input
-                value={categoryQuery}
-                onChange={(event) => setCategoryQuery(event.target.value)}
-                placeholder="Szukaj kategorii, np. software, oil, retail..."
-                disabled={catalogLoading}
-              />
-              <div className="category-actions">
-                <button type="button" className="secondary-button compact-button" onClick={handleSelectAllCategories} disabled={catalogLoading}>Wszystkie</button>
-                <button type="button" className="secondary-button compact-button" onClick={handleClearCategories} disabled={catalogLoading}>Wyczyść</button>
-              </div>
-              <div className="category-list" role="group" aria-label="Lista kategorii">
-                {visibleCategories.map((item) => {
-                  const selected = form.categories.includes(item.name);
-                  return (
-                    <label key={item.slug} className={`category-option${selected ? " selected" : ""}`}>
-                      <input type="checkbox" checked={selected} onChange={() => handleCategoryToggle(item.name)} />
-                      <span>{item.name}</span>
-                    </label>
-                  );
-                })}
-              </div>
-            </div>
-          </div>
-
-          <div className="panel">
   <div className="panel-head">
-    <h2>Percepcja spółek — osie organiczne</h2>
+    <h2>Osie wartości z dyskursu inwestorów</h2>
     <div className="axis-view-toggle">
       <button type="button" className={`chart-pill${axisViewMode === "list" ? " active" : ""}`} onClick={() => setAxisViewMode("list")}>Lista</button>
       <button type="button" className={`chart-pill${axisViewMode === "groups" ? " active" : ""}`} onClick={() => setAxisViewMode("groups")}>Grupy</button>
     </div>
   </div>
+  <p className="panel-lead">
+    Te osie <strong>wyłoniły się z komentarzy inwestorów</strong> — nie z gotowej listy ESG. To sedno metody.
+  </p>
   <p className="panel-copy">
     Każda oś opisuje, jak inwestorzy postrzegają spółkę przez pryzmat komentarzy.
     Ekspozycja = jak mocno spółka jest z tą osią kojarzona. Nastawienie = ton komentarzy.
     Waga 0 = ignoruj tę oś, waga 2 = silnie uwzględnij.
+    <strong> Na start wystarczą 2–3 osie, które są dla Ciebie ważne — resztę zostaw na 0.</strong>
   </p>
+  <details className="method-note">
+    <summary>Skąd te wartości?</summary>
+    <p>
+      Zebraliśmy realne komentarze inwestorów dla {(catalog.companies_count || 2298).toLocaleString("pl-PL")} spółek. Metoda BERTopic sama
+      odkryła powtarzające się tematy, z których wydestylowaliśmy {catalog.custom_esg_axes?.length || 55} osi wartości
+      (pogrupowanych w rodziny). Niezależnie model językowy (LLM) czyta komentarze
+      i wypisuje konkretne ramki wartości dla każdej spółki. Te same dane puściliśmy
+      przez dwa różne modele LLM jako test rzetelności — ogólny poziom sygnału okazał
+      się odporny na wybór modelu. Gdzie sygnału jest za mało, oznaczamy to wprost,
+      zamiast zmyślać.
+    </p>
+  </details>
   <div className="axis-toolbar">
     <input
       type="search"
@@ -789,7 +794,7 @@ export default function App() {
       <>
         {axisViewMode === "list" && (
           <div className="axis-card-grid">
-            {(showAllAxes ? filteredAxisDefinitions : filteredAxisDefinitions.slice(0, 20)).map((axis) => (
+            {(showAllAxes ? filteredAxisDefinitions : filteredAxisDefinitions.slice(0, 12)).map((axis) => (
               <AxisCard key={axis.axis_id} axis={axis} />
             ))}
           </div>
@@ -813,7 +818,7 @@ export default function App() {
             })}
           </div>
         )}
-        {filteredAxisDefinitions.length > 20 && axisViewMode === "list" && (
+        {filteredAxisDefinitions.length > 12 && axisViewMode === "list" && (
           <button type="button" className="secondary-button" onClick={() => setShowAllAxes((v) => !v)}>
             {showAllAxes ? "Pokaż mniej" : `Pokaż wszystkie ${filteredAxisDefinitions.length}`}
           </button>
@@ -823,36 +828,6 @@ export default function App() {
   })()}
 </div>
 
-          <div className="panel">
-            <div className="panel-head"><h2>Dodatkowe filtry</h2></div>
-            <div className="mini-grid">
-              <label>
-                <span>Priorytet rentowności</span>
-                <select name="profitability_mode" value={form.profitability_mode} onChange={handleTextChange}>
-                  <option value="prefer_high">Preferuj wysoką rentowność</option>
-                  <option value="neutral">Neutralnie</option>
-                  <option value="prefer_low">Preferuj niską rentowność</option>
-                </select>
-              </label>
-              <label>
-                <span>Priorytet techniczny</span>
-                <select name="technical_mode" value={form.technical_mode} onChange={handleTextChange}>
-                  <option value="prefer_high">Preferuj mocniejszy sygnał</option>
-                  <option value="neutral">Neutralnie</option>
-                  <option value="prefer_low">Preferuj słabszy sygnał</option>
-                </select>
-              </label>
-              <label>
-                <span>Bias kapitalizacji</span>
-                <select name="market_cap_mode" value={form.market_cap_mode} onChange={handleTextChange}>
-                  <option value="neutral">Neutralnie</option>
-                  <option value="prefer_large">Preferuj duże spółki</option>
-                  <option value="prefer_small">Preferuj mniejsze spółki</option>
-                </select>
-              </label>
-            </div>
-          </div>
-
           <div className="step-nav">
             <button type="button" className="secondary-button" onClick={() => setStep(1)}>← Wróć</button>
             <button type="button" className="primary-button" onClick={() => setStep(3)}>Dalej →</button>
@@ -860,8 +835,59 @@ export default function App() {
         </section>
         )}
 
-        {/* ── STEP 3: PARAMETRY ── */}
+        {/* ── STEP 3: ZAKRES (z czego wybieramy) ── */}
         {step === 3 && (
+        <section className="wizard-step-panel">
+          <div className="panel">
+            <div className="panel-head">
+              <h2>Z czego wybieramy</h2>
+              <span className="badge ghost">{form.categories.length > 0 ? `${form.categories.length} wybranych` : "wszystkie"}</span>
+            </div>
+            <p className="panel-lead panel-lead-muted">
+              Zawęź pulę spółek do interesujących Cię branż i ustaw, ile komentarzy musi mieć spółka, by w ogóle ją rozważać.
+            </p>
+            <div className="category-picker">
+              <div className="category-picker-head">
+                <strong>Wybrane: {form.categories.length}</strong>
+                <span>{catalog.categories_count} dostępnych kategorii</span>
+              </div>
+              <input
+                value={categoryQuery}
+                onChange={(event) => setCategoryQuery(event.target.value)}
+                placeholder="Szukaj kategorii, np. software, oil, retail..."
+                disabled={catalogLoading}
+              />
+              <div className="category-actions">
+                <button type="button" className="secondary-button compact-button" onClick={handleSelectAllCategories} disabled={catalogLoading}>Wszystkie</button>
+                <button type="button" className="secondary-button compact-button" onClick={handleClearCategories} disabled={catalogLoading}>Wyczyść</button>
+              </div>
+              <div className="category-list" role="group" aria-label="Lista kategorii">
+                {visibleCategories.map((item) => {
+                  const selected = form.categories.includes(item.name);
+                  return (
+                    <label key={item.slug} className={`category-option${selected ? " selected" : ""}`}>
+                      <input type="checkbox" checked={selected} onChange={() => handleCategoryToggle(item.name)} />
+                      <span>{item.name}</span>
+                    </label>
+                  );
+                })}
+              </div>
+            </div>
+            <label className="zakres-min-posts">
+              <span>Minimalna liczba komentarzy na spółkę</span>
+              <input type="number" min="0" max="500" name="min_posts" value={form.min_posts} onChange={handleNumberChange} />
+            </label>
+          </div>
+
+          <div className="step-nav">
+            <button type="button" className="secondary-button" onClick={() => setStep(2)}>← Wróć</button>
+            <button type="button" className="primary-button" onClick={() => setStep(4)}>Dalej →</button>
+          </div>
+        </section>
+        )}
+
+        {/* ── STEP 4: DOSTROJENIE PORTFELA ── */}
+        {step === 4 && (
         <section className="wizard-step-panel">
           <div className="panel">
             <div className="panel-head"><h2>Parametry portfela</h2></div>
@@ -869,10 +895,6 @@ export default function App() {
               <label>
                 <span>Ile spółek ma mieć portfel</span>
                 <input type="number" min="1" max="50" name="portfolio_size" value={form.portfolio_size} onChange={handleNumberChange} />
-              </label>
-              <label>
-                <span>Minimalna liczba komentarzy na spółkę</span>
-                <input type="number" min="0" max="500" name="min_posts" value={form.min_posts} onChange={handleNumberChange} />
               </label>
               <label>
                 <span>Maksymalna waga jednej spółki</span>
@@ -901,6 +923,42 @@ export default function App() {
           </div>
 
           <div className="panel">
+            <div className="panel-head"><h2>Preferencje finansowe (klasyczna analiza)</h2></div>
+            <p className="panel-lead panel-lead-muted">
+              Dodatek do profilu wartości — klasyczne kryteria finansowe, nie sedno metody.
+            </p>
+            <div className="mini-grid">
+              <label>
+                <span>Priorytet rentowności</span>
+                <select name="profitability_mode" value={form.profitability_mode} onChange={handleTextChange}>
+                  <option value="prefer_high">Preferuj wysoką rentowność</option>
+                  <option value="neutral">Neutralnie</option>
+                  <option value="prefer_low">Preferuj niską rentowność</option>
+                </select>
+              </label>
+              <label>
+                <span>Priorytet techniczny</span>
+                <select name="technical_mode" value={form.technical_mode} onChange={handleTextChange}>
+                  <option value="prefer_high">Preferuj mocniejszy sygnał</option>
+                  <option value="neutral">Neutralnie</option>
+                  <option value="prefer_low">Preferuj słabszy sygnał</option>
+                </select>
+              </label>
+              <label>
+                <span>Bias kapitalizacji</span>
+                <select name="market_cap_mode" value={form.market_cap_mode} onChange={handleTextChange}>
+                  <option value="neutral">Neutralnie</option>
+                  <option value="prefer_large">Preferuj duże spółki</option>
+                  <option value="prefer_small">Preferuj mniejsze spółki</option>
+                </select>
+              </label>
+            </div>
+          </div>
+
+          <details className="details-card advanced-block">
+            <summary>▸ Zaawansowane — wagi scoringu i progi wymiarów (dla eksperta)</summary>
+            <div className="details-body">
+          <div className="panel">
             <div className="panel-head"><h2>Wagi składowych scoringu</h2></div>
             <div className="weights-block">
               <label>
@@ -908,7 +966,7 @@ export default function App() {
                 <input type="range" min="0" max="100" step="1" name="base_quality" value={form.score_weights.base_quality * 100} onChange={handleWeightChange} />
               </label>
               <label>
-                <span>Custom ESG: {weightPercent(form.score_weights.esg_alignment)}</span>
+                <span>Dopasowanie wartości (aksjologia): {weightPercent(form.score_weights.esg_alignment)}</span>
                 <input type="range" min="0" max="100" step="1" name="esg_alignment" value={form.score_weights.esg_alignment * 100} onChange={handleWeightChange} />
               </label>
               <label>
@@ -976,6 +1034,8 @@ export default function App() {
               </div>
             </div>
           </div>
+            </div>
+          </details>
 
           <details className="details-card">
             <summary>Zapis profilu</summary>
@@ -1003,7 +1063,7 @@ export default function App() {
           {error && <p className="error-message">{error}</p>}
 
           <div className="step-nav">
-            <button type="button" className="secondary-button" onClick={() => setStep(2)}>← Wróć</button>
+            <button type="button" className="secondary-button" onClick={() => setStep(3)}>← Wróć</button>
             <button
               type="button"
               className="primary-button"
@@ -1016,11 +1076,11 @@ export default function App() {
         </section>
         )}
 
-        {/* ── STEP 4: WYNIKI ── */}
-        {step === 4 && (
+        {/* ── STEP 5: WYNIKI ── */}
+        {step === 5 && (
         <section className="wizard-step-panel">
           <div className="step-nav" style={{ paddingTop: 0 }}>
-            <button type="button" className="secondary-button" onClick={() => setStep(3)}>← Zmień parametry</button>
+            <button type="button" className="secondary-button" onClick={() => setStep(4)}>← Zmień parametry</button>
             <div style={{ display: "flex", gap: 8 }}>
               <button type="button" className="secondary-button" onClick={handleGenerate} disabled={loading}>
                 {loading ? "Generowanie..." : "Generuj ponownie"}
@@ -1038,6 +1098,48 @@ export default function App() {
             </p>
           ) : (
             <>
+              <section className="result-tldr">
+                <p className="result-tldr-kicker">Twój portfel w skrócie</p>
+                <p className="result-tldr-lead">
+                  <strong>{result.summary.selected_companies} {spolkiLabel(result.summary.selected_companies)}</strong> najlepiej dopasowanych do Twojego profilu wartości
+                  {result.comparison
+                    ? <> — <strong>{(result.comparison.metrics.overlap_ratio * 100).toFixed(0)}% wspólnych spółek</strong> z klasycznym portfelem ESG.</>
+                    : "."}
+                </p>
+                <div className="result-tldr-kpis">
+                  <div className="result-tldr-kpi">
+                    <strong>{result.summary.selected_companies}</strong>
+                    <span>spółek w portfelu</span>
+                  </div>
+                  <div className="result-tldr-kpi">
+                    <strong>{result.summary.average_custom_esg != null ? `${result.summary.average_custom_esg.toFixed(0)}/100` : "n/d"}</strong>
+                    <span>średni profil wartości</span>
+                  </div>
+                  <div className="result-tldr-kpi">
+                    <strong>{result.summary.distinct_categories}</strong>
+                    <span>różnych kategorii</span>
+                  </div>
+                  {result.comparison ? (
+                    <div className="result-tldr-kpi">
+                      <strong>{(result.comparison.metrics.overlap_ratio * 100).toFixed(0)}%</strong>
+                      <span>wspólnych z ESG</span>
+                    </div>
+                  ) : null}
+                </div>
+                {result.summary.average_custom_esg != null ? (
+                  <div className="result-tldr-bar" role="img" aria-label={`Profil wartości ${result.summary.average_custom_esg.toFixed(0)} na 100`}>
+                    <div
+                      className="result-tldr-bar-fill"
+                      style={{ width: `${Math.min(100, Math.max(0, result.summary.average_custom_esg))}%` }}
+                    />
+                  </div>
+                ) : null}
+                <p className="result-tldr-note">
+                  Top kategoria: <strong>{result.summary.top_category ?? "n/d"}</strong>. Im wyższy profil wartości, tym mocniejsze dopasowanie do wybranej osi —
+                  pełne dane spółka po spółce znajdziesz niżej.
+                </p>
+              </section>
+
               {result.warnings.length > 0 ? (
                 <div className="warning-box">
                   <h3>Uwagi do prototypu</h3>
@@ -1050,19 +1152,19 @@ export default function App() {
               ) : null}
 
               <p className="panel-copy">
-                Sposob rozkladania wag: <strong>{weightingModeLabels[result.weighting_mode] ?? result.weighting_mode}</strong>. Spolek po filtracji:{" "}
+                Sposób rozkładania wag: <strong>{weightingModeLabels[result.weighting_mode] ?? result.weighting_mode}</strong>. Spółek po filtracji:{" "}
                 <strong>{result.matched_companies}</strong>.
               </p>
 
               {result.comparison ? (
                 <div className="comparison-block">
                   <div className="comparison-head">
-                    <h3>Jak Twoj portfel wypada wzgledem benchmarku ESG-like</h3>
+                    <h3>Jak Twój portfel wypada względem zewnętrznego benchmarku ESG</h3>
                     <span>{result.comparison.benchmark.label}</span>
                   </div>
                   <div className="comparison-grid">
                     <article>
-                      <span className="stat-label">Wspolne spolki</span>
+                      <span className="stat-label">Wspólne spółki</span>
                       <strong>{result.comparison.metrics.overlap_count}</strong>
                     </article>
                     <article>
@@ -1070,7 +1172,7 @@ export default function App() {
                       <strong>{(result.comparison.metrics.overlap_ratio * 100).toFixed(1)}%</strong>
                     </article>
                     <article>
-                      <span className="stat-label">Delta custom ESG</span>
+                      <span className="stat-label">Delta profilu wartości</span>
                       <strong>{result.comparison.metrics.custom_esg_delta != null ? result.comparison.metrics.custom_esg_delta.toFixed(2) : "n/d"}</strong>
                     </article>
                     <article>
@@ -1096,6 +1198,7 @@ export default function App() {
                 </div>
               ) : null}
 
+              <h3 className="results-section">Podsumowanie portfela</h3>
               <div className="summary-grid">
                 <article>
                   <span className="stat-label">Pozycji</span>
@@ -1106,15 +1209,15 @@ export default function App() {
                   <strong>{result.summary.distinct_categories}</strong>
                 </article>
                 <article>
-                  <span className="stat-label">Sredni custom ESG</span>
+                  <span className="stat-label">Średni profil wartości</span>
                   <strong>{result.summary.average_custom_esg != null ? result.summary.average_custom_esg.toFixed(2) : "n/d"}</strong>
                 </article>
                 <article>
-                  <span className="stat-label">Srednia rentownosc</span>
+                  <span className="stat-label">Średnia rentowność</span>
                   <strong>{result.summary.average_profitability != null ? result.summary.average_profitability.toFixed(2) : "n/d"}</strong>
                 </article>
                 <article>
-                  <span className="stat-label">Srednia technika</span>
+                  <span className="stat-label">Średnia technika</span>
                   <strong>{result.summary.average_technical != null ? result.summary.average_technical.toFixed(2) : "n/d"}</strong>
                 </article>
                 <article>
@@ -1127,17 +1230,19 @@ export default function App() {
                 </article>
               </div>
 
+              <h3 className="results-section">Alokacja wg kategorii</h3>
               <div className="allocation-strip">
                 {result.category_allocations.map((allocation) => (
                   <article key={allocation.category} className="allocation-card">
                     <strong>{allocation.category}</strong>
-                    <span>{allocation.holdings_count} spolek</span>
+                    <span>{allocation.holdings_count} {spolkiLabel(allocation.holdings_count)}</span>
                     <span>{(allocation.total_weight * 100).toFixed(1)}% wagi</span>
                     <span>avg score {allocation.average_selection_score.toFixed(4)}</span>
                   </article>
                 ))}
               </div>
 
+              <h3 className="results-section">Twój portfel — {result.holdings.length} pozycji</h3>
               <div className="portfolio-strip">
                 {result.holdings.map((holding) => (
                   <article key={holding.symbol} className="holding-card">
@@ -1150,19 +1255,30 @@ export default function App() {
                 ))}
               </div>
 
+              <p className="signal-legend">
+                <span className="signal-legend-badge">⚠ niski sygnał</span>
+                = za mało treści wartościowej w komentarzach, by wnioskować z pewnością —
+                oznaczamy to wprost, zamiast zmyślać (dotyczy ok. 38% spółek). To świadoma granica metody.
+              </p>
+              <h3 className="results-section">Wszystkie dopasowane spółki</h3>
               <div className="company-table">
-                {result.companies.map((company) => (
+                {(showAllCompanies ? result.companies : result.companies.slice(0, 15)).map((company) => (
                   <article key={company.symbol} className={`company-row${expandedSymbol === company.symbol ? " company-row--expanded" : ""}`}>
-                    <div>
-                      <div className="company-headline">
-                        <strong>{company.symbol}</strong>
-                        <span>{company.company_name}</span>
+                    <div className="company-row-head">
+                      <div className="company-row-id">
+                        <div className="company-headline">
+                          <strong>{company.symbol}</strong>
+                          <span>{company.company_name}</span>
+                        </div>
+                        <p className="company-meta">
+                          {company.category}
+                          {company.industry ? ` / ${company.industry}` : ""}
+                          {company.market_cap_label ? ` / ${company.market_cap_label}` : ""}
+                        </p>
+                        {company.axiological_low_signal ? (
+                          <p className="axiological-low-signal">⚠ Niski sygnał wartościowy — interpretuj ostrożnie</p>
+                        ) : null}
                       </div>
-                      <p className="company-meta">
-                        {company.category}
-                        {company.industry ? ` / ${company.industry}` : ""}
-                        {company.market_cap_label ? ` / ${company.market_cap_label}` : ""}
-                      </p>
                       <div className="company-dimensions">
                         <div className="company-dim">
                           <span className="company-dim-label">Percepcja</span>
@@ -1181,6 +1297,20 @@ export default function App() {
                           <strong className="company-dim-value">{company.technical_score != null ? company.technical_score.toFixed(1) : "n/d"}</strong>
                         </div>
                       </div>
+                      <div className="score-box">
+                        <span>score</span>
+                        <strong>{company.selection_score.toFixed(4)}</strong>
+                        <button
+                          className="expand-btn"
+                          onClick={() => setExpandedSymbol(expandedSymbol === company.symbol ? null : company.symbol)}
+                          title={expandedSymbol === company.symbol ? "Zwiń" : "Szczegóły, wykres i analiza"}
+                        >
+                          {expandedSymbol === company.symbol ? "▲ Zwiń" : "▼ Szczegóły"}
+                        </button>
+                      </div>
+                    </div>
+                    {expandedSymbol === company.symbol && (
+                      <div className="company-detail">
                       {company.custom_esg_families?.length ? (
                         <div className="axis-strip family-strip">
                           {company.custom_esg_families.slice(0, 5).map((family) => (
@@ -1194,7 +1324,7 @@ export default function App() {
                           {company.custom_esg_families.length > 5 ? (
                             <article className="axis-chip axis-chip-more family-chip-more">
                               <strong>+{company.custom_esg_families.length - 5}</strong>
-                              <span>Pozostale rodziny ukryte</span>
+                              <span>Pozostałe rodziny ukryte</span>
                             </article>
                           ) : null}
                         </div>
@@ -1213,7 +1343,7 @@ export default function App() {
                           {company.custom_esg_axes.length > 8 ? (
                             <article className="axis-chip axis-chip-more">
                               <strong>+{company.custom_esg_axes.length - 8}</strong>
-                              <span>Pozostale wymiary ukryte</span>
+                              <span>Pozostałe wymiary ukryte</span>
                             </article>
                           ) : null}
                         </div>
@@ -1265,31 +1395,26 @@ export default function App() {
                           </>
                         )}
                       </div>
-                    </div>
-                    <div className="score-box">
-                      <span>score</span>
-                      <strong>{company.selection_score.toFixed(4)}</strong>
-                      <button
-                        className="expand-btn"
-                        onClick={() => setExpandedSymbol(expandedSymbol === company.symbol ? null : company.symbol)}
-                        title={expandedSymbol === company.symbol ? "Zwiń" : "Wykres i analiza"}
-                      >
-                        {expandedSymbol === company.symbol ? "▲" : "▼"}
-                      </button>
-                    </div>
-                    <div className="explanations">
-                      {company.explanations.map((item) => (
-                        <p key={`${company.symbol}-${item.title}`}>
-                          <strong>{item.title}:</strong> {item.detail}
-                        </p>
-                      ))}
-                    </div>
-                    {expandedSymbol === company.symbol && (
-                      <CompanyChart symbol={company.symbol} />
+                        <div className="explanations">
+                          {company.explanations.map((item) => (
+                            <p key={`${company.symbol}-${item.title}`}>
+                              <strong>{item.title}:</strong> {item.detail}
+                            </p>
+                          ))}
+                        </div>
+                        <CompanyChart symbol={company.symbol} />
+                      </div>
                     )}
                   </article>
                 ))}
               </div>
+              {result.companies.length > 15 ? (
+                <div className="results-more">
+                  <button type="button" className="secondary-button" onClick={() => setShowAllCompanies((v) => !v)}>
+                    {showAllCompanies ? "Pokaż mniej" : `Pokaż wszystkie spółki (${result.companies.length})`}
+                  </button>
+                </div>
+              ) : null}
             </>
           )}
         </section>
