@@ -1124,6 +1124,13 @@ select[multiple] {
   font-style: italic;
 }
 
+.axiological-low-signal {
+  margin: 6px 0 0;
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: #e8a838;
+}
+
 .axiological-metrics {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));

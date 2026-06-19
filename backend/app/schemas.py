@@ -248,6 +248,7 @@ class CompanyPreview(BaseModel):
     axiological_frames: list[dict] = Field(default_factory=list)
     axiological_has_signal: bool = False
     axiological_profile_null: bool = True
+    axiological_low_signal: bool = False
     selection_score: float
     score_breakdown: ScoreBreakdown
     explanations: list[CompanyExplanation]

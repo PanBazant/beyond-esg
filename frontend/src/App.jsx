@@ -1243,6 +1243,11 @@ export default function App() {
                                 <strong>{company.axiological_inter_method_agreement != null ? (company.axiological_inter_method_agreement * 100).toFixed(0) + "%" : "n/d"}</strong>
                               </div>
                             </div>
+                            {company.axiological_low_signal && (
+                              <p className="axiological-low-signal">
+                                ⚠ Niski sygnał wartościowy — interpretuj ostrożnie
+                              </p>
+                            )}
                             {company.axiological_frames?.length > 0 && (
                               <div className="axiological-frames">
                                 {company.axiological_frames.slice(0, 6).map((frame, i) => (

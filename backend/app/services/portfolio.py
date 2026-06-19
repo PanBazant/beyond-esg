@@ -22,6 +22,24 @@ from .datasets import load_comment_esg_axes_catalog, load_company_records, metri
 from .instrument_universe import PORTFOLIO_EXCLUDED_UNIVERSES, expand_allowed_instrument_universes
 from .scoring import build_holding_weights, normalize_weights, perception_score, score_company
 
+# Próg model-niezależnego coverage (BERTopic), poniżej którego sygnał aksjologiczny
+# uznajemy za zbyt słaby, by wnioskować z pewnością. 0,05 = istniejący próg has_signal,
+# potwierdzony ablacją Qwen vs Codex (flaguje ~42% spółek = populacja none/marginal,
+# zgodnie z konserwatywnym Codexem i diagnozą gęstości sygnału). Nie zmienia rankingu —
+# służy tylko jawnemu oznaczeniu niskiego sygnału w UI.
+AXIOLOGICAL_LOW_SIGNAL_THRESHOLD = 0.05
+
+
+def _is_low_signal(coverage: float | None, profile_null: bool) -> bool:
+    """Spółka ma profil, ale sygnał wartościowy jest zbyt słaby na pewne wnioskowanie.
+
+    Rozłączne z profile_null (brak profilu w ogóle) — badge dotyczy spółek,
+    którym pokazujemy coverage, ale poniżej progu wiarygodności.
+    """
+    if profile_null or coverage is None:
+        return False
+    return coverage < AXIOLOGICAL_LOW_SIGNAL_THRESHOLD
+
 
 def _build_warnings(payload: PortfolioPreviewRequest, metrics: dict[str, bool]) -> list[str]:
     warnings: list[str] = []
@@ -453,6 +471,10 @@ def _run_preview(payload: PortfolioPreviewRequest) -> tuple[int, list[str], Scor
                 axiological_frames=_parse_axiological_frames(company.get("axiological_frames_json")),
                 axiological_has_signal=bool(company.get("axiological_has_signal", False)),
                 axiological_profile_null=bool(company.get("axiological_profile_null", True)),
+                axiological_low_signal=_is_low_signal(
+                    _safe_float(company.get("axiological_coverage"), None),
+                    bool(company.get("axiological_profile_null", True)),
+                ),
                 selection_score=selection_score,
                 score_breakdown=breakdown,
                 explanations=explanations,

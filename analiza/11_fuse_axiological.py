@@ -109,11 +109,18 @@ def build_profile(symbol: str, bertopic_data: dict[str, dict], llm_data: dict | 
 def main() -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument("--sample", action="store_true")
+    parser.add_argument("--llm-path", type=str, default=None,
+                        help="nadpisz plik profili LLM (np. wariant Codex do ablacji)")
+    parser.add_argument("--out", type=str, default=None,
+                        help="nadpisz plik wyjściowy zfuzowanych profili")
+    parser.add_argument("--summary-out", type=str, default=None,
+                        help="nadpisz plik podsumowania coverage")
     args = parser.parse_args()
 
     exposure_paths = BERTOPIC_EXPOSURE_SAMPLE_PATHS if args.sample else BERTOPIC_EXPOSURE_PATHS
-    llm_path = LLM_SAMPLE_PATH if args.sample else LLM_PATH
-    out_path = PROFILE_SAMPLE_OUT_PATH if args.sample else PROFILE_OUT_PATH
+    llm_path = Path(args.llm_path) if args.llm_path else (LLM_SAMPLE_PATH if args.sample else LLM_PATH)
+    out_path = Path(args.out) if args.out else (PROFILE_SAMPLE_OUT_PATH if args.sample else PROFILE_OUT_PATH)
+    summary_path = Path(args.summary_out) if args.summary_out else COVERAGE_SUMMARY_PATH
 
     bertopic_by_filter: dict[str, dict[str, dict]] = {}
     for filter_name, path in exposure_paths.items():
@@ -154,7 +161,7 @@ def main() -> None:
         "avg_confidence": round(sum(p["axiological_confidence"] for p in profiles) / len(profiles), 4) if profiles else 0.0,
         "avg_agreement": round(sum(p["inter_method_agreement"] for p in profiles) / len(profiles), 4) if profiles else 0.0,
     }
-    COVERAGE_SUMMARY_PATH.write_text(json.dumps(summary, indent=2, ensure_ascii=False), encoding="utf-8")
+    summary_path.write_text(json.dumps(summary, indent=2, ensure_ascii=False), encoding="utf-8")
 
     print(f"\nProfile: {len(profiles)} spółek")
     print(f"  Z sygnałem: {has_signal} ({100*has_signal//len(profiles) if profiles else 0}%)")
