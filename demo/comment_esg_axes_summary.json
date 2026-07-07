@@ -1,0 +1,2426 @@
+{
+ "input_posts_file": "demo",
+ "input_company_topics_file": "demo",
+ "input_topic_summary_file": "demo",
+ "output_company_esg_file": "demo",
+ "companies_scored": 10,
+ "raw_topics_count": 64,
+ "dimensions_count": 55,
+ "families": [
+  {
+   "family_id": "governance-management-insiders",
+   "family_label": "Zarzad, insiderzy i odpowiedzialnosc",
+   "family_summary": "Motywy o zarzadzie, insider activity, boardzie i tym, czy kierownictwo wyglada na odpowiedzialne wobec akcjonariuszy.",
+   "keywords": [
+    "opportunity",
+    "insider",
+    "buying opportunity",
+    "insider buying",
+    "insiders",
+    "insiders buying",
+    "needs",
+    "ceo",
+    "board",
+    "push"
+   ],
+   "examples": [
+    "Przykladowy komentarz (dane syntetyczne).",
+    "Ilustracyjna wypowiedz demo, bez realnego zrodla."
+   ],
+   "topic_labels": [
+    "buying / opportunity / insider",
+    "needs / ceo / board",
+    "love / finally / insider",
+    "selling / pressure / insider"
+   ],
+   "member_axis_ids": [
+    8,
+    63,
+    49,
+    57
+   ],
+   "member_dimensions_count": 4,
+   "average_value_relevance": 0.7504,
+   "average_assignment_score": 0.1862,
+   "esg_relevance": 0.3655,
+   "esg_axis_weights": {
+    "0": 0.0,
+    "1": 0.05,
+    "2": 0.95
+   },
+   "dominant_axis_code": "G",
+   "dominant_axis_label": "Governance & Trust",
+   "sort_order": 20
+  },
+  {
+   "family_id": "governance-capital-fairness",
+   "family_label": "Rozwodnienie, reverse splity i finansowanie",
+   "family_summary": "Sygnaly o dilution, reverse splitach, offeringach, warrantach i agresywnym finansowaniu.",
+   "keywords": [
+    "split",
+    "reverse",
+    "reverse split",
+    "scam",
+    "nasdaq",
+    "merger"
+   ],
+   "examples": [
+    "Przykladowy komentarz (dane syntetyczne).",
+    "Ilustracyjna wypowiedz demo, bez realnego zrodla."
+   ],
+   "topic_labels": [
+    "split / reverse / reverse split"
+   ],
+   "member_axis_ids": [
+    29
+   ],
+   "member_dimensions_count": 1,
+   "average_value_relevance": 0.7362,
+   "average_assignment_score": 0.2984,
+   "esg_relevance": 0.4297,
+   "esg_axis_weights": {
+    "0": 0.0,
+    "1": 0.05,
+    "2": 0.95
+   },
+   "dominant_axis_code": "G",
+   "dominant_axis_label": "Governance & Trust",
+   "sort_order": 30
+  },
+  {
+   "family_id": "governance-legal-compliance",
+   "family_label": "Spory, dochodzenia i compliance",
+   "family_summary": "Tematy o lawsuitach, settlementach, dochodzeniach, fines i ryzykach regulacyjnych.",
+   "keywords": [
+    "claims",
+    "file",
+    "form",
+    "settlement",
+    "filed",
+    "payment"
+   ],
+   "examples": [
+    "Przykladowy komentarz (dane syntetyczne).",
+    "Ilustracyjna wypowiedz demo, bez realnego zrodla."
+   ],
+   "topic_labels": [
+    "investors / claims / file"
+   ],
+   "member_axis_ids": [
+    52
+   ],
+   "member_dimensions_count": 1,
+   "average_value_relevance": 0.7109,
+   "average_assignment_score": 0.1294,
+   "esg_relevance": 0.3039,
+   "esg_axis_weights": {
+    "0": 0.0,
+    "1": 0.1,
+    "2": 0.9
+   },
+   "dominant_axis_code": "G",
+   "dominant_axis_label": "Governance & Trust",
+   "sort_order": 40
+  },
+  {
+   "family_id": "environment-extraction-footprint",
+   "family_label": "Wydobycie, paliwa kopalne i presja zasobowa",
+   "family_summary": "Tematy o wydobyciu, metalach, oil and gas, drillingu i modelach biznesu obciazonych zasobowo.",
+   "keywords": [
+    "gold",
+    "silver",
+    "gold silver",
+    "mining",
+    "prices",
+    "copper",
+    "oil",
+    "energy",
+    "gas",
+    "oil gas"
+   ],
+   "examples": [
+    "Przykladowy komentarz (dane syntetyczne).",
+    "Ilustracyjna wypowiedz demo, bez realnego zrodla."
+   ],
+   "topic_labels": [
+    "gold / silver / gold silver",
+    "oil / energy / gas"
+   ],
+   "member_axis_ids": [
+    28,
+    60
+   ],
+   "member_dimensions_count": 2,
+   "average_value_relevance": 0.8887,
+   "average_assignment_score": 0.2706,
+   "esg_relevance": 0.4796,
+   "esg_axis_weights": {
+    "0": 0.95,
+    "1": 0.05,
+    "2": 0.0
+   },
+   "dominant_axis_code": "E",
+   "dominant_axis_label": "Environmental Externalities",
+   "sort_order": 110
+  }
+ ],
+ "family_count": 4,
+ "axes": [
+  {
+   "axis_id": 0,
+   "axis_label": "Demand / Data / Business",
+   "axis_display_label": "Demand / Data / Business",
+   "axis_summary": "Organiczny wymiar wartosci odkryty z komentarzy inwestorow. Glowne motywy: demand, data, business, services, risk.",
+   "axis_family_id": null,
+   "axis_family_label": null,
+   "axis_family_summary": null,
+   "axis_family_dominant_axis_code": null,
+   "axis_family_dominant_axis_label": null,
+   "family_assignment_score": 0.0,
+   "axis_family_axis_weights": {},
+   "axis_family_base_relevance": 0.0,
+   "axis_family_sort_order": 999,
+   "keywords": [
+    "demand",
+    "data",
+    "business",
+    "services",
+    "risk",
+    "capital",
+    "execution",
+    "markets"
+   ],
+   "topic_labels": [
+    "demand / data / business"
+   ],
+   "examples": [
+    "Przykladowy komentarz (dane syntetyczne).",
+    "Ilustracyjna wypowiedz demo, bez realnego zrodla."
+   ],
+   "topic_count": 1,
+   "corpus_weight": 295.7846,
+   "average_sentiment": 0.3164,
+   "value_relevance": 0.8798,
+   "specificity_score": 0.9,
+   "cluster_id": 0,
+   "cluster_label": "does / demand / bank"
+  },
+  {
+   "axis_id": 1,
+   "axis_label": "Yoy / Ebitda / Yoy Ebitda",
+   "axis_display_label": "Yoy / Ebitda / Yoy Ebitda",
+   "axis_summary": "Organiczny wymiar wartosci odkryty z komentarzy inwestorow. Glowne motywy: yoy, ebitda, yoy ebitda, profit, margin.",
+   "axis_family_id": null,
+   "axis_family_label": null,
+   "axis_family_summary": null,
+   "axis_family_dominant_axis_code": null,
+   "axis_family_dominant_axis_label": null,
+   "family_assignment_score": 0.0,
+   "axis_family_axis_weights": {},
+   "axis_family_base_relevance": 0.0,
+   "axis_family_sort_order": 999,
+   "keywords": [
+    "yoy",
+    "ebitda",
+    "yoy ebitda",
+    "profit",
+    "margin",
+    "ebitda margin",
+    "revenue",
+    "yoy revenue"
+   ],
+   "topic_labels": [
+    "yoy / ebitda / yoy ebitda"
+   ],
+   "examples": [
+    "Przykladowy komentarz (dane syntetyczne).",
+    "Ilustracyjna wypowiedz demo, bez realnego zrodla."
+   ],
+   "topic_count": 1,
+   "corpus_weight": 473.5904,
+   "average_sentiment": 0.1297,
+   "value_relevance": 0.7916,
+   "specificity_score": 0.8917,
+   "cluster_id": 5,
+   "cluster_label": "pre / revenue / estimate"
+  },
+  {
+   "axis_id": 2,
+   "axis_label": "Earnings / Post Earnings / Guidance",
+   "axis_display_label": "Earnings / Post Earnings / Guidance",
+   "axis_summary": "Organiczny wymiar wartosci odkryty z komentarzy inwestorow. Glowne motywy: earnings, post earnings, guidance, open, post.",
+   "axis_family_id": null,
+   "axis_family_label": null,
+   "axis_family_summary": null,
+   "axis_family_dominant_axis_code": null,
+   "axis_family_dominant_axis_label": null,
+   "family_assignment_score": 0.0,
+   "axis_family_axis_weights": {},
+   "axis_family_base_relevance": 0.0,
+   "axis_family_sort_order": 999,
+   "keywords": [
+    "earnings",
+    "post earnings",
+    "guidance",
+    "open",
+    "post",
+    "est",
+    "earnings open",
+    "earnings beat"
+   ],
+   "topic_labels": [
+    "earnings / post earnings / guidance"
+   ],
+   "examples": [
+    "Przykladowy komentarz (dane syntetyczne).",
+    "Ilustracyjna wypowiedz demo, bez realnego zrodla."
+   ],
+   "topic_count": 1,
+   "corpus_weight": 789.6749,
+   "average_sentiment": 0.3215,
+   "value_relevance": 0.874,
+   "specificity_score": 0.8533,
+   "cluster_id": 9,
+   "cluster_label": "earnings / monday / gold"
+  },
+  {
+   "axis_id": 3,
+   "axis_label": "Value / Book / Book Value",
+   "axis_display_label": "Value / Book / Book Value",
+   "axis_summary": "Organiczny wymiar wartosci odkryty z komentarzy inwestorow. Glowne motywy: value, book, book value, shareholder, fair.",
+   "axis_family_id": null,
+   "axis_family_label": null,
+   "axis_family_summary": null,
+   "axis_family_dominant_axis_code": null,
+   "axis_family_dominant_axis_label": null,
+   "family_assignment_score": 0.0,
+   "axis_family_axis_weights": {},
+   "axis_family_base_relevance": 0.0,
+   "axis_family_sort_order": 999,
+   "keywords": [
+    "value",
+    "book",
+    "book value",
+    "shareholder",
+    "fair",
+    "shareholder value",
+    "fair value",
+    "current"
+   ],
+   "topic_labels": [
+    "value / book / book value"
+   ],
+   "examples": [
+    "Przykladowy komentarz (dane syntetyczne).",
+    "Ilustracyjna wypowiedz demo, bez realnego zrodla."
+   ],
+   "topic_count": 1,
+   "corpus_weight": 331.4945,
+   "average_sentiment": 0.3525,
+   "value_relevance": 0.8689,
+   "specificity_score": 0.8487,
+   "cluster_id": 6,
+   "cluster_label": "value / book / suggested"
+  },
+  {
+   "axis_id": 4,
+   "axis_label": "Screen / Value Screen / Suggested",
+   "axis_display_label": "Screen / Value Screen / Suggested",
+   "axis_summary": "Organiczny wymiar wartosci odkryty z komentarzy inwestorow. Glowne motywy: screen, value screen, suggested, value, suggested real.",
+   "axis_family_id": null,
+   "axis_family_label": null,
+   "axis_family_summary": null,
+   "axis_family_dominant_axis_code": null,
+   "axis_family_dominant_axis_label": null,
+   "family_assignment_score": 0.0,
+   "axis_family_axis_weights": {},
+   "axis_family_base_relevance": 0.0,
+   "axis_family_sort_order": 999,
+   "keywords": [
+    "screen",
+    "value screen",
+    "suggested",
+    "value",
+    "suggested real",
+    "chemicals",
+    "defense value",
+    "suggested aerospace"
+   ],
+   "topic_labels": [
+    "screen / value screen / suggested"
+   ],
+   "examples": [
+    "Przykladowy komentarz (dane syntetyczne).",
+    "Ilustracyjna wypowiedz demo, bez realnego zrodla."
+   ],
+   "topic_count": 1,
+   "corpus_weight": 150.7943,
+   "average_sentiment": 0.439,
+   "value_relevance": 0.8885,
+   "specificity_score": 0.94,
+   "cluster_id": 6,
+   "cluster_label": "value / book / suggested"
+  },
+  {
+   "axis_id": 5,
+   "axis_label": "Nyse / Revenue / Beats",
+   "axis_display_label": "Nyse / Revenue / Beats",
+   "axis_summary": "Organiczny wymiar wartosci odkryty z komentarzy inwestorow. Glowne motywy: nyse, revenue, beats, misses, pre revenue.",
+   "axis_family_id": null,
+   "axis_family_label": null,
+   "axis_family_summary": null,
+   "axis_family_dominant_axis_code": null,
+   "axis_family_dominant_axis_label": null,
+   "family_assignment_score": 0.0,
+   "axis_family_axis_weights": {},
+   "axis_family_base_relevance": 0.0,
+   "axis_family_sort_order": 999,
+   "keywords": [
+    "nyse",
+    "revenue",
+    "beats",
+    "misses",
+    "pre revenue",
+    "announces",
+    "outlook",
+    "estimates"
+   ],
+   "topic_labels": [
+    "pre / ooc / nyse"
+   ],
+   "examples": [
+    "Przykladowy komentarz (dane syntetyczne).",
+    "Ilustracyjna wypowiedz demo, bez realnego zrodla."
+   ],
+   "topic_count": 1,
+   "corpus_weight": 304.9859,
+   "average_sentiment": 0.2291,
+   "value_relevance": 0.7305,
+   "specificity_score": 0.7307,
+   "cluster_id": 5,
+   "cluster_label": "pre / revenue / estimate"
+  },
+  {
+   "axis_id": 6,
+   "axis_label": "Low High / Conviction / High Low",
+   "axis_display_label": "Low High / Conviction / High Low",
+   "axis_summary": "Organiczny wymiar wartosci odkryty z komentarzy inwestorow. Glowne motywy: low high, conviction, high low, mid, reversal.",
+   "axis_family_id": null,
+   "axis_family_label": null,
+   "axis_family_summary": null,
+   "axis_family_dominant_axis_code": null,
+   "axis_family_dominant_axis_label": null,
+   "family_assignment_score": 0.0,
+   "axis_family_axis_weights": {},
+   "axis_family_base_relevance": 0.0,
+   "axis_family_sort_order": 999,
+   "keywords": [
+    "low high",
+    "conviction",
+    "high low",
+    "mid",
+    "reversal",
+    "low reversal",
+    "tickers"
+   ],
+   "topic_labels": [
+    "low / low high / conviction"
+   ],
+   "examples": [
+    "Przykladowy komentarz (dane syntetyczne).",
+    "Ilustracyjna wypowiedz demo, bez realnego zrodla."
+   ],
+   "topic_count": 1,
+   "corpus_weight": 331.2949,
+   "average_sentiment": 0.4096,
+   "value_relevance": 0.8109,
+   "specificity_score": 0.721,
+   "cluster_id": 7,
+   "cluster_label": "high / sold / low"
+  },
+  {
+   "axis_id": 7,
+   "axis_label": "Worth / Bought Worth / Ceo Bought",
+   "axis_display_label": "Worth / Bought Worth / Ceo Bought",
+   "axis_summary": "Organiczny wymiar wartosci odkryty z komentarzy inwestorow. Glowne motywy: worth, bought worth, ceo bought, wish.",
+   "axis_family_id": null,
+   "axis_family_label": null,
+   "axis_family_summary": null,
+   "axis_family_dominant_axis_code": null,
+   "axis_family_dominant_axis_label": null,
+   "family_assignment_score": 0.0,
+   "axis_family_axis_weights": {},
+   "axis_family_base_relevance": 0.0,
+   "axis_family_sort_order": 999,
+   "keywords": [
+    "worth",
+    "bought worth",
+    "ceo bought",
+    "wish"
+   ],
+   "topic_labels": [
+    "bought / dip / bought dip"
+   ],
+   "examples": [
+    "Przykladowy komentarz (dane syntetyczne).",
+    "Ilustracyjna wypowiedz demo, bez realnego zrodla."
+   ],
+   "topic_count": 1,
+   "corpus_weight": 284.5875,
+   "average_sentiment": 0.4752,
+   "value_relevance": 0.7421,
+   "specificity_score": 0.607,
+   "cluster_id": 4,
+   "cluster_label": "bullish / bought / way"
+  },
+  {
+   "axis_id": 8,
+   "axis_label": "Opportunity / Insider / Buying Opportunity",
+   "axis_display_label": "Opportunity / Insider / Buying Opportunity",
+   "axis_summary": "Organiczny wymiar wartosci odkryty z komentarzy inwestorow. Glowne motywy: opportunity, insider, buying opportunity, insider buying, insiders.",
+   "axis_family_id": "governance-management-insiders",
+   "axis_family_label": "Zarzad, insiderzy i odpowiedzialnosc",
+   "axis_family_summary": "Motywy o zarzadzie, insider activity, boardzie i tym, czy kierownictwo wyglada na odpowiedzialne wobec akcjonariuszy.",
+   "axis_family_dominant_axis_code": "G",
+   "axis_family_dominant_axis_label": "Governance & Trust",
+   "family_assignment_score": 0.1981,
+   "axis_family_axis_weights": {
+    "0": 0.0,
+    "1": 0.05,
+    "2": 0.95
+   },
+   "axis_family_base_relevance": 0.1981,
+   "axis_family_sort_order": 20,
+   "keywords": [
+    "opportunity",
+    "insider",
+    "buying opportunity",
+    "insider buying",
+    "insiders",
+    "insiders buying",
+    "lots"
+   ],
+   "topic_labels": [
+    "buying / opportunity / insider"
+   ],
+   "examples": [
+    "Przykladowy komentarz (dane syntetyczne).",
+    "Ilustracyjna wypowiedz demo, bez realnego zrodla."
+   ],
+   "topic_count": 1,
+   "corpus_weight": 391.9384,
+   "average_sentiment": 0.4296,
+   "value_relevance": 0.797,
+   "specificity_score": 0.6877,
+   "cluster_id": 4,
+   "cluster_label": "bullish / bought / way"
+  },
+  {
+   "axis_id": 9,
+   "axis_label": "Dividend / Yield / Dividend Yield",
+   "axis_display_label": "Dividend / Yield / Dividend Yield",
+   "axis_summary": "Organiczny wymiar wartosci odkryty z komentarzy inwestorow. Glowne motywy: dividend, yield, dividend yield, updated, special.",
+   "axis_family_id": null,
+   "axis_family_label": null,
+   "axis_family_summary": null,
+   "axis_family_dominant_axis_code": null,
+   "axis_family_dominant_axis_label": null,
+   "family_assignment_score": 0.0,
+   "axis_family_axis_weights": {},
+   "axis_family_base_relevance": 0.0,
+   "axis_family_sort_order": 999,
+   "keywords": [
+    "dividend",
+    "yield",
+    "dividend yield",
+    "updated",
+    "special",
+    "special dividend",
+    "quarterly",
+    "quarterly dividend"
+   ],
+   "topic_labels": [
+    "dividend / yield / list"
+   ],
+   "examples": [
+    "Przykladowy komentarz (dane syntetyczne).",
+    "Ilustracyjna wypowiedz demo, bez realnego zrodla."
+   ],
+   "topic_count": 1,
+   "corpus_weight": 480.0112,
+   "average_sentiment": 0.3704,
+   "value_relevance": 0.8661,
+   "specificity_score": 0.8237,
+   "cluster_id": 1,
+   "cluster_label": "deal / dividend / going"
+  },
+  {
+   "axis_id": 10,
+   "axis_label": "Revenue / Consensus / Sees",
+   "axis_display_label": "Revenue / Consensus / Sees",
+   "axis_summary": "Organiczny wymiar wartosci odkryty z komentarzy inwestorow. Glowne motywy: revenue, consensus, sees, adjusted, reports.",
+   "axis_family_id": null,
+   "axis_family_label": null,
+   "axis_family_summary": null,
+   "axis_family_dominant_axis_code": null,
+   "axis_family_dominant_axis_label": null,
+   "family_assignment_score": 0.0,
+   "axis_family_axis_weights": {},
+   "axis_family_base_relevance": 0.0,
+   "axis_family_sort_order": 999,
+   "keywords": [
+    "revenue",
+    "consensus",
+    "sees",
+    "adjusted",
+    "reports",
+    "revenue consensus",
+    "sees revenue",
+    "adjusted consensus"
+   ],
+   "topic_labels": [
+    "revenue / consensus / sees"
+   ],
+   "examples": [
+    "Przykladowy komentarz (dane syntetyczne).",
+    "Ilustracyjna wypowiedz demo, bez realnego zrodla."
+   ],
+   "topic_count": 1,
+   "corpus_weight": 422.6406,
+   "average_sentiment": 0.2713,
+   "value_relevance": 0.8877,
+   "specificity_score": 0.95,
+   "cluster_id": 5,
+   "cluster_label": "pre / revenue / estimate"
+  },
+  {
+   "axis_id": 11,
+   "axis_label": "Conviction / Sold High / Glad",
+   "axis_display_label": "Conviction / Sold High / Glad",
+   "axis_summary": "Organiczny wymiar wartosci odkryty z komentarzy inwestorow. Glowne motywy: conviction, sold high, glad, ath, profit.",
+   "axis_family_id": null,
+   "axis_family_label": null,
+   "axis_family_summary": null,
+   "axis_family_dominant_axis_code": null,
+   "axis_family_dominant_axis_label": null,
+   "family_assignment_score": 0.0,
+   "axis_family_axis_weights": {},
+   "axis_family_base_relevance": 0.0,
+   "axis_family_sort_order": 999,
+   "keywords": [
+    "conviction",
+    "sold high",
+    "glad",
+    "ath",
+    "profit",
+    "glad sold",
+    "early",
+    "gain"
+   ],
+   "topic_labels": [
+    "sold / conviction / sold high"
+   ],
+   "examples": [
+    "Przykladowy komentarz (dane syntetyczne).",
+    "Ilustracyjna wypowiedz demo, bez realnego zrodla."
+   ],
+   "topic_count": 1,
+   "corpus_weight": 384.7848,
+   "average_sentiment": 0.0948,
+   "value_relevance": 0.6948,
+   "specificity_score": 0.7523,
+   "cluster_id": 7,
+   "cluster_label": "high / sold / low"
+  },
+  {
+   "axis_id": 12,
+   "axis_label": "Make Money / Making / Dead",
+   "axis_display_label": "Make Money / Making / Dead",
+   "axis_summary": "Organiczny wymiar wartosci odkryty z komentarzy inwestorow. Glowne motywy: make money, making, dead, lost, scam.",
+   "axis_family_id": null,
+   "axis_family_label": null,
+   "axis_family_summary": null,
+   "axis_family_dominant_axis_code": null,
+   "axis_family_dominant_axis_label": null,
+   "family_assignment_score": 0.0,
+   "axis_family_axis_weights": {},
+   "axis_family_base_relevance": 0.0,
+   "axis_family_sort_order": 999,
+   "keywords": [
+    "make money",
+    "making",
+    "dead",
+    "lost",
+    "scam",
+    "smart",
+    "smart money",
+    "making money"
+   ],
+   "topic_labels": [
+    "money / make money / making"
+   ],
+   "examples": [
+    "Przykladowy komentarz (dane syntetyczne).",
+    "Ilustracyjna wypowiedz demo, bez realnego zrodla."
+   ],
+   "topic_count": 1,
+   "corpus_weight": 423.0583,
+   "average_sentiment": 0.0838,
+   "value_relevance": 0.7251,
+   "specificity_score": 0.8053,
+   "cluster_id": 8,
+   "cluster_label": "money / make / trump"
+  },
+  {
+   "axis_id": 13,
+   "axis_label": "Care / Understand / Don Care",
+   "axis_display_label": "Care / Understand / Don Care",
+   "axis_summary": "Organiczny wymiar wartosci odkryty z komentarzy inwestorow. Glowne motywy: care, understand, don care, anymore, don understand.",
+   "axis_family_id": null,
+   "axis_family_label": null,
+   "axis_family_summary": null,
+   "axis_family_dominant_axis_code": null,
+   "axis_family_dominant_axis_label": null,
+   "family_assignment_score": 0.0,
+   "axis_family_axis_weights": {},
+   "axis_family_base_relevance": 0.0,
+   "axis_family_sort_order": 999,
+   "keywords": [
+    "care",
+    "understand",
+    "don care",
+    "anymore",
+    "don understand"
+   ],
+   "topic_labels": [
+    "don / miss / forget"
+   ],
+   "examples": [
+    "Przykladowy komentarz (dane syntetyczne).",
+    "Ilustracyjna wypowiedz demo, bez realnego zrodla."
+   ],
+   "topic_count": 1,
+   "corpus_weight": 512.917,
+   "average_sentiment": 0.1616,
+   "value_relevance": 0.6797,
+   "specificity_score": 0.6367,
+   "cluster_id": 2,
+   "cluster_label": "little / don / rsi"
+  },
+  {
+   "axis_id": 14,
+   "axis_label": "High / Risk / High Risk",
+   "axis_display_label": "High / Risk / High Risk",
+   "axis_summary": "Organiczny wymiar wartosci odkryty z komentarzy inwestorow. Glowne motywy: high, risk, high risk, high conviction, conviction.",
+   "axis_family_id": null,
+   "axis_family_label": null,
+   "axis_family_summary": null,
+   "axis_family_dominant_axis_code": null,
+   "axis_family_dominant_axis_label": null,
+   "family_assignment_score": 0.0,
+   "axis_family_axis_weights": {},
+   "axis_family_base_relevance": 0.0,
+   "axis_family_sort_order": 999,
+   "keywords": [
+    "high",
+    "risk",
+    "high risk",
+    "high conviction",
+    "conviction",
+    "low high",
+    "sold high",
+    "high yield"
+   ],
+   "topic_labels": [
+    "high / risk / high risk"
+   ],
+   "examples": [
+    "Przykladowy komentarz (dane syntetyczne).",
+    "Ilustracyjna wypowiedz demo, bez realnego zrodla."
+   ],
+   "topic_count": 1,
+   "corpus_weight": 484.3692,
+   "average_sentiment": 0.4107,
+   "value_relevance": 0.9149,
+   "specificity_score": 0.89,
+   "cluster_id": 7,
+   "cluster_label": "high / sold / low"
+  },
+  {
+   "axis_id": 15,
+   "axis_label": "Right Direction / Direction / Stands Right",
+   "axis_display_label": "Right Direction / Direction / Stands Right",
+   "axis_summary": "Organiczny wymiar wartosci odkryty z komentarzy inwestorow. Glowne motywy: right direction, direction, stands right, excellent nails, knowledge acquainted.",
+   "axis_family_id": null,
+   "axis_family_label": null,
+   "axis_family_summary": null,
+   "axis_family_dominant_axis_code": null,
+   "axis_family_dominant_axis_label": null,
+   "family_assignment_score": 0.0,
+   "axis_family_axis_weights": {},
+   "axis_family_base_relevance": 0.0,
+   "axis_family_sort_order": 999,
+   "keywords": [
+    "right direction",
+    "direction",
+    "stands right",
+    "excellent nails",
+    "knowledge acquainted",
+    "acquainted",
+    "nails exactly"
+   ],
+   "topic_labels": [
+    "right / right direction / direction"
+   ],
+   "examples": [
+    "Przykladowy komentarz (dane syntetyczne).",
+    "Ilustracyjna wypowiedz demo, bez realnego zrodla."
+   ],
+   "topic_count": 1,
+   "corpus_weight": 280.5473,
+   "average_sentiment": 0.2139,
+   "value_relevance": 0.7404,
+   "specificity_score": 0.7593,
+   "cluster_id": 10,
+   "cluster_label": "right / added / rpi"
+  },
+  {
+   "axis_id": 17,
+   "axis_label": "Forward / Looking Forward / Solid",
+   "axis_display_label": "Forward / Looking Forward / Solid",
+   "axis_summary": "Organiczny wymiar wartosci odkryty z komentarzy inwestorow. Glowne motywy: forward, looking forward, solid, forward looking.",
+   "axis_family_id": null,
+   "axis_family_label": null,
+   "axis_family_summary": null,
+   "axis_family_dominant_axis_code": null,
+   "axis_family_dominant_axis_label": null,
+   "family_assignment_score": 0.0,
+   "axis_family_axis_weights": {},
+   "axis_family_base_relevance": 0.0,
+   "axis_family_sort_order": 999,
+   "keywords": [
+    "forward",
+    "looking forward",
+    "solid",
+    "forward looking"
+   ],
+   "topic_labels": [
+    "looking / forward / looking forward"
+   ],
+   "examples": [
+    "Przykladowy komentarz (dane syntetyczne).",
+    "Ilustracyjna wypowiedz demo, bez realnego zrodla."
+   ],
+   "topic_count": 1,
+   "corpus_weight": 184.4024,
+   "average_sentiment": 0.4861,
+   "value_relevance": 0.7299,
+   "specificity_score": 0.6003,
+   "cluster_id": 2,
+   "cluster_label": "little / don / rsi"
+  },
+  {
+   "axis_id": 18,
+   "axis_label": "Setup / Msi / Msi Setup",
+   "axis_display_label": "Setup / Msi / Msi Setup",
+   "axis_summary": "Organiczny wymiar wartosci odkryty z komentarzy inwestorow. Glowne motywy: setup, msi, msi setup, check, zone.",
+   "axis_family_id": null,
+   "axis_family_label": null,
+   "axis_family_summary": null,
+   "axis_family_dominant_axis_code": null,
+   "axis_family_dominant_axis_label": null,
+   "family_assignment_score": 0.0,
+   "axis_family_axis_weights": {},
+   "axis_family_base_relevance": 0.0,
+   "axis_family_sort_order": 999,
+   "keywords": [
+    "setup",
+    "msi",
+    "msi setup",
+    "check",
+    "zone",
+    "stockmarketindia",
+    "momentumtrading",
+    "momentumtrading stockmarketindia"
+   ],
+   "topic_labels": [
+    "setup / msi / msi setup"
+   ],
+   "examples": [
+    "Przykladowy komentarz (dane syntetyczne).",
+    "Ilustracyjna wypowiedz demo, bez realnego zrodla."
+   ],
+   "topic_count": 1,
+   "corpus_weight": 314.5185,
+   "average_sentiment": 0.4878,
+   "value_relevance": 0.9149,
+   "specificity_score": 0.892,
+   "cluster_id": 8,
+   "cluster_label": "money / make / trump"
+  },
+  {
+   "axis_id": 21,
+   "axis_label": "Cap / Micro / Micro Cap",
+   "axis_display_label": "Cap / Micro / Micro Cap",
+   "axis_summary": "Organiczny wymiar wartosci odkryty z komentarzy inwestorow. Glowne motywy: cap, micro, micro cap, obscure micro, obscure.",
+   "axis_family_id": null,
+   "axis_family_label": null,
+   "axis_family_summary": null,
+   "axis_family_dominant_axis_code": null,
+   "axis_family_dominant_axis_label": null,
+   "family_assignment_score": 0.0,
+   "axis_family_axis_weights": {},
+   "axis_family_base_relevance": 0.0,
+   "axis_family_sort_order": 999,
+   "keywords": [
+    "cap",
+    "micro",
+    "micro cap",
+    "obscure micro",
+    "obscure",
+    "minimal",
+    "cap minimal",
+    "speculative"
+   ],
+   "topic_labels": [
+    "cap / micro / micro cap"
+   ],
+   "examples": [
+    "Przykladowy komentarz (dane syntetyczne).",
+    "Ilustracyjna wypowiedz demo, bez realnego zrodla."
+   ],
+   "topic_count": 1,
+   "corpus_weight": 357.5338,
+   "average_sentiment": 0.3652,
+   "value_relevance": 0.8784,
+   "specificity_score": 0.87,
+   "cluster_id": 0,
+   "cluster_label": "does / demand / bank"
+  },
+  {
+   "axis_id": 22,
+   "axis_label": "Shorts / Cover / Borrow",
+   "axis_display_label": "Shorts / Cover / Borrow",
+   "axis_summary": "Organiczny wymiar wartosci odkryty z komentarzy inwestorow. Glowne motywy: shorts, cover, borrow, covering, zero.",
+   "axis_family_id": null,
+   "axis_family_label": null,
+   "axis_family_summary": null,
+   "axis_family_dominant_axis_code": null,
+   "axis_family_dominant_axis_label": null,
+   "family_assignment_score": 0.0,
+   "axis_family_axis_weights": {},
+   "axis_family_base_relevance": 0.0,
+   "axis_family_sort_order": 999,
+   "keywords": [
+    "shorts",
+    "cover",
+    "borrow",
+    "covering",
+    "zero",
+    "trying",
+    "trapped",
+    "zero borrow"
+   ],
+   "topic_labels": [
+    "shorts / cover / squeeze"
+   ],
+   "examples": [
+    "Przykladowy komentarz (dane syntetyczne).",
+    "Ilustracyjna wypowiedz demo, bez realnego zrodla."
+   ],
+   "topic_count": 1,
+   "corpus_weight": 299.8745,
+   "average_sentiment": 0.3315,
+   "value_relevance": 0.814,
+   "specificity_score": 0.7853,
+   "cluster_id": 4,
+   "cluster_label": "bullish / bought / way"
+  },
+  {
+   "axis_id": 23,
+   "axis_label": "Update / Reading / Piece",
+   "axis_display_label": "Update / Reading / Piece",
+   "axis_summary": "Organiczny wymiar wartosci odkryty z komentarzy inwestorow. Glowne motywy: update, reading, piece, want update, situation.",
+   "axis_family_id": null,
+   "axis_family_label": null,
+   "axis_family_summary": null,
+   "axis_family_dominant_axis_code": null,
+   "axis_family_dominant_axis_label": null,
+   "family_assignment_score": 0.0,
+   "axis_family_axis_weights": {},
+   "axis_family_base_relevance": 0.0,
+   "axis_family_sort_order": 999,
+   "keywords": [
+    "update",
+    "reading",
+    "piece",
+    "want update",
+    "situation",
+    "perfectly",
+    "essential reading",
+    "captures"
+   ],
+   "topic_labels": [
+    "want / update / reading"
+   ],
+   "examples": [
+    "Przykladowy komentarz (dane syntetyczne).",
+    "Ilustracyjna wypowiedz demo, bez realnego zrodla."
+   ],
+   "topic_count": 1,
+   "corpus_weight": 360.5342,
+   "average_sentiment": 0.2473,
+   "value_relevance": 0.8164,
+   "specificity_score": 0.8503,
+   "cluster_id": 11,
+   "cluster_label": "come / hit / clpr"
+  },
+  {
+   "axis_id": 24,
+   "axis_label": "Quarter / Financial / Second",
+   "axis_display_label": "Quarter / Financial / Second",
+   "axis_summary": "Organiczny wymiar wartosci odkryty z komentarzy inwestorow. Glowne motywy: quarter, financial, second, second quarter, reports.",
+   "axis_family_id": null,
+   "axis_family_label": null,
+   "axis_family_summary": null,
+   "axis_family_dominant_axis_code": null,
+   "axis_family_dominant_axis_label": null,
+   "family_assignment_score": 0.0,
+   "axis_family_axis_weights": {},
+   "axis_family_base_relevance": 0.0,
+   "axis_family_sort_order": 999,
+   "keywords": [
+    "quarter",
+    "financial",
+    "second",
+    "second quarter",
+    "reports",
+    "fourth quarter",
+    "fourth",
+    "quarter financial"
+   ],
+   "topic_labels": [
+    "quarter / financial / second"
+   ],
+   "examples": [
+    "Przykladowy komentarz (dane syntetyczne).",
+    "Ilustracyjna wypowiedz demo, bez realnego zrodla."
+   ],
+   "topic_count": 1,
+   "corpus_weight": 402.3224,
+   "average_sentiment": 0.3986,
+   "value_relevance": 0.9457,
+   "specificity_score": 0.9517,
+   "cluster_id": 5,
+   "cluster_label": "pre / revenue / estimate"
+  },
+  {
+   "axis_id": 25,
+   "axis_label": "Twitch / Way Oversold / Mentioned",
+   "axis_display_label": "Twitch / Way Oversold / Mentioned",
+   "axis_summary": "Organiczny wymiar wartosci odkryty z komentarzy inwestorow. Glowne motywy: twitch, way oversold, mentioned, working, action.",
+   "axis_family_id": null,
+   "axis_family_label": null,
+   "axis_family_summary": null,
+   "axis_family_dominant_axis_code": null,
+   "axis_family_dominant_axis_label": null,
+   "family_assignment_score": 0.0,
+   "axis_family_axis_weights": {},
+   "axis_family_base_relevance": 0.0,
+   "axis_family_sort_order": 999,
+   "keywords": [
+    "twitch",
+    "way oversold",
+    "mentioned",
+    "working",
+    "action",
+    "shift"
+   ],
+   "topic_labels": [
+    "way / twitch / hours"
+   ],
+   "examples": [
+    "Przykladowy komentarz (dane syntetyczne).",
+    "Ilustracyjna wypowiedz demo, bez realnego zrodla."
+   ],
+   "topic_count": 1,
+   "corpus_weight": 397.7088,
+   "average_sentiment": 0.2397,
+   "value_relevance": 0.717,
+   "specificity_score": 0.6613,
+   "cluster_id": 4,
+   "cluster_label": "bullish / bought / way"
+  },
+  {
+   "axis_id": 26,
+   "axis_label": "Make / Make Money / Make Sure",
+   "axis_display_label": "Make / Make Money / Make Sure",
+   "axis_summary": "Organiczny wymiar wartosci odkryty z komentarzy inwestorow. Glowne motywy: make, make money, make sure, sense, make sense.",
+   "axis_family_id": null,
+   "axis_family_label": null,
+   "axis_family_summary": null,
+   "axis_family_dominant_axis_code": null,
+   "axis_family_dominant_axis_label": null,
+   "family_assignment_score": 0.0,
+   "axis_family_axis_weights": {},
+   "axis_family_base_relevance": 0.0,
+   "axis_family_sort_order": 999,
+   "keywords": [
+    "make",
+    "make money",
+    "make sure",
+    "sense",
+    "make sense",
+    "follow",
+    "make make",
+    "rich"
+   ],
+   "topic_labels": [
+    "make / sure / make money"
+   ],
+   "examples": [
+    "Przykladowy komentarz (dane syntetyczne).",
+    "Ilustracyjna wypowiedz demo, bez realnego zrodla."
+   ],
+   "topic_count": 1,
+   "corpus_weight": 204.3146,
+   "average_sentiment": 0.2418,
+   "value_relevance": 0.7526,
+   "specificity_score": 0.7673,
+   "cluster_id": 8,
+   "cluster_label": "money / make / trump"
+  },
+  {
+   "axis_id": 27,
+   "axis_label": "Pattern / Candlestick Pattern / Candlestick",
+   "axis_display_label": "Pattern / Candlestick Pattern / Candlestick",
+   "axis_summary": "Organiczny wymiar wartosci odkryty z komentarzy inwestorow. Glowne motywy: pattern, candlestick pattern, candlestick, white, formed.",
+   "axis_family_id": null,
+   "axis_family_label": null,
+   "axis_family_summary": null,
+   "axis_family_dominant_axis_code": null,
+   "axis_family_dominant_axis_label": null,
+   "family_assignment_score": 0.0,
+   "axis_family_axis_weights": {},
+   "axis_family_base_relevance": 0.0,
+   "axis_family_sort_order": 999,
+   "keywords": [
+    "pattern",
+    "candlestick pattern",
+    "candlestick",
+    "white",
+    "formed",
+    "pattern formed",
+    "engulfing",
+    "white candlestick"
+   ],
+   "topic_labels": [
+    "pattern / candlestick pattern / candlestick"
+   ],
+   "examples": [
+    "Przykladowy komentarz (dane syntetyczne).",
+    "Ilustracyjna wypowiedz demo, bez realnego zrodla."
+   ],
+   "topic_count": 1,
+   "corpus_weight": 259.698,
+   "average_sentiment": 0.512,
+   "value_relevance": 0.8993,
+   "specificity_score": 0.9017,
+   "cluster_id": 4,
+   "cluster_label": "bullish / bought / way"
+  },
+  {
+   "axis_id": 28,
+   "axis_label": "Gold / Silver / Gold Silver",
+   "axis_display_label": "Gold / Silver / Gold Silver",
+   "axis_summary": "Organiczny wymiar wartosci odkryty z komentarzy inwestorow. Glowne motywy: gold, silver, gold silver, mining, prices.",
+   "axis_family_id": "environment-extraction-footprint",
+   "axis_family_label": "Wydobycie, paliwa kopalne i presja zasobowa",
+   "axis_family_summary": "Tematy o wydobyciu, metalach, oil and gas, drillingu i modelach biznesu obciazonych zasobowo.",
+   "axis_family_dominant_axis_code": "E",
+   "axis_family_dominant_axis_label": "Environmental Externalities",
+   "family_assignment_score": 0.3178,
+   "axis_family_axis_weights": {
+    "0": 0.95,
+    "1": 0.05,
+    "2": 0.0
+   },
+   "axis_family_base_relevance": 0.3178,
+   "axis_family_sort_order": 110,
+   "keywords": [
+    "gold",
+    "silver",
+    "gold silver",
+    "mining",
+    "prices",
+    "copper",
+    "metals",
+    "miners"
+   ],
+   "topic_labels": [
+    "gold / silver / gold silver"
+   ],
+   "examples": [
+    "Przykladowy komentarz (dane syntetyczne).",
+    "Ilustracyjna wypowiedz demo, bez realnego zrodla."
+   ],
+   "topic_count": 1,
+   "corpus_weight": 268.5903,
+   "average_sentiment": 0.4899,
+   "value_relevance": 0.902,
+   "specificity_score": 0.905,
+   "cluster_id": 9,
+   "cluster_label": "earnings / monday / gold"
+  },
+  {
+   "axis_id": 29,
+   "axis_label": "Split / Reverse / Reverse Split",
+   "axis_display_label": "Split / Reverse / Reverse Split",
+   "axis_summary": "Organiczny wymiar wartosci odkryty z komentarzy inwestorow. Glowne motywy: split, reverse, reverse split, scam, nasdaq.",
+   "axis_family_id": "governance-capital-fairness",
+   "axis_family_label": "Rozwodnienie, reverse splity i finansowanie",
+   "axis_family_summary": "Sygnaly o dilution, reverse splitach, offeringach, warrantach i agresywnym finansowaniu.",
+   "axis_family_dominant_axis_code": "G",
+   "axis_family_dominant_axis_label": "Governance & Trust",
+   "family_assignment_score": 0.2984,
+   "axis_family_axis_weights": {
+    "0": 0.0,
+    "1": 0.05,
+    "2": 0.95
+   },
+   "axis_family_base_relevance": 0.2984,
+   "axis_family_sort_order": 30,
+   "keywords": [
+    "split",
+    "reverse",
+    "reverse split",
+    "scam",
+    "nasdaq",
+    "merger",
+    "dilution",
+    "march"
+   ],
+   "topic_labels": [
+    "split / reverse / reverse split"
+   ],
+   "examples": [
+    "Przykladowy komentarz (dane syntetyczne).",
+    "Ilustracyjna wypowiedz demo, bez realnego zrodla."
+   ],
+   "topic_count": 1,
+   "corpus_weight": 177.0856,
+   "average_sentiment": -0.182,
+   "value_relevance": 0.7362,
+   "specificity_score": 0.7983,
+   "cluster_id": 2,
+   "cluster_label": "little / don / rsi"
+  },
+  {
+   "axis_id": 30,
+   "axis_label": "March / Delivery / Past",
+   "axis_display_label": "March / Delivery / Past",
+   "axis_summary": "Organiczny wymiar wartosci odkryty z komentarzy inwestorow. Glowne motywy: march, delivery, past, quite, wide.",
+   "axis_family_id": null,
+   "axis_family_label": null,
+   "axis_family_summary": null,
+   "axis_family_dominant_axis_code": null,
+   "axis_family_dominant_axis_label": null,
+   "family_assignment_score": 0.0,
+   "axis_family_axis_weights": {},
+   "axis_family_base_relevance": 0.0,
+   "axis_family_sort_order": 999,
+   "keywords": [
+    "march",
+    "delivery",
+    "past",
+    "quite",
+    "wide",
+    "double"
+   ],
+   "topic_labels": [
+    "month / march / end month"
+   ],
+   "examples": [
+    "Przykladowy komentarz (dane syntetyczne).",
+    "Ilustracyjna wypowiedz demo, bez realnego zrodla."
+   ],
+   "topic_count": 1,
+   "corpus_weight": 194.5251,
+   "average_sentiment": 0.3664,
+   "value_relevance": 0.7541,
+   "specificity_score": 0.678,
+   "cluster_id": 2,
+   "cluster_label": "little / don / rsi"
+  },
+  {
+   "axis_id": 31,
+   "axis_label": "Open / War / Iran",
+   "axis_display_label": "Open / War / Iran",
+   "axis_summary": "Organiczny wymiar wartosci odkryty z komentarzy inwestorow. Glowne motywy: open, war, iran, earnings monday, probably.",
+   "axis_family_id": null,
+   "axis_family_label": null,
+   "axis_family_summary": null,
+   "axis_family_dominant_axis_code": null,
+   "axis_family_dominant_axis_label": null,
+   "family_assignment_score": 0.0,
+   "axis_family_axis_weights": {},
+   "axis_family_base_relevance": 0.0,
+   "axis_family_sort_order": 999,
+   "keywords": [
+    "open",
+    "war",
+    "iran",
+    "earnings monday",
+    "probably",
+    "markets"
+   ],
+   "topic_labels": [
+    "monday / friday / open"
+   ],
+   "examples": [
+    "Przykladowy komentarz (dane syntetyczne).",
+    "Ilustracyjna wypowiedz demo, bez realnego zrodla."
+   ],
+   "topic_count": 1,
+   "corpus_weight": 269.1254,
+   "average_sentiment": 0.2804,
+   "value_relevance": 0.7503,
+   "specificity_score": 0.7047,
+   "cluster_id": 9,
+   "cluster_label": "earnings / monday / gold"
+  },
+  {
+   "axis_id": 33,
+   "axis_label": "Term / Near / Near Term",
+   "axis_display_label": "Term / Near / Near Term",
+   "axis_summary": "Organiczny wymiar wartosci odkryty z komentarzy inwestorow. Glowne motywy: term, near, near term, solid, positive.",
+   "axis_family_id": null,
+   "axis_family_label": null,
+   "axis_family_summary": null,
+   "axis_family_dominant_axis_code": null,
+   "axis_family_dominant_axis_label": null,
+   "family_assignment_score": 0.0,
+   "axis_family_axis_weights": {},
+   "axis_family_base_relevance": 0.0,
+   "axis_family_sort_order": 999,
+   "keywords": [
+    "term",
+    "near",
+    "near term",
+    "solid",
+    "positive",
+    "investment",
+    "longer",
+    "longer term"
+   ],
+   "topic_labels": [
+    "term / near / near term"
+   ],
+   "examples": [
+    "Przykladowy komentarz (dane syntetyczne).",
+    "Ilustracyjna wypowiedz demo, bez realnego zrodla."
+   ],
+   "topic_count": 1,
+   "corpus_weight": 479.7275,
+   "average_sentiment": 0.4319,
+   "value_relevance": 0.9196,
+   "specificity_score": 0.8903,
+   "cluster_id": 3,
+   "cluster_label": "term / play / bonds"
+  },
+  {
+   "axis_id": 34,
+   "axis_label": "Sales / Beat / Estimate",
+   "axis_display_label": "Sales / Beat / Estimate",
+   "axis_summary": "Organiczny wymiar wartosci odkryty z komentarzy inwestorow. Glowne motywy: sales, beat, estimate, beats, estimate sales.",
+   "axis_family_id": null,
+   "axis_family_label": null,
+   "axis_family_summary": null,
+   "axis_family_dominant_axis_code": null,
+   "axis_family_dominant_axis_label": null,
+   "family_assignment_score": 0.0,
+   "axis_family_axis_weights": {},
+   "axis_family_base_relevance": 0.0,
+   "axis_family_sort_order": 999,
+   "keywords": [
+    "sales",
+    "beat",
+    "estimate",
+    "beats",
+    "estimate sales",
+    "sales beat",
+    "beat estimate",
+    "beats estimate"
+   ],
+   "topic_labels": [
+    "sales / beat / estimate"
+   ],
+   "examples": [
+    "Przykladowy komentarz (dane syntetyczne).",
+    "Ilustracyjna wypowiedz demo, bez realnego zrodla."
+   ],
+   "topic_count": 1,
+   "corpus_weight": 389.9028,
+   "average_sentiment": 0.2322,
+   "value_relevance": 0.8582,
+   "specificity_score": 0.9333,
+   "cluster_id": 5,
+   "cluster_label": "pre / revenue / estimate"
+  },
+  {
+   "axis_id": 35,
+   "axis_label": "Gap / Value Play / Term Play",
+   "axis_display_label": "Gap / Value Play / Term Play",
+   "axis_summary": "Organiczny wymiar wartosci odkryty z komentarzy inwestorow. Glowne motywy: gap, value play, term play, check.",
+   "axis_family_id": null,
+   "axis_family_label": null,
+   "axis_family_summary": null,
+   "axis_family_dominant_axis_code": null,
+   "axis_family_dominant_axis_label": null,
+   "family_assignment_score": 0.0,
+   "axis_family_axis_weights": {},
+   "axis_family_base_relevance": 0.0,
+   "axis_family_sort_order": 999,
+   "keywords": [
+    "gap",
+    "value play",
+    "term play",
+    "check"
+   ],
+   "topic_labels": [
+    "play / squeeze / gap"
+   ],
+   "examples": [
+    "Przykladowy komentarz (dane syntetyczne).",
+    "Ilustracyjna wypowiedz demo, bez realnego zrodla."
+   ],
+   "topic_count": 1,
+   "corpus_weight": 228.6608,
+   "average_sentiment": 0.4174,
+   "value_relevance": 0.7219,
+   "specificity_score": 0.5687,
+   "cluster_id": 3,
+   "cluster_label": "term / play / bonds"
+  },
+  {
+   "axis_id": 37,
+   "axis_label": "Consumer / Bonds / Staples",
+   "axis_display_label": "Consumer / Bonds / Staples",
+   "axis_summary": "Organiczny wymiar wartosci odkryty z komentarzy inwestorow. Glowne motywy: consumer, bonds, staples, consumer staples, assets.",
+   "axis_family_id": null,
+   "axis_family_label": null,
+   "axis_family_summary": null,
+   "axis_family_dominant_axis_code": null,
+   "axis_family_dominant_axis_label": null,
+   "family_assignment_score": 0.0,
+   "axis_family_axis_weights": {},
+   "axis_family_base_relevance": 0.0,
+   "axis_family_sort_order": 999,
+   "keywords": [
+    "consumer",
+    "bonds",
+    "staples",
+    "consumer staples",
+    "assets",
+    "intermediate",
+    "intermediate bonds",
+    "rankings"
+   ],
+   "topic_labels": [
+    "consumer / bonds / staples"
+   ],
+   "examples": [
+    "Przykladowy komentarz (dane syntetyczne).",
+    "Ilustracyjna wypowiedz demo, bez realnego zrodla."
+   ],
+   "topic_count": 1,
+   "corpus_weight": 247.2333,
+   "average_sentiment": 0.3688,
+   "value_relevance": 0.8109,
+   "specificity_score": 0.755,
+   "cluster_id": 3,
+   "cluster_label": "term / play / bonds"
+  },
+  {
+   "axis_id": 38,
+   "axis_label": "Does / Mean / Rating",
+   "axis_display_label": "Does / Mean / Rating",
+   "axis_summary": "Organiczny wymiar wartosci odkryty z komentarzy inwestorow. Glowne motywy: does, mean, rating, date, technical.",
+   "axis_family_id": null,
+   "axis_family_label": null,
+   "axis_family_summary": null,
+   "axis_family_dominant_axis_code": null,
+   "axis_family_dominant_axis_label": null,
+   "family_assignment_score": 0.0,
+   "axis_family_axis_weights": {},
+   "axis_family_base_relevance": 0.0,
+   "axis_family_sort_order": 999,
+   "keywords": [
+    "does",
+    "mean",
+    "rating",
+    "date",
+    "technical",
+    "management",
+    "does mean",
+    "decent"
+   ],
+   "topic_labels": [
+    "does / mean / goes"
+   ],
+   "examples": [
+    "Przykladowy komentarz (dane syntetyczne).",
+    "Ilustracyjna wypowiedz demo, bez realnego zrodla."
+   ],
+   "topic_count": 1,
+   "corpus_weight": 269.1579,
+   "average_sentiment": 0.1828,
+   "value_relevance": 0.7525,
+   "specificity_score": 0.802,
+   "cluster_id": 0,
+   "cluster_label": "does / demand / bank"
+  },
+  {
+   "axis_id": 39,
+   "axis_label": "Strength / Asset / Ranked Strength",
+   "axis_display_label": "Strength / Asset / Ranked Strength",
+   "axis_summary": "Organiczny wymiar wartosci odkryty z komentarzy inwestorow. Glowne motywy: strength, asset, ranked strength, classes ranked, classes.",
+   "axis_family_id": null,
+   "axis_family_label": null,
+   "axis_family_summary": null,
+   "axis_family_dominant_axis_code": null,
+   "axis_family_dominant_axis_label": null,
+   "family_assignment_score": 0.0,
+   "axis_family_axis_weights": {},
+   "axis_family_base_relevance": 0.0,
+   "axis_family_sort_order": 999,
+   "keywords": [
+    "strength",
+    "asset",
+    "ranked strength",
+    "classes ranked",
+    "classes",
+    "ranked",
+    "asset classes",
+    "feb"
+   ],
+   "topic_labels": [
+    "strength / asset / ranked strength"
+   ],
+   "examples": [
+    "Przykladowy komentarz (dane syntetyczne).",
+    "Ilustracyjna wypowiedz demo, bez realnego zrodla."
+   ],
+   "topic_count": 1,
+   "corpus_weight": 108.9857,
+   "average_sentiment": 0.5252,
+   "value_relevance": 0.8691,
+   "specificity_score": 0.9,
+   "cluster_id": 0,
+   "cluster_label": "does / demand / bank"
+  },
+  {
+   "axis_id": 40,
+   "axis_label": "Hit / Highs / Lows",
+   "axis_display_label": "Hit / Highs / Lows",
+   "axis_summary": "Organiczny wymiar wartosci odkryty z komentarzy inwestorow. Glowne motywy: hit, highs, lows, hit high, idea.",
+   "axis_family_id": null,
+   "axis_family_label": null,
+   "axis_family_summary": null,
+   "axis_family_dominant_axis_code": null,
+   "axis_family_dominant_axis_label": null,
+   "family_assignment_score": 0.0,
+   "axis_family_axis_weights": {},
+   "axis_family_base_relevance": 0.0,
+   "axis_family_sort_order": 999,
+   "keywords": [
+    "hit",
+    "highs",
+    "lows",
+    "hit high",
+    "idea",
+    "min"
+   ],
+   "topic_labels": [
+    "hit / hard / highs"
+   ],
+   "examples": [
+    "Przykladowy komentarz (dane syntetyczne).",
+    "Ilustracyjna wypowiedz demo, bez realnego zrodla."
+   ],
+   "topic_count": 1,
+   "corpus_weight": 263.2367,
+   "average_sentiment": 0.2815,
+   "value_relevance": 0.7418,
+   "specificity_score": 0.688,
+   "cluster_id": 11,
+   "cluster_label": "come / hit / clpr"
+  },
+  {
+   "axis_id": 42,
+   "axis_label": "Adding / Weakness / Portfolio",
+   "axis_display_label": "Adding / Weakness / Portfolio",
+   "axis_summary": "Organiczny wymiar wartosci odkryty z komentarzy inwestorow. Glowne motywy: adding, weakness, portfolio, cheap, trades.",
+   "axis_family_id": null,
+   "axis_family_label": null,
+   "axis_family_summary": null,
+   "axis_family_dominant_axis_code": null,
+   "axis_family_dominant_axis_label": null,
+   "family_assignment_score": 0.0,
+   "axis_family_axis_weights": {},
+   "axis_family_base_relevance": 0.0,
+   "axis_family_sort_order": 999,
+   "keywords": [
+    "adding",
+    "weakness",
+    "portfolio",
+    "cheap",
+    "trades"
+   ],
+   "topic_labels": [
+    "added / bit / adding"
+   ],
+   "examples": [
+    "Przykladowy komentarz (dane syntetyczne).",
+    "Ilustracyjna wypowiedz demo, bez realnego zrodla."
+   ],
+   "topic_count": 1,
+   "corpus_weight": 192.4115,
+   "average_sentiment": 0.5637,
+   "value_relevance": 0.7557,
+   "specificity_score": 0.6433,
+   "cluster_id": 10,
+   "cluster_label": "right / added / rpi"
+  },
+  {
+   "axis_id": 43,
+   "axis_label": "Loss / Loss Loss / Focus",
+   "axis_display_label": "Loss / Loss Loss / Focus",
+   "axis_summary": "Organiczny wymiar wartosci odkryty z komentarzy inwestorow. Glowne motywy: loss, loss loss, focus, period, loss period.",
+   "axis_family_id": null,
+   "axis_family_label": null,
+   "axis_family_summary": null,
+   "axis_family_dominant_axis_code": null,
+   "axis_family_dominant_axis_label": null,
+   "family_assignment_score": 0.0,
+   "axis_family_axis_weights": {},
+   "axis_family_base_relevance": 0.0,
+   "axis_family_sort_order": 999,
+   "keywords": [
+    "loss",
+    "loss loss",
+    "focus",
+    "period",
+    "loss period",
+    "jan",
+    "focus jan",
+    "jan loss"
+   ],
+   "topic_labels": [
+    "loss / loss loss / focus"
+   ],
+   "examples": [
+    "Przykladowy komentarz (dane syntetyczne).",
+    "Ilustracyjna wypowiedz demo, bez realnego zrodla."
+   ],
+   "topic_count": 1,
+   "corpus_weight": 166.6399,
+   "average_sentiment": 0.2083,
+   "value_relevance": 0.8019,
+   "specificity_score": 0.9017,
+   "cluster_id": 2,
+   "cluster_label": "little / don / rsi"
+  },
+  {
+   "axis_id": 44,
+   "axis_label": "Real / Estate / Real Estate",
+   "axis_display_label": "Real / Estate / Real Estate",
+   "axis_summary": "Organiczny wymiar wartosci odkryty z komentarzy inwestorow. Glowne motywy: real, estate, real estate, suggested real, investment.",
+   "axis_family_id": null,
+   "axis_family_label": null,
+   "axis_family_summary": null,
+   "axis_family_dominant_axis_code": null,
+   "axis_family_dominant_axis_label": null,
+   "family_assignment_score": 0.0,
+   "axis_family_axis_weights": {},
+   "axis_family_base_relevance": 0.0,
+   "axis_family_sort_order": 999,
+   "keywords": [
+    "real",
+    "estate",
+    "real estate",
+    "suggested real",
+    "investment",
+    "estate investment",
+    "commercial real",
+    "assets"
+   ],
+   "topic_labels": [
+    "real / estate / real estate"
+   ],
+   "examples": [
+    "Przykladowy komentarz (dane syntetyczne).",
+    "Ilustracyjna wypowiedz demo, bez realnego zrodla."
+   ],
+   "topic_count": 1,
+   "corpus_weight": 350.6169,
+   "average_sentiment": 0.3649,
+   "value_relevance": 0.8676,
+   "specificity_score": 0.8433,
+   "cluster_id": 0,
+   "cluster_label": "does / demand / bank"
+  },
+  {
+   "axis_id": 45,
+   "axis_label": "Quite / Recent / Highs",
+   "axis_display_label": "Quite / Recent / Highs",
+   "axis_summary": "Organiczny wymiar wartosci odkryty z komentarzy inwestorow. Glowne motywy: quite, recent, highs, wide, open.",
+   "axis_family_id": null,
+   "axis_family_label": null,
+   "axis_family_summary": null,
+   "axis_family_dominant_axis_code": null,
+   "axis_family_dominant_axis_label": null,
+   "family_assignment_score": 0.0,
+   "axis_family_axis_weights": {},
+   "axis_family_base_relevance": 0.0,
+   "axis_family_sort_order": 999,
+   "keywords": [
+    "quite",
+    "recent",
+    "highs",
+    "wide",
+    "open",
+    "dollar"
+   ],
+   "topic_labels": [
+    "range / tight / tight range"
+   ],
+   "examples": [
+    "Przykladowy komentarz (dane syntetyczne).",
+    "Ilustracyjna wypowiedz demo, bez realnego zrodla."
+   ],
+   "topic_count": 1,
+   "corpus_weight": 184.6716,
+   "average_sentiment": 0.4383,
+   "value_relevance": 0.7782,
+   "specificity_score": 0.688,
+   "cluster_id": 2,
+   "cluster_label": "little / don / rsi"
+  },
+  {
+   "axis_id": 46,
+   "axis_label": "Deal / Billion / Worth",
+   "axis_display_label": "Deal / Billion / Worth",
+   "axis_summary": "Organiczny wymiar wartosci odkryty z komentarzy inwestorow. Glowne motywy: deal, billion, worth, debt, acquire.",
+   "axis_family_id": null,
+   "axis_family_label": null,
+   "axis_family_summary": null,
+   "axis_family_dominant_axis_code": null,
+   "axis_family_dominant_axis_label": null,
+   "family_assignment_score": 0.0,
+   "axis_family_axis_weights": {},
+   "axis_family_base_relevance": 0.0,
+   "axis_family_sort_order": 999,
+   "keywords": [
+    "deal",
+    "billion",
+    "worth",
+    "debt",
+    "acquire",
+    "shareholders",
+    "acquisition",
+    "announced"
+   ],
+   "topic_labels": [
+    "deal / billion / worth"
+   ],
+   "examples": [
+    "Przykladowy komentarz (dane syntetyczne).",
+    "Ilustracyjna wypowiedz demo, bez realnego zrodla."
+   ],
+   "topic_count": 1,
+   "corpus_weight": 615.0975,
+   "average_sentiment": 0.3362,
+   "value_relevance": 0.8662,
+   "specificity_score": 0.8083,
+   "cluster_id": 1,
+   "cluster_label": "deal / dividend / going"
+  },
+  {
+   "axis_id": 47,
+   "axis_label": "Rsi / Trend / Cci",
+   "axis_display_label": "Rsi / Trend / Cci",
+   "axis_summary": "Organiczny wymiar wartosci odkryty z komentarzy inwestorow. Glowne motywy: rsi, trend, cci, stoch, oversold.",
+   "axis_family_id": null,
+   "axis_family_label": null,
+   "axis_family_summary": null,
+   "axis_family_dominant_axis_code": null,
+   "axis_family_dominant_axis_label": null,
+   "family_assignment_score": 0.0,
+   "axis_family_axis_weights": {},
+   "axis_family_base_relevance": 0.0,
+   "axis_family_sort_order": 999,
+   "keywords": [
+    "rsi",
+    "trend",
+    "cci",
+    "stoch",
+    "oversold",
+    "levels",
+    "neutral",
+    "shows"
+   ],
+   "topic_labels": [
+    "rsi / trend / cci"
+   ],
+   "examples": [
+    "Przykladowy komentarz (dane syntetyczne).",
+    "Ilustracyjna wypowiedz demo, bez realnego zrodla."
+   ],
+   "topic_count": 1,
+   "corpus_weight": 500.8627,
+   "average_sentiment": 0.2915,
+   "value_relevance": 0.8293,
+   "specificity_score": 0.7953,
+   "cluster_id": 2,
+   "cluster_label": "little / don / rsi"
+  },
+  {
+   "axis_id": 49,
+   "axis_label": "Insider / Gotta / Analyst",
+   "axis_display_label": "Insider / Gotta / Analyst",
+   "axis_summary": "Organiczny wymiar wartosci odkryty z komentarzy inwestorow. Glowne motywy: insider, gotta, analyst, reason, picked.",
+   "axis_family_id": "governance-management-insiders",
+   "axis_family_label": "Zarzad, insiderzy i odpowiedzialnosc",
+   "axis_family_summary": "Motywy o zarzadzie, insider activity, boardzie i tym, czy kierownictwo wyglada na odpowiedzialne wobec akcjonariuszy.",
+   "axis_family_dominant_axis_code": "G",
+   "axis_family_dominant_axis_label": "Governance & Trust",
+   "family_assignment_score": 0.1303,
+   "axis_family_axis_weights": {
+    "0": 0.0,
+    "1": 0.05,
+    "2": 0.95
+   },
+   "axis_family_base_relevance": 0.1303,
+   "axis_family_sort_order": 20,
+   "keywords": [
+    "insider",
+    "gotta",
+    "analyst",
+    "reason",
+    "picked"
+   ],
+   "topic_labels": [
+    "love / finally / insider"
+   ],
+   "examples": [
+    "Przykladowy komentarz (dane syntetyczne).",
+    "Ilustracyjna wypowiedz demo, bez realnego zrodla."
+   ],
+   "topic_count": 1,
+   "corpus_weight": 218.032,
+   "average_sentiment": 0.4136,
+   "value_relevance": 0.7369,
+   "specificity_score": 0.5933,
+   "cluster_id": 4,
+   "cluster_label": "bullish / bought / way"
+  },
+  {
+   "axis_id": 50,
+   "axis_label": "Adding / Probably / Early",
+   "axis_display_label": "Adding / Probably / Early",
+   "axis_summary": "Organiczny wymiar wartosci odkryty z komentarzy inwestorow. Glowne motywy: adding, probably, early, rip, makes.",
+   "axis_family_id": null,
+   "axis_family_label": null,
+   "axis_family_summary": null,
+   "axis_family_dominant_axis_code": null,
+   "axis_family_dominant_axis_label": null,
+   "family_assignment_score": 0.0,
+   "axis_family_axis_weights": {},
+   "axis_family_base_relevance": 0.0,
+   "axis_family_sort_order": 999,
+   "keywords": [
+    "adding",
+    "probably",
+    "early",
+    "rip",
+    "makes"
+   ],
+   "topic_labels": [
+    "little / dip / add"
+   ],
+   "examples": [
+    "Przykladowy komentarz (dane syntetyczne).",
+    "Ilustracyjna wypowiedz demo, bez realnego zrodla."
+   ],
+   "topic_count": 1,
+   "corpus_weight": 330.6409,
+   "average_sentiment": 0.4618,
+   "value_relevance": 0.7519,
+   "specificity_score": 0.5917,
+   "cluster_id": 2,
+   "cluster_label": "little / don / rsi"
+  },
+  {
+   "axis_id": 51,
+   "axis_label": "Showing / Flow / Unusual",
+   "axis_display_label": "Showing / Flow / Unusual",
+   "axis_summary": "Organiczny wymiar wartosci odkryty z komentarzy inwestorow. Glowne motywy: showing, flow, unusual, activity, sentiment.",
+   "axis_family_id": null,
+   "axis_family_label": null,
+   "axis_family_summary": null,
+   "axis_family_dominant_axis_code": null,
+   "axis_family_dominant_axis_label": null,
+   "family_assignment_score": 0.0,
+   "axis_family_axis_weights": {},
+   "axis_family_base_relevance": 0.0,
+   "axis_family_sort_order": 999,
+   "keywords": [
+    "showing",
+    "flow",
+    "unusual",
+    "activity",
+    "sentiment"
+   ],
+   "topic_labels": [
+    "showing / flow / strike"
+   ],
+   "examples": [
+    "Przykladowy komentarz (dane syntetyczne).",
+    "Ilustracyjna wypowiedz demo, bez realnego zrodla."
+   ],
+   "topic_count": 1,
+   "corpus_weight": 374.5807,
+   "average_sentiment": 0.2742,
+   "value_relevance": 0.7734,
+   "specificity_score": 0.725,
+   "cluster_id": 9,
+   "cluster_label": "earnings / monday / gold"
+  },
+  {
+   "axis_id": 52,
+   "axis_label": "Claims / File / Form",
+   "axis_display_label": "Claims / File / Form",
+   "axis_summary": "Organiczny wymiar wartosci odkryty z komentarzy inwestorow. Glowne motywy: claims, file, form, settlement, filed.",
+   "axis_family_id": "governance-legal-compliance",
+   "axis_family_label": "Spory, dochodzenia i compliance",
+   "axis_family_summary": "Tematy o lawsuitach, settlementach, dochodzeniach, fines i ryzykach regulacyjnych.",
+   "axis_family_dominant_axis_code": "G",
+   "axis_family_dominant_axis_label": "Governance & Trust",
+   "family_assignment_score": 0.1294,
+   "axis_family_axis_weights": {
+    "0": 0.0,
+    "1": 0.1,
+    "2": 0.9
+   },
+   "axis_family_base_relevance": 0.1294,
+   "axis_family_sort_order": 40,
+   "keywords": [
+    "claims",
+    "file",
+    "form",
+    "settlement",
+    "filed",
+    "payment",
+    "deadline",
+    "file payment"
+   ],
+   "topic_labels": [
+    "investors / claims / file"
+   ],
+   "examples": [
+    "Przykladowy komentarz (dane syntetyczne).",
+    "Ilustracyjna wypowiedz demo, bez realnego zrodla."
+   ],
+   "topic_count": 1,
+   "corpus_weight": 582.1516,
+   "average_sentiment": 0.2184,
+   "value_relevance": 0.7109,
+   "specificity_score": 0.7417,
+   "cluster_id": 10,
+   "cluster_label": "right / added / rpi"
+  },
+  {
+   "axis_id": 53,
+   "axis_label": "Trump / Tariffs / Iran",
+   "axis_display_label": "Trump / Tariffs / Iran",
+   "axis_summary": "Organiczny wymiar wartosci odkryty z komentarzy inwestorow. Glowne motywy: trump, tariffs, iran, china, tariff.",
+   "axis_family_id": null,
+   "axis_family_label": null,
+   "axis_family_summary": null,
+   "axis_family_dominant_axis_code": null,
+   "axis_family_dominant_axis_label": null,
+   "family_assignment_score": 0.0,
+   "axis_family_axis_weights": {},
+   "axis_family_base_relevance": 0.0,
+   "axis_family_sort_order": 999,
+   "keywords": [
+    "trump",
+    "tariffs",
+    "iran",
+    "china",
+    "tariff",
+    "president",
+    "war",
+    "court"
+   ],
+   "topic_labels": [
+    "trump / tariffs / iran"
+   ],
+   "examples": [
+    "Przykladowy komentarz (dane syntetyczne).",
+    "Ilustracyjna wypowiedz demo, bez realnego zrodla."
+   ],
+   "topic_count": 1,
+   "corpus_weight": 445.8499,
+   "average_sentiment": 0.1768,
+   "value_relevance": 0.7452,
+   "specificity_score": 0.7453,
+   "cluster_id": 8,
+   "cluster_label": "money / make / trump"
+  },
+  {
+   "axis_id": 54,
+   "axis_label": "Level / Key / Key Level",
+   "axis_display_label": "Level / Key / Key Level",
+   "axis_summary": "Organiczny wymiar wartosci odkryty z komentarzy inwestorow. Glowne motywy: level, key, key level, sector, testing.",
+   "axis_family_id": null,
+   "axis_family_label": null,
+   "axis_family_summary": null,
+   "axis_family_dominant_axis_code": null,
+   "axis_family_dominant_axis_label": null,
+   "family_assignment_score": 0.0,
+   "axis_family_axis_weights": {},
+   "axis_family_base_relevance": 0.0,
+   "axis_family_sort_order": 999,
+   "keywords": [
+    "level",
+    "key",
+    "key level",
+    "sector",
+    "testing",
+    "testing level",
+    "test",
+    "post"
+   ],
+   "topic_labels": [
+    "level / key / key level"
+   ],
+   "examples": [
+    "Przykladowy komentarz (dane syntetyczne).",
+    "Ilustracyjna wypowiedz demo, bez realnego zrodla."
+   ],
+   "topic_count": 1,
+   "corpus_weight": 326.3233,
+   "average_sentiment": 0.4314,
+   "value_relevance": 0.886,
+   "specificity_score": 0.8467,
+   "cluster_id": 4,
+   "cluster_label": "bullish / bought / way"
+  },
+  {
+   "axis_id": 55,
+   "axis_label": "Closed / Conference / Closed End",
+   "axis_display_label": "Closed / Conference / Closed End",
+   "axis_summary": "Organiczny wymiar wartosci odkryty z komentarzy inwestorow. Glowne motywy: closed, conference, closed end, near, fund.",
+   "axis_family_id": null,
+   "axis_family_label": null,
+   "axis_family_summary": null,
+   "axis_family_dominant_axis_code": null,
+   "axis_family_dominant_axis_label": null,
+   "family_assignment_score": 0.0,
+   "axis_family_axis_weights": {},
+   "axis_family_base_relevance": 0.0,
+   "axis_family_sort_order": 999,
+   "keywords": [
+    "closed",
+    "conference",
+    "closed end",
+    "near",
+    "fund",
+    "ticker",
+    "march"
+   ],
+   "topic_labels": [
+    "end / closed / end month"
+   ],
+   "examples": [
+    "Przykladowy komentarz (dane syntetyczne).",
+    "Ilustracyjna wypowiedz demo, bez realnego zrodla."
+   ],
+   "topic_count": 1,
+   "corpus_weight": 325.6584,
+   "average_sentiment": 0.308,
+   "value_relevance": 0.8006,
+   "specificity_score": 0.766,
+   "cluster_id": 10,
+   "cluster_label": "right / added / rpi"
+  },
+  {
+   "axis_id": 57,
+   "axis_label": "Pressure / Insider / Business",
+   "axis_display_label": "Pressure / Insider / Business",
+   "axis_summary": "Organiczny wymiar wartosci odkryty z komentarzy inwestorow. Glowne motywy: pressure, insider, business, insiders, selling pressure.",
+   "axis_family_id": "governance-management-insiders",
+   "axis_family_label": "Zarzad, insiderzy i odpowiedzialnosc",
+   "axis_family_summary": "Motywy o zarzadzie, insider activity, boardzie i tym, czy kierownictwo wyglada na odpowiedzialne wobec akcjonariuszy.",
+   "axis_family_dominant_axis_code": "G",
+   "axis_family_dominant_axis_label": "Governance & Trust",
+   "family_assignment_score": 0.2029,
+   "axis_family_axis_weights": {
+    "0": 0.0,
+    "1": 0.05,
+    "2": 0.95
+   },
+   "axis_family_base_relevance": 0.2029,
+   "axis_family_sort_order": 20,
+   "keywords": [
+    "pressure",
+    "insider",
+    "business",
+    "insiders",
+    "selling pressure",
+    "insider selling"
+   ],
+   "topic_labels": [
+    "selling / pressure / insider"
+   ],
+   "examples": [
+    "Przykladowy komentarz (dane syntetyczne).",
+    "Ilustracyjna wypowiedz demo, bez realnego zrodla."
+   ],
+   "topic_count": 1,
+   "corpus_weight": 356.4477,
+   "average_sentiment": 0.0887,
+   "value_relevance": 0.6501,
+   "specificity_score": 0.6513,
+   "cluster_id": 4,
+   "cluster_label": "bullish / bought / way"
+  },
+  {
+   "axis_id": 59,
+   "axis_label": "Current / Read / Learn",
+   "axis_display_label": "Current / Read / Learn",
+   "axis_summary": "Organiczny wymiar wartosci odkryty z komentarzy inwestorow. Glowne motywy: current, read, learn, hits, refresh.",
+   "axis_family_id": null,
+   "axis_family_label": null,
+   "axis_family_summary": null,
+   "axis_family_dominant_axis_code": null,
+   "axis_family_dominant_axis_label": null,
+   "family_assignment_score": 0.0,
+   "axis_family_axis_weights": {},
+   "axis_family_base_relevance": 0.0,
+   "axis_family_sort_order": 999,
+   "keywords": [
+    "current",
+    "read",
+    "learn",
+    "hits",
+    "refresh",
+    "want refresh",
+    "mark",
+    "outstanding"
+   ],
+   "topic_labels": [
+    "current / read / learn"
+   ],
+   "examples": [
+    "Przykladowy komentarz (dane syntetyczne).",
+    "Ilustracyjna wypowiedz demo, bez realnego zrodla."
+   ],
+   "topic_count": 1,
+   "corpus_weight": 356.1415,
+   "average_sentiment": 0.3423,
+   "value_relevance": 0.9122,
+   "specificity_score": 0.945,
+   "cluster_id": 0,
+   "cluster_label": "does / demand / bank"
+  },
+  {
+   "axis_id": 60,
+   "axis_label": "Oil / Energy / Gas",
+   "axis_display_label": "Oil / Energy / Gas",
+   "axis_summary": "Organiczny wymiar wartosci odkryty z komentarzy inwestorow. Glowne motywy: oil, energy, gas, oil gas, prices.",
+   "axis_family_id": "environment-extraction-footprint",
+   "axis_family_label": "Wydobycie, paliwa kopalne i presja zasobowa",
+   "axis_family_summary": "Tematy o wydobyciu, metalach, oil and gas, drillingu i modelach biznesu obciazonych zasobowo.",
+   "axis_family_dominant_axis_code": "E",
+   "axis_family_dominant_axis_label": "Environmental Externalities",
+   "family_assignment_score": 0.2304,
+   "axis_family_axis_weights": {
+    "0": 0.95,
+    "1": 0.05,
+    "2": 0.0
+   },
+   "axis_family_base_relevance": 0.2304,
+   "axis_family_sort_order": 110,
+   "keywords": [
+    "oil",
+    "energy",
+    "gas",
+    "oil gas",
+    "prices",
+    "natural",
+    "natural gas",
+    "services"
+   ],
+   "topic_labels": [
+    "oil / energy / gas"
+   ],
+   "examples": [
+    "Przykladowy komentarz (dane syntetyczne).",
+    "Ilustracyjna wypowiedz demo, bez realnego zrodla."
+   ],
+   "topic_count": 1,
+   "corpus_weight": 675.9783,
+   "average_sentiment": 0.4053,
+   "value_relevance": 0.8774,
+   "specificity_score": 0.7883,
+   "cluster_id": 0,
+   "cluster_label": "does / demand / bank"
+  },
+  {
+   "axis_id": 61,
+   "axis_label": "Come / Join / Set",
+   "axis_display_label": "Come / Join / Set",
+   "axis_summary": "Organiczny wymiar wartosci odkryty z komentarzy inwestorow. Glowne motywy: come, join, set, tariffs, later.",
+   "axis_family_id": null,
+   "axis_family_label": null,
+   "axis_family_summary": null,
+   "axis_family_dominant_axis_code": null,
+   "axis_family_dominant_axis_label": null,
+   "family_assignment_score": 0.0,
+   "axis_family_axis_weights": {},
+   "axis_family_base_relevance": 0.0,
+   "axis_family_sort_order": 999,
+   "keywords": [
+    "come",
+    "join",
+    "set",
+    "tariffs",
+    "later",
+    "numbers",
+    "cheap"
+   ],
+   "topic_labels": [
+    "come / goes / wait"
+   ],
+   "examples": [
+    "Przykladowy komentarz (dane syntetyczne).",
+    "Ilustracyjna wypowiedz demo, bez realnego zrodla."
+   ],
+   "topic_count": 1,
+   "corpus_weight": 244.4041,
+   "average_sentiment": 0.3388,
+   "value_relevance": 0.7513,
+   "specificity_score": 0.6777,
+   "cluster_id": 11,
+   "cluster_label": "come / hit / clpr"
+  },
+  {
+   "axis_id": 62,
+   "axis_label": "Bank / Regional / Regional Bank",
+   "axis_display_label": "Bank / Regional / Regional Bank",
+   "axis_summary": "Organiczny wymiar wartosci odkryty z komentarzy inwestorow. Glowne motywy: bank, regional, regional bank, community, community bank.",
+   "axis_family_id": null,
+   "axis_family_label": null,
+   "axis_family_summary": null,
+   "axis_family_dominant_axis_code": null,
+   "axis_family_dominant_axis_label": null,
+   "family_assignment_score": 0.0,
+   "axis_family_axis_weights": {},
+   "axis_family_base_relevance": 0.0,
+   "axis_family_sort_order": 999,
+   "keywords": [
+    "bank",
+    "regional",
+    "regional bank",
+    "community",
+    "community bank",
+    "ipo",
+    "crore",
+    "rate"
+   ],
+   "topic_labels": [
+    "bank / regional / regional bank"
+   ],
+   "examples": [
+    "Przykladowy komentarz (dane syntetyczne).",
+    "Ilustracyjna wypowiedz demo, bez realnego zrodla."
+   ],
+   "topic_count": 1,
+   "corpus_weight": 474.2822,
+   "average_sentiment": 0.2172,
+   "value_relevance": 0.8083,
+   "specificity_score": 0.8283,
+   "cluster_id": 0,
+   "cluster_label": "does / demand / bank"
+  },
+  {
+   "axis_id": 63,
+   "axis_label": "Needs / Ceo / Board",
+   "axis_display_label": "Needs / Ceo / Board",
+   "axis_summary": "Organiczny wymiar wartosci odkryty z komentarzy inwestorow. Glowne motywy: needs, ceo, board, push, management.",
+   "axis_family_id": "governance-management-insiders",
+   "axis_family_label": "Zarzad, insiderzy i odpowiedzialnosc",
+   "axis_family_summary": "Motywy o zarzadzie, insider activity, boardzie i tym, czy kierownictwo wyglada na odpowiedzialne wobec akcjonariuszy.",
+   "axis_family_dominant_axis_code": "G",
+   "axis_family_dominant_axis_label": "Governance & Trust",
+   "family_assignment_score": 0.2063,
+   "axis_family_axis_weights": {
+    "0": 0.0,
+    "1": 0.05,
+    "2": 0.95
+   },
+   "axis_family_base_relevance": 0.2063,
+   "axis_family_sort_order": 20,
+   "keywords": [
+    "needs",
+    "ceo",
+    "board",
+    "push",
+    "management",
+    "free",
+    "help",
+    "shareholders"
+   ],
+   "topic_labels": [
+    "needs / ceo / board"
+   ],
+   "examples": [
+    "Przykladowy komentarz (dane syntetyczne).",
+    "Ilustracyjna wypowiedz demo, bez realnego zrodla."
+   ],
+   "topic_count": 1,
+   "corpus_weight": 568.2925,
+   "average_sentiment": 0.227,
+   "value_relevance": 0.795,
+   "specificity_score": 0.7787,
+   "cluster_id": 4,
+   "cluster_label": "bullish / bought / way"
+  }
+ ],
+ "esg_like_axes": [
+  {
+   "axis_id": 0,
+   "axis_label": "Environmental Externalities",
+   "axis_display_label": "Environmental Externalities",
+   "axis_summary": "Skrot E-like zbudowany z organicznych wymiarow wartosci. To warstwa podsumowujaca, a nie glowna reprezentacja modelu.",
+   "axis_code": "E",
+   "keywords": [
+    "gold",
+    "silver",
+    "gold silver",
+    "mining",
+    "prices",
+    "copper"
+   ],
+   "examples": [
+    "Przykladowy komentarz (dane syntetyczne).",
+    "Ilustracyjna wypowiedz demo, bez realnego zrodla."
+   ],
+   "family_ids": [
+    "environment-extraction-footprint"
+   ],
+   "family_labels": [
+    "Wydobycie, paliwa kopalne i presja zasobowa"
+   ],
+   "topic_labels": [
+    "Wydobycie, paliwa kopalne i presja zasobowa"
+   ],
+   "family_weights": [
+    0.4556
+   ],
+   "topic_count": 1
+  },
+  {
+   "axis_id": 1,
+   "axis_label": "Social Impact & Stakeholder Treatment",
+   "axis_display_label": "Social Impact & Stakeholder Treatment",
+   "axis_summary": "Skrot S-like oparty na komentarzowych wymiarach wartosci. Opisuje, jak komentowany jest wplyw firmy na ludzi i interesariuszy.",
+   "axis_code": "S",
+   "keywords": [],
+   "examples": [],
+   "family_ids": [],
+   "family_labels": [],
+   "topic_labels": [],
+   "family_weights": [],
+   "topic_count": 0
+  },
+  {
+   "axis_id": 2,
+   "axis_label": "Governance & Trust",
+   "axis_display_label": "Governance & Trust",
+   "axis_summary": "Skrot G-like nad organicznymi wymiarami z komentarzy. Dotyczy zaufania, transparentnosci, zgodnosci i ryzyk typu fraud lub insider selling.",
+   "axis_code": "G",
+   "keywords": [
+    "split",
+    "reverse",
+    "reverse split",
+    "scam",
+    "nasdaq",
+    "merger",
+    "opportunity",
+    "insider"
+   ],
+   "examples": [
+    "Przykladowy komentarz (dane syntetyczne).",
+    "Ilustracyjna wypowiedz demo, bez realnego zrodla."
+   ],
+   "family_ids": [
+    "governance-capital-fairness",
+    "governance-management-insiders",
+    "governance-legal-compliance"
+   ],
+   "family_labels": [
+    "Rozwodnienie, reverse splity i finansowanie",
+    "Zarzad, insiderzy i odpowiedzialnosc",
+    "Spory, dochodzenia i compliance"
+   ],
+   "topic_labels": [
+    "Rozwodnienie, reverse splity i finansowanie",
+    "Zarzad, insiderzy i odpowiedzialnosc",
+    "Spory, dochodzenia i compliance"
+   ],
+   "family_weights": [
+    0.4082,
+    0.3472,
+    0.2735
+   ],
+   "topic_count": 3
+  }
+ ],
+ "discarded_topics_count": 9,
+ "discarded_topics_preview": [
+  {
+   "topic_id": 48,
+   "label": "Przykladowy komentarz (dane syntetyczne).",
+   "keywords": [
+    "Przykladowy komentarz (dane syntetyczne).",
+    "Ilustracyjna wypowiedz demo, bez realnego zrodla.",
+    "Fragment pokazowy wygenerowany na potrzeby demo."
+   ],
+   "value_relevance": 0.7128,
+   "specificity_score": 0.6173,
+   "domain_ratio": 0.0
+  },
+  {
+   "topic_id": 19,
+   "label": "Ilustracyjna wypowiedz demo, bez realnego zrodla.",
+   "keywords": [
+    "Przykladowy komentarz (dane syntetyczne).",
+    "Ilustracyjna wypowiedz demo, bez realnego zrodla.",
+    "Fragment pokazowy wygenerowany na potrzeby demo.",
+    "Przykladowy komentarz (dane syntetyczne).",
+    "Ilustracyjna wypowiedz demo, bez realnego zrodla."
+   ],
+   "value_relevance": 0.6991,
+   "specificity_score": 0.655,
+   "domain_ratio": 0.0
+  }
+ ],
+ "metric_version": "custom-esg-v7-normative-family-summary",
+ "value_dimensions_metric_version": "value-dimensions-v3-organic-topic-nlp",
+ "projection_method": "organic-topic-dimensions-first-then-esg-like-summary",
+ "is_sample": true
+}

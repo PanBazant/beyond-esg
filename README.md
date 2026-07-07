@@ -2,6 +2,27 @@
 
 Repozytorium pracy **"Inzynieria selekcji wartosci w inwestowaniu poza normami ESG"**.
 
+Aplikacja odkrywa oddolne osie wartosci z komentarzy inwestorow (StockTwits),
+laczy je z fundamentami i technikaliami spolek i buduje z tego selekcje
+ETF-opodobna. Warstwa po warstwie: scraper, potok analizy (BERTopic, model
+jezykowy jako ekstraktor jakosciowy, ablacja dwoch modeli), API FastAPI,
+frontend React.
+
+## Dane i tryb demo
+
+Repozytorium **nie zawiera** realnych danych ze StockTwits ani z yfinance ze
+wzgledu na ich pochodzenie (scraping i serwisy finansowe). Zamiast nich w
+`demo/` sa male, w pelni syntetyczne fikstury: fikcyjne spolki
+(`DEMO01`..`DEMO10`), bez realnych nazw i bez cytatow z komentarzy, o schemacie
+identycznym z realnym. Backend uzywa `demo/` automatycznie, gdy nie ma wynikow
+potoku w `analiza/out/`, wiec po `git clone` aplikacja odpala sie i daje sie
+pokazac od reki, na danych demo.
+
+Zeby uruchomic na realnych danych, wygeneruj je lokalnie: scrapery w
+`scrapper/` buduja universe i korpus, a ponumerowany potok w `analiza/` tworzy
+`analiza/out/company_master_dataset.jsonl`. Realne dane pozostaja lokalne i nie
+sa publikowane (zob. `.gitignore`).
+
 ## Struktura
 
 - `scrapper/`
@@ -41,7 +62,7 @@ Repozytorium pracy **"Inzynieria selekcji wartosci w inwestowaniu poza normami E
 Z katalogu glownego projektu:
 
 ```powershell
-cd C:\Users\macie\Documents\mgr\magister
+cd path\to\magister
 .\start_app.ps1
 ```
 
@@ -93,7 +114,7 @@ npm install
 npm run dev
 ```
 
-Frontend domyslnie zaklada API pod `http://localhost:8000/api/v1`. Dla czytelnego lokalnego setupu skopiuj [frontend/.env.example](C:\Users\macie\Documents\mgr\magister\frontend\.env.example) do `.env` i w razie potrzeby zmien `VITE_API_BASE`.
+Frontend domyslnie zaklada API pod `http://localhost:8000/api/v1`. Dla czytelnego lokalnego setupu skopiuj [frontend/.env.example](frontend/.env.example) do `.env` i w razie potrzeby zmien `VITE_API_BASE`.
 
 Build produkcyjny:
 

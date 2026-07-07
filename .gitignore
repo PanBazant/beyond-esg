@@ -35,3 +35,21 @@ scrapper/batch_progress.json
 analiza/profiles/*.json
 !analiza/profiles/anti_esg_diversified.json
 !analiza/profiles/balanced_signal.json
+
+# Provenance-sensitive data — NOT published.
+# Real yfinance-derived financials + the scraped StockTwits/CompaniesMarketCap
+# universe (2500+ real company identities) and computed scores. Regenerate
+# locally via the scrapers + analiza/ pipeline. The app ships with synthetic
+# fixtures in demo/ so it runs without any of this.
+analiza/input/company_fundamentals.csv
+analiza/input/company_technicals.csv
+analiza/input/company_fundamentals_template.csv
+analiza/input/company_technicals_template.csv
+analiza/input/fundamentals_worklist.csv
+analiza/input/technicals_worklist.csv
+scrapper/cmc_to_stocktwits_symbol_map.json
+scrapper/cmc_to_stocktwits_symbol_stats.json
+scrapper/cmc_unmatched_symbols.json
+scrapper/cmc_ambiguous_symbols.json
+scrapper/merge_report.json
+scrapper/batch_progress_sample.json

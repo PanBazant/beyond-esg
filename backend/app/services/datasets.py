@@ -16,11 +16,33 @@ from .instrument_universe import (
 ROOT_DIR = Path(__file__).resolve().parents[3]
 SCRAPPER_DIR = ROOT_DIR / "scrapper"
 ANALYSIS_DIR = ROOT_DIR / "analiza" / "out"
+DEMO_DIR = ROOT_DIR / "demo"
+
+
+def _with_demo_fallback(real_path: Path, demo_name: str) -> Path:
+    """Return real pipeline output when present, else bundled synthetic demo data.
+
+    Lets the app run out-of-the-box on the fixtures in ``demo/`` after a clean
+    clone, and switch to real data automatically once the pipeline has produced
+    it. Real StockTwits/yfinance-derived data is not shipped (see README).
+    """
+    if real_path.exists():
+        return real_path
+    demo_path = DEMO_DIR / demo_name
+    return demo_path if demo_path.exists() else real_path
+
+
 NON_GEO_INDEX_PATH = SCRAPPER_DIR / "cmc_out" / "non_geo_cleaned_index.json"
-MERGED_FLAT_PATH = SCRAPPER_DIR / "merged_flat_stocktwits.jsonl"
+MERGED_FLAT_PATH = _with_demo_fallback(
+    SCRAPPER_DIR / "merged_flat_stocktwits.jsonl", "merged_flat_stocktwits.jsonl"
+)
 MEDIA_SAMPLE_DIR = SCRAPPER_DIR / "media_sample"
-MASTER_DATASET_PATH = ANALYSIS_DIR / "company_master_dataset.jsonl"
-COMMENT_ESG_SUMMARY_PATH = ANALYSIS_DIR / "comment_esg_axes_summary.json"
+MASTER_DATASET_PATH = _with_demo_fallback(
+    ANALYSIS_DIR / "company_master_dataset.jsonl", "company_master_dataset.jsonl"
+)
+COMMENT_ESG_SUMMARY_PATH = _with_demo_fallback(
+    ANALYSIS_DIR / "comment_esg_axes_summary.json", "comment_esg_axes_summary.json"
+)
 
 MONEY_PATTERN = re.compile(r"([0-9]+(?:\.[0-9]+)?)\s*([KMBT])?", re.IGNORECASE)
 LEADING_NOISE_PATTERN = re.compile(r"^[^A-Za-z0-9]+")
